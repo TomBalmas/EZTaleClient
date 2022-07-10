@@ -1,4 +1,4 @@
-# ez_tale
+# EZTale
 
 A new Flutter project.
 
