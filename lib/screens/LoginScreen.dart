@@ -2,6 +2,7 @@ import 'package:ez_tale/EZNetworking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'EditorScreen.dart';
 import 'HomeScreen.dart';
 
 
@@ -15,14 +16,19 @@ class LoginScreen extends StatelessWidget {
         title: const Text('Login'),
       ),
       body: Center(
-        child: ElevatedButton(
+        child: Column(
+          children: <Widget>[
+            Image.asset('assets/EZTaleLogo.png'),
+        ElevatedButton(
           child: const Text('Login'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
-            },
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EditorScreen()),
+            );
+          }
+        )
+          ],
         ),
       ),
     );
