@@ -29,6 +29,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.3
   flutter_quill: ^6.0.4
+  google_fonts: ^3.0.1
+  flutter_svg_provider: ^1.0.3
+  universal_platform: ^1.0.0-nullsafety
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
