@@ -5,5 +5,5 @@ export './EditorScreen.dart';
 export './HomeScreen.dart';
 export './LoginScreen.dart';
 export './RegisterScreen.dart';
-export './WelcomeScreen.dart';
+
 

@@ -1,8 +1,10 @@
 import 'package:ez_tale/utils/AppModel.dart';
 import 'package:ez_tale/widgets/Widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/EZPasswordField.dart';
+import '../widgets/EZTextField.dart';
+import 'Screens.dart';
 
 // Uses full-screen breakpoints to reflow the widget tree
 class LoginScreen extends StatelessWidget {
@@ -81,6 +83,19 @@ class _LoginScreenState extends State<_LoginForm> {
                   bgColor: Colors.white,
                   textColor: Colors.black87,
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: EZTextButton(
+                    buttonName: 'Register',
+                    onTap: () { Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => RegisterScreen()));
+                      },
+                    bgColor: Colors.white,
+                    textColor: Colors.black87,
+                  )
+                )
               ],
             ),
           ),

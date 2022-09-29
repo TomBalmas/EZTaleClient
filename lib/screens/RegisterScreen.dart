@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../widgets/widgets.dart';
 import '../constants.dart';
+import '../EZNetworking.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -11,6 +12,12 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   bool passwordVisibility = true;
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController phoneController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,18 +62,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 50,
                           ),
                           EZTextField(
-                            hintText: 'Name',
+                            controller: nameController,
+                            hintText: 'Full Name',
                             inputType: TextInputType.name,
                           ),
                           EZTextField(
+                            controller: emailController,
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
                           ),
                           EZTextField(
+                            controller: phoneController,
                             hintText: 'Phone',
                             inputType: TextInputType.phone,
                           ),
                           EZPasswordField(
+                            controller: passwordController,
                             isPasswordVisible: passwordVisibility,
                             onTap: () {
                               setState(() {
@@ -86,12 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => RegisterScreen(),
-                              ),
-                            );
+                            Navigator.pop(context);
                           },
                           child: Text(
                             "Log In",
@@ -107,7 +113,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     EZTextButton(
                       buttonName: 'Register',
-                      onTap: () {},
+                      onTap: () {
+                        Future<String> res = createUser(nameController.text, emailController.text,
+                            phoneController.text, passwordController.text);
+                        print(res);
+                      },
                       bgColor: Colors.white,
                       textColor: Colors.black87,
                     )

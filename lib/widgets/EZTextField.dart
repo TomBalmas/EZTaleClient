@@ -1,42 +1,29 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class EZPasswordField extends StatelessWidget {
-  const EZPasswordField({
+class EZTextField extends StatelessWidget {
+  const EZTextField({
     Key key,
-    @required this.isPasswordVisible,
-    @required this.onTap,
+    @required this.hintText,
+    @required this.inputType,
+    @required this.controller
   }) : super(key: key);
-
-  final bool isPasswordVisible;
-  final Function onTap;
+  final String hintText;
+  final TextInputType inputType;
+  final controller;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
-        style: kBodyText.copyWith(
-          color: Colors.white,
-        ),
-        obscureText: isPasswordVisible,
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.done,
+        controller: controller,
+        style: kBodyText.copyWith(color: Colors.white),
+        keyboardType: inputType,
+        textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          suffixIcon: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: onTap,
-              icon: Icon(
-                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                color: Colors.grey,
-              ),
-            ),
-          ),
           contentPadding: EdgeInsets.all(20),
-          hintText: 'Password',
+          hintText: hintText,
           hintStyle: kBodyText,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
