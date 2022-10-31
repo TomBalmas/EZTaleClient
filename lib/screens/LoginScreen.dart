@@ -79,7 +79,12 @@ class _LoginScreenState extends State<_LoginForm> {
                 SizedBox(height: 16),
                 EZTextButton(
                   buttonName: 'Login',
-                  onTap: () {},
+                  onTap: () {
+                    //TODO: add auth with server 
+
+                    Navigator.push(context,CupertinoPageRoute(
+                            builder: (context) => HomeScreen()));
+                  },
                   bgColor: Colors.white,
                   textColor: Colors.black87,
                 ),

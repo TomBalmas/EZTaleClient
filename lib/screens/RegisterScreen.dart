@@ -59,17 +59,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: kBodyText2,
                           ),
                           SizedBox(
-                            height: 50,
+                            height: 50
                           ),
                           EZTextField(
                             controller: nameController,
-                            hintText: 'Full Name',
+                            hintText: 'Name',
+                            inputType: TextInputType.name,
+                          ),
+                           EZTextField(
+                            controller: nameController,
+                            hintText: 'Surname',
                             inputType: TextInputType.name,
                           ),
                           EZTextField(
                             controller: emailController,
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
+                            
                           ),
                           EZTextField(
                             controller: phoneController,
