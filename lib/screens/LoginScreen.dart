@@ -16,12 +16,14 @@ class LoginScreen extends StatelessWidget {
     // Hide an optional element if the screen gets too small.
     bool hideDetailPanel = screenSize.shortestSide < 250;
     return Scaffold(
-      body: Flex(direction: useVerticalLayout ? Axis.vertical : Axis.horizontal, children: [
-        if (hideDetailPanel == false) ...[
-          Flexible(child: _LoginDetailPanel()),
-        ],
-        Flexible(child: _LoginForm()),
-      ]),
+      body: Flex(
+          direction: useVerticalLayout ? Axis.vertical : Axis.horizontal,
+          children: [
+            if (hideDetailPanel == false) ...[
+              Flexible(child: _LoginDetailPanel()),
+            ],
+            Flexible(child: _LoginForm()),
+          ]),
     );
   }
 }
@@ -29,20 +31,19 @@ class LoginScreen extends StatelessWidget {
 class _LoginDetailPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-    alignment: Alignment.center,
-    color: Colors.grey.shade300,
-    child: Text(
-      "EZTale\nThe easy way\nTo tale.",
-      style: TextStyle(fontSize: 64),
-      textAlign: TextAlign.center,
-    ),
-  );
+        alignment: Alignment.center,
+        color: Colors.grey.shade300,
+        child: Text(
+          "EZTale\nThe easy way\nTo tale.",
+          style: TextStyle(fontSize: 64),
+          textAlign: TextAlign.center,
+        ),
+      );
 }
 
 class _LoginForm extends StatefulWidget {
-
   @override
-  _LoginScreenState createState()  => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<_LoginForm> {
@@ -74,42 +75,40 @@ class _LoginScreenState extends State<_LoginForm> {
                       setState(() {
                         isPasswordVisible = !isPasswordVisible;
                       });
-                    }
-                ),
+                    }),
                 SizedBox(height: 16),
                 EZTextButton(
                   buttonName: 'Login',
                   onTap: () {
-                    //TODO: add auth with server 
+                    //TODO: add auth with server
 
-                    Navigator.push(context,CupertinoPageRoute(
-                            builder: (context) => HomeScreen()));
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => HomeScreen()));
                   },
                   bgColor: Colors.white,
                   textColor: Colors.black87,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: EZTextButton(
-                    buttonName: 'Register',
-                    onTap: () { Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => RegisterScreen()));
+                    padding: EdgeInsets.only(top: 5),
+                    child: EZTextButton(
+                      buttonName: 'Register',
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => RegisterScreen()));
                       },
-                    bgColor: Colors.white,
-                    textColor: Colors.black87,
-                  )
-                )
+                      bgColor: Colors.white,
+                      textColor: Colors.black87,
+                    ))
               ],
             ),
           ),
         ),
       ),
     );
-
-
   }
 }
 
-InputDecoration _getTextDecoration(String hint) => InputDecoration(border: OutlineInputBorder(), hintText: hint);
+InputDecoration _getTextDecoration(String hint) =>
+    InputDecoration(border: OutlineInputBorder(), hintText: hint);

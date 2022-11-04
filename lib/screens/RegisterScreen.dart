@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../widgets/widgets.dart';
@@ -16,7 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
-
+  TextEditingController surnameController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +57,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             "Create new account to get started.",
                             style: kBodyText2,
                           ),
-                          SizedBox(
-                            height: 50
-                          ),
+                          SizedBox(height: 50),
                           EZTextField(
                             controller: nameController,
                             hintText: 'Name',
                             inputType: TextInputType.name,
                           ),
-                           EZTextField(
-                            controller: nameController,
+                          EZTextField(
+                            controller: surnameController,
                             hintText: 'Surname',
                             inputType: TextInputType.name,
                           ),
@@ -75,7 +72,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: emailController,
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
-                            
                           ),
                           EZTextField(
                             controller: phoneController,
@@ -102,16 +98,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: kBodyText,
                         ),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Log In",
-                            style: kBodyText.copyWith(
-                              color: Colors.white
-                            ),
-                          )
-                        )
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Log In",
+                              style: kBodyText.copyWith(color: Colors.white),
+                            ))
                       ],
                     ),
                     SizedBox(
@@ -120,8 +113,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     EZTextButton(
                       buttonName: 'Register',
                       onTap: () {
-                        Future<String> res = createUser(nameController.text, emailController.text,
-                            phoneController.text, passwordController.text);
+                        Future<String> res = createUser(
+                            nameController.text,
+                            surnameController.text,
+                            emailController.text,
+                            phoneController.text,
+                            passwordController.text
+                            );
                         print(res);
                       },
                       bgColor: Colors.white,
