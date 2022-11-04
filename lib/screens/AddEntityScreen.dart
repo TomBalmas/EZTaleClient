@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NewStoryScreen extends StatelessWidget {
+class AddEntitiyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: this
