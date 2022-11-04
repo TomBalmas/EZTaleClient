@@ -80,7 +80,7 @@ class _LoginScreenState extends State<_LoginForm> {
                 EZTextButton(
                   buttonName: 'Login',
                   onTap: () {
-                    //TODO: add auth with server
+                    //TODO: add auth with server 
 
                     Navigator.push(context,
                         CupertinoPageRoute(builder: (context) => HomeScreen()));
