@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import '../widgets/Widgets.dart';
 import '../widgets/widgets.dart';
 import '../constants.dart';
 import '../EZNetworking.dart';
+import 'Screens.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -13,9 +17,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool passwordVisibility = true;
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
-  TextEditingController phoneController = new TextEditingController();
+  TextEditingController usernameController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController surnameController = new TextEditingController();
+  TextEditingController repeatPasswordController = new TextEditingController();
+  showAlartDialog(
+      BuildContext context, String alt, String desc, Function callback) async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(alt),
+        content: Text(desc),
+        actions: <Widget>[
+          TextButton(
+            onPressed: callback,
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,18 +90,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             inputType: TextInputType.name,
                           ),
                           EZTextField(
+                            controller: usernameController,
+                            hintText: 'Username',
+                            inputType: TextInputType.phone,
+                          ),
+                          EZTextField(
                             controller: emailController,
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
                           ),
-                          EZTextField(
-                            controller: phoneController,
-                            hintText: 'Phone',
-                            inputType: TextInputType.phone,
-                          ),
                           EZPasswordField(
                             controller: passwordController,
                             isPasswordVisible: passwordVisibility,
+                            onTap: () {
+                              setState(() {
+                                passwordVisibility = !passwordVisibility;
+                              });
+                            },
+                          ),
+                          EZPasswordField(
+                            controller: repeatPasswordController,
+                            isPasswordVisible: passwordVisibility,
+                            repeat: true,
                             onTap: () {
                               setState(() {
                                 passwordVisibility = !passwordVisibility;
@@ -113,14 +144,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     EZTextButton(
                       buttonName: 'Register',
                       onTap: () {
+                        if (nameController.text.isEmpty ||
+                            surnameController.text.isEmpty ||
+                            usernameController.text.isEmpty ||
+                            passwordController.text.isEmpty ||
+                            repeatPasswordController.text.isEmpty ||
+                            emailController.text.isEmpty) {
+                          showAlartDialog(
+                              context,
+                              "Error",
+                              "At least one of the fields are missing ",
+                              () => Navigator.pop(context, 'OK'));
+                          return;
+                        }
+                        //FIXME: email check if exists
+                        if (passwordController.text !=
+                            repeatPasswordController.text) {
+                          showAlartDialog(
+                              context,
+                              "Error",
+                              "passwords are not the same",
+                              () => Navigator.pop(context, 'OK'));
+                          return;
+                        }
                         Future<String> res = createUser(
                             nameController.text,
                             surnameController.text,
                             emailController.text,
-                            phoneController.text,
-                            passwordController.text
-                            );
-                        print(res);
+                            usernameController.text,
+                            passwordController.text);
+                        res.then((value) {
+                          final data = jsonDecode(value);
+                          if (data['success']) {
+                            showAlartDialog(
+                                context,
+                                "Success!",
+                                "Welcome to our community " +
+                                    nameController.text +
+                                    "!",
+                                () => Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => LoginScreen())));
+                          } else {
+                            showAlartDialog(
+                                context,
+                                "Error",
+                                data['msg'],
+                                () => Navigator.pop(context, 'OK'));
+                          }
+                        });
                       },
                       bgColor: Colors.white,
                       textColor: Colors.black87,

@@ -29,14 +29,14 @@ class EZTextField extends StatelessWidget {
               hintStyle: kBodyText,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.grey,
+                  color: Color.fromRGBO(0, 173, 181,100),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(18),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.white,
+                  color: Colors.blue,
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(18),

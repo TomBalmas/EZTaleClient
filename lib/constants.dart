@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Colors
-const kBackgroundColor = Color(0xff191720);
+const kBackgroundColor = Color.fromRGBO(34, 40, 49, 100);
 const kTextFieldFill = Color(0xff1E1C24);
 
 // TextStyles
@@ -24,3 +24,5 @@ const kButtonText = TextStyle(
 
 const kBodyText2 =
 TextStyle(fontSize: 28, fontWeight: FontWeight.w500, color: Colors.white);
+
+const kServerURL = 'http://localhost:3000';

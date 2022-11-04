@@ -21,11 +21,7 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            //createUser("tom");
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EditorScreen()),
-            );
+            Navigator.pop(context);
           },
           child: const Text('Go back!'),
         ),
