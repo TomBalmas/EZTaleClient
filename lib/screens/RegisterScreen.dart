@@ -157,6 +157,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               () => Navigator.pop(context, 'OK'));
                           return;
                         }
+                        if(usernameController.text.contains('@')){
+                          showAlartDialog(
+                              context,
+                              "Error",
+                              "@ is not valid in Username",
+                              () => Navigator.pop(context, 'OK'));
+                          return;
+                        }
+                        if (!RegExp(
+                                r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*")
+                            .hasMatch(emailController.text)) {
+                          showAlartDialog(
+                              context,
+                              "Error",
+                              "Email is not valid",
+                              () => Navigator.pop(context, 'OK'));
+                          return;
+                        }
                         if (passwordController.text !=
                             repeatPasswordController.text) {
                           showAlartDialog(
@@ -174,6 +192,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             passwordController.text);
                         res.then((value) {
                           if (value == 'Email is already in use') {
+                            showAlartDialog(context, "Error", value,
+                                () => Navigator.pop(context, 'OK'));
+                            return;
+                          } else if (value == 'Username is already in use') {
                             showAlartDialog(context, "Error", value,
                                 () => Navigator.pop(context, 'OK'));
                             return;

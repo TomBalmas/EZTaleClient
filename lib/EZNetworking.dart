@@ -3,9 +3,13 @@ import 'constants.dart';
 
 //TODO: add more requests
 
-Future<String> authUser(String email, String password) async {
+Future<String> authUser(String emailUsername, String password) async {
   var url = Uri.parse(kServerURL + '/auth');
-  Map<String, String> body = {'email': email, 'password': password};
+  Map<String, String> body;
+  if (emailUsername.contains('@'))
+    body = {'email': emailUsername, 'password': password};
+  else
+    body = {'username': emailUsername, 'password': password};
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -17,7 +21,10 @@ Future<String> createUser(String name, String surname, String email,
   Map<String, String> headers = {'email': email};
   var response = await http.get(url, headers: headers);
   if (response.statusCode == 200) return 'Email is already in use';
-
+  url = Uri.parse(kServerURL + '/getusername');
+  headers = {'username': username};
+  response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) return 'Username is already in use';
   url = Uri.parse(kServerURL + '/addUser');
   Map<String, String> body = {
     'name': name,
@@ -33,11 +40,4 @@ Future<String> createUser(String name, String surname, String email,
   } else
     ('Request failed with status: ${response.statusCode}.');
   return 'failed';
-}
-
-Future<String> checkEmail(String email) async {
-  var url = Uri.parse(kServerURL + '/getemail');
-  Map<String, String> headers = {'email': email};
-  var response = await http.get(url, headers: headers);
-  return response.body;
 }

@@ -92,7 +92,7 @@ class _LoginScreenState extends State<_LoginForm> {
               children: [
                 EZTextField(
                   controller: emailController,
-                  hintText: 'Email',
+                  hintText: 'Email / Username',
                   inputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 16),
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<_LoginForm> {
                                 builder: (context) => HomeScreen()));
                       else {
                         showAlartDialog(context, "Error",
-                            "Email or password are not correct");
+                            "Email / Username or password are not correct");
                       }
                     });
                   },
