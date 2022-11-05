@@ -157,7 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               () => Navigator.pop(context, 'OK'));
                           return;
                         }
-                        //FIXME: email check if exists
                         if (passwordController.text !=
                             repeatPasswordController.text) {
                           showAlartDialog(
@@ -174,6 +173,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             usernameController.text,
                             passwordController.text);
                         res.then((value) {
+                          if (value == 'Email is already in use') {
+                            showAlartDialog(context, "Error", value,
+                                () => Navigator.pop(context, 'OK'));
+                            return;
+                          }
                           final data = jsonDecode(value);
                           if (data['success']) {
                             showAlartDialog(
@@ -186,12 +190,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     context,
                                     CupertinoPageRoute(
                                         builder: (context) => LoginScreen())));
-                          } else {
-                            showAlartDialog(
-                                context,
-                                "Error",
-                                data['msg'],
-                                () => Navigator.pop(context, 'OK'));
                           }
                         });
                       },

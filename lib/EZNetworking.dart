@@ -13,8 +13,12 @@ Future<String> authUser(String email, String password) async {
 //example of http get request
 Future<String> createUser(String name, String surname, String email,
     String username, String password) async {
-  //FIXME:
-  var url = Uri.parse(kServerURL + '/addUser');
+  var url = Uri.parse(kServerURL + '/getemail');
+  Map<String, String> headers = {'email': email};
+  var response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) return 'Email is already in use';
+
+  url = Uri.parse(kServerURL + '/addUser');
   Map<String, String> body = {
     'name': name,
     'surname': surname,
@@ -22,7 +26,7 @@ Future<String> createUser(String name, String surname, String email,
     'username': username,
     'password': password
   };
-  var response = await http.post(url, body: body);
+  response = await http.post(url, body: body);
   if (response.statusCode == 200) {
     print(response.body);
     return response.body;
@@ -31,9 +35,9 @@ Future<String> createUser(String name, String surname, String email,
   return 'failed';
 }
 
-Future<String> checkEmail(String email) async { 
-	var url = Uri.parse(kServerURL + '/getemail');
-	  Map<String, String> headers = {'email': email};
-	var response = await http.get(url, headers: headers);
-	return response.body;
+Future<String> checkEmail(String email) async {
+  var url = Uri.parse(kServerURL + '/getemail');
+  Map<String, String> headers = {'email': email};
+  var response = await http.get(url, headers: headers);
+  return response.body;
 }
