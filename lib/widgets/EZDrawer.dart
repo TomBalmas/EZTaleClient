@@ -1,4 +1,5 @@
 import 'package:ez_tale/screens/Screens.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
@@ -8,7 +9,7 @@ class EZDrawer extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
           // Set the transparency here
-          canvasColor: kBackgroundColor),
+          canvasColor: kTextFieldFill),
       child: Drawer(
         // add drawer to seperete file
         child: ListView(
@@ -16,47 +17,54 @@ class EZDrawer extends StatelessWidget {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: kBackgroundColor,
+                color: kTextFieldFill,
               ),
-              child: Text('EZTale'),
+              child: Text('EZTale', style: TextStyle(color: Colors.white)),
             ),
             ListTile(
-              title: const Text('Home'),
+              leading: Icon(Icons.home, color: Colors.white30),
+              title: const Text('Home', style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  CupertinoPageRoute(builder: (context) => HomeScreen()),
                 );
               },
             ),
             ListTile(
-              title: const Text('New Story'),
+              leading: Icon(Icons.book, color: Colors.white30),
+              title: const Text('New Story',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NewStoryScreen()),
-                );
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            ListTile(
-              title: const Text('User Settings'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UserSettingsScreen()),
+                  CupertinoPageRoute(builder: (context) => NewStoryScreen()),
                 );
                 // Update the state of the app.
                 // ...
               },
             ),
             ListTile(
-              title: const Text('Logout'),
+              leading: Icon(Icons.settings, color: Colors.white30),
+              title: const Text('User Settings',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserSettingsScreen()),
+                  CupertinoPageRoute(builder: (context) => UserSettingsScreen()),
+                );
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.white30),
+              title:
+                  const Text('Logout', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => LoginScreen()),
                 );
                 // Update the state of the app.
                 // ...

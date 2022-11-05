@@ -1,10 +1,6 @@
-import 'package:ez_tale/EZNetworking.dart';
-import 'package:ez_tale/screens/EditorScreen.dart';
-import 'package:ez_tale/widgets/EZDrawer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'LoginScreen.dart';
 import '../constants.dart';
+import '../widgets/Widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({key});
@@ -19,13 +15,8 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: kBackgroundColor,
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Go back!'),
-        ),
-      ),
+        
+      )
     );
   }
 }

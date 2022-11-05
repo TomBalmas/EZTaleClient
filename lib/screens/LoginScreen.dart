@@ -91,12 +91,14 @@ class _LoginScreenState extends State<_LoginForm> {
             child: Column(
               children: [
                 EZTextField(
+                  icon: Icon(Icons.account_circle),
                   controller: emailController,
                   hintText: 'Email / Username',
                   inputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 16),
                 EZPasswordField(
+                    icon: Icon(Icons.password),
                     controller: passwordContoller,
                     isPasswordVisible: isPasswordVisible,
                     onTap: () {

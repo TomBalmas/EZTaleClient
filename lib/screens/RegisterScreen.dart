@@ -130,7 +130,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         GestureDetector(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => LoginScreen()));
                             },
                             child: Text(
                               "Log In",
@@ -157,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               () => Navigator.pop(context, 'OK'));
                           return;
                         }
-                        if(usernameController.text.contains('@')){
+                        if (usernameController.text.contains('@')) {
                           showAlartDialog(
                               context,
                               "Error",

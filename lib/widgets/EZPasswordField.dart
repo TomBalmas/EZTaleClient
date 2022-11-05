@@ -7,12 +7,14 @@ class EZPasswordField extends StatelessWidget {
       @required this.isPasswordVisible,
       @required this.onTap,
       @required this.controller,
-      this.repeat: false})
+      this.repeat: false,
+      this.icon})
       : super(key: key);
   final bool isPasswordVisible;
   final Function onTap;
   final controller;
   final bool repeat;
+  final icon;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,6 +30,7 @@ class EZPasswordField extends StatelessWidget {
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
+              prefixIcon: icon,
               suffixIcon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: IconButton(

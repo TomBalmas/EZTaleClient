@@ -4,12 +4,11 @@ import 'constants.dart';
 import 'screens/Screens.dart';
 
 void main() {
-    runApp(MyApp());
+  runApp(MyApp());
 }
 
 // Main Function
 class MyApp extends StatelessWidget {
-  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
