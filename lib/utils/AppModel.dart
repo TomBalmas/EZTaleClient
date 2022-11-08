@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class AppModel with ChangeNotifier {
   bool getDefaultTouchMode() => DeviceType.isMobile == true;
-
   // Main menu, selected page
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
@@ -12,8 +11,9 @@ class AppModel with ChangeNotifier {
   bool _touchMode = false;
   bool get touchMode => _touchMode;
   set touchMode(bool value) => notify(() => _touchMode = value);
-
   void toggleTouchMode() => touchMode = !touchMode;
+
+  
 
   // Indicates whether a user is logged in or not
   bool _isLoggedIn = false;

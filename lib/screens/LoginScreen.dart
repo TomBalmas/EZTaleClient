@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:ez_tale/main.dart';
 import 'package:ez_tale/utils/AppModel.dart';
+import 'package:ez_tale/utils/EZUserManager.dart';
 import 'package:ez_tale/widgets/Widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -131,12 +133,15 @@ class _LoginScreenState extends State<_LoginForm> {
                         authUser(emailController.text, passwordContoller.text);
                     res.then((value) {
                       final data = jsonDecode(value);
-                      if (data['success'])
+                      if (data['success']) {
+                        getUserInfo(data['token']).then((val) =>
+                            MyApp.userManager.setCurrentUser(
+                                jsonDecode(val)['username'], data['token']));
                         Navigator.push(
                             context,
                             CupertinoPageRoute(
                                 builder: (context) => HomeScreen()));
-                      else {
+                      } else {
                         showAlartDialog(context, "Error",
                             "Email / Username or password are not correct");
                       }

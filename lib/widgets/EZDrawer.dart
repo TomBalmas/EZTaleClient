@@ -1,3 +1,4 @@
+import 'package:ez_tale/main.dart';
 import 'package:ez_tale/screens/Screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,8 @@ class EZDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => UserSettingsScreen()),
+                  CupertinoPageRoute(
+                      builder: (context) => UserSettingsScreen()),
                 );
                 // Update the state of the app.
                 // ...
@@ -62,6 +64,7 @@ class EZDrawer extends StatelessWidget {
               title:
                   const Text('Logout', style: TextStyle(color: Colors.white)),
               onTap: () {
+                MyApp.userManager.logout();
                 Navigator.push(
                   context,
                   CupertinoPageRoute(builder: (context) => LoginScreen()),

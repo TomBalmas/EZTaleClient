@@ -14,6 +14,14 @@ Future<String> authUser(String emailUsername, String password) async {
   return response.body;
 }
 
+Future<String> getUserInfo(String token) async {
+  var url = Uri.parse(kServerURL + '/getinfo');
+  Map<String, String> headers;
+  headers = {'authorization': 'Bearer ' + token};
+  var response = await http.get(url, headers: headers);
+  return response.body;
+}
+
 //example of http get request
 Future<String> createUser(String name, String surname, String email,
     String username, String password) async {
