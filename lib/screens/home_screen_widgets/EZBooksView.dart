@@ -10,10 +10,13 @@ import 'EZBookInfo.dart';
 import 'EZBooks.dart';
 
 class MyBooks extends StatelessWidget {
-  const MyBooks({
+  MyBooks({
     Key key,
+    @required
+    this.booksList
   }) : super(key: key);
 
+  final booksList;
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -48,11 +51,18 @@ class MyBooks extends StatelessWidget {
         SizedBox(height: defaultPadding),
         Responsive(
           mobile: EZBookInfoCardGridView(
+            booksCnt: booksList.length,
+            booksList: booksList,
             crossAxisCount: _size.width < 650 ? 2 : 4,
             childAspectRatio: _size.width < 650 ? 1.3 : 1,
           ),
-          tablet: EZBookInfoCardGridView(),
+          tablet: EZBookInfoCardGridView(
+            booksCnt: booksList.length,
+            booksList: booksList,
+          ),
           desktop: EZBookInfoCardGridView(
+            booksCnt: booksList.length,
+            booksList: booksList,
             childAspectRatio: _size.width < 1400 ? 1.1 : 1.4,
           ),
         ),
@@ -62,49 +72,24 @@ class MyBooks extends StatelessWidget {
 }
 
 class EZBookInfoCardGridView extends StatelessWidget {
-  EZBookInfoCardGridView({
-    Key key,
-    this.crossAxisCount = 4,
-    this.childAspectRatio = 1,
-  }) : super(key: key);
-
+  EZBookInfoCardGridView(
+      {Key key,
+      this.crossAxisCount = 4,
+      this.childAspectRatio = 1,
+      @required this.booksCnt,
+      @required this.booksList})
+      : super(key: key);
+  final booksCnt;
+  final booksList;
   final int crossAxisCount;
   final double childAspectRatio;
-
-  int getUserStoryCount() {
-    int cnt;
-    var res = getStoryCount(MyApp.userManager.getCurrentToken());
-    res.then((value) {
-      final data = jsonDecode(value);
-      if (data['success'])
-        cnt = data['count'] as int;
-      else
-        print('count didnt work');
-    });
-    return cnt;
-  }
-
-  List getUserStories() {
-    List retList = <EZBook>[];
-    var res = getAllStories(MyApp.userManager.getCurrentToken());
-    res.then((value) {
-      final data = jsonDecode(value);
-      for (int i = 0; i < getUserStoryCount(); i++) {
-        retList.add(new EZBook(
-            title: data[i]['name'],
-            description: data[i]['description'],
-            type: data[i]['type']));
-      }
-    });
-    return retList;
-  }
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: getUserStoryCount(),
+        itemCount: booksCnt,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: defaultPadding,
@@ -112,8 +97,7 @@ class EZBookInfoCardGridView extends StatelessWidget {
           childAspectRatio: childAspectRatio,
         ),
         itemBuilder: (context, index) {
-          List storyLists = getUserStories();
-          return BookInfoCard(storyLists[index]);
+          return BookInfoCard(booksList[index]);
         });
   }
 }

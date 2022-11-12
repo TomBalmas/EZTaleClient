@@ -1,14 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../EZNetworking.dart';
 import '../constants.dart';
 import '../utils/Responsive.dart';
 import '../widgets/Widgets.dart';
+import 'home_screen_widgets/EZBooks.dart';
 import 'home_screen_widgets/HomeScreenWidgets.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({key});
+  const HomeScreen({key,@required this.booksList});
+  final booksList;
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
@@ -29,7 +35,9 @@ class HomeScreen extends StatelessWidget {
                       flex: 5,
                       child: Column(
                         children: [
-                          MyBooks(), // ----- change to books
+                          MyBooks(
+                            booksList: booksList,
+                          ), // ----- change to books
                           SizedBox(height: defaultPadding),
                           //RecentFiles(),  -- change to recent books
                           if (Responsive.isMobile(context))

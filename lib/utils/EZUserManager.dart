@@ -3,8 +3,8 @@ class EZUserManager {
   String _currentToken;
 
   void setCurrentUser(String username, String token) {
-    _currentUsername = username;
-    _currentToken = token;
+    _currentUsername =  username;
+    _currentToken =  token;
   }
 
   String getCurrentToken() {

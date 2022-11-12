@@ -13,6 +13,8 @@ import '../widgets/EZTextField.dart';
 import 'Screens.dart';
 import 'dart:convert';
 
+import 'home_screen_widgets/EZBooks.dart';
+
 // Uses full-screen breakpoints to reflow the widget tree
 class LoginScreen extends StatelessWidget {
   @override
@@ -59,7 +61,8 @@ class _LoginScreenState extends State<_LoginForm> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordContoller = new TextEditingController();
 
-  showAlartDialog(BuildContext context, String alt, String desc) async {
+  showAlartDialog(
+      BuildContext context, String alt, String desc, Function func) async {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -67,12 +70,30 @@ class _LoginScreenState extends State<_LoginForm> {
         content: Text(desc),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
+            onPressed: func,
             child: const Text('OK'),
           ),
         ],
       ),
     );
+  }
+
+  Future<List<dynamic>> getUserStories() async {
+    var retList = <EZBook>[];
+    var res = getAllStories(MyApp.userManager.getCurrentToken());
+    res.then((value) {
+      print(value);
+      final data = jsonDecode(value);
+      print("len: ${data.length}");
+      print("name: ${data[0]['name']}");
+      for (int i = 0; i < data.length; i++) {
+        retList.add(new EZBook(
+            title: data[i]['name'],
+            description: data[i]['description'],
+            type: data[i]['type']));
+      }
+    });
+    return retList;
   }
 
   @override
@@ -115,17 +136,24 @@ class _LoginScreenState extends State<_LoginForm> {
                     //backdoor: email 1 password 1
                     if (emailController.text == '1' &&
                         passwordContoller.text == '1') {
+                      var booksList;
+                      getUserStories().then((value) => booksList = value);
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    booksList: booksList,
+                                  )));
                       return;
                     }
                     // check empty conditions
                     if (emailController.text.isEmpty ||
                         passwordContoller.text.isEmpty) {
                       showAlartDialog(
-                          context, "Error", "One or more fields are empty");
+                          context,
+                          "Error",
+                          "One or more fields are empty",
+                          () => Navigator.pop(context, 'OK'));
                       return;
                     }
                     // check auth on server
@@ -134,16 +162,26 @@ class _LoginScreenState extends State<_LoginForm> {
                     res.then((value) {
                       final data = jsonDecode(value);
                       if (data['success']) {
-                        getUserInfo(data['token']).then((val) =>
-                            MyApp.userManager.setCurrentUser(
-                                jsonDecode(val)['username'], data['token']));
-                        Navigator.push(
+                        MyApp.userManager
+                            .setCurrentUser(data['username'], data['token']);
+                        var booksList;
+                        getUserStories().then((value) => booksList = value);
+                        showAlartDialog(
                             context,
-                            CupertinoPageRoute(
-                                builder: (context) => HomeScreen()));
+                            "User Connected",
+                            "User ${emailController.text} Has Connected Successfully!",
+                            () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => HomeScreen(
+                                          booksList: booksList,
+                                        ))));
                       } else {
-                        showAlartDialog(context, "Error",
-                            "Email / Username or password are not correct");
+                        showAlartDialog(
+                            context,
+                            "Error",
+                            "Email / Username or password are not correct",
+                            () => Navigator.pop(context, 'OK'));
                       }
                     });
                   },

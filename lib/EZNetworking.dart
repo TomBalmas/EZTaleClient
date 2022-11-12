@@ -54,7 +54,12 @@ Future<String> getStoryCount(String token) async {
   var url = Uri.parse(kServerURL + '/story/getstorycount');
   Map<String, String> headers;
   headers = {'token': token};
+  print("token: " + token);
   var response = await http.get(url, headers: headers);
+  if (response.statusCode == 404) {
+    print("lol");
+  }
+  print(response.body);
   return response.body;
 }
 
