@@ -10,7 +10,7 @@ void main() {
 
 // Main Function
 class MyApp extends StatelessWidget {
-  static final EZUserManager userManager = new EZUserManager(); //singleton
+  static final EZUserManager userManager = new EZUserManager(); //singleton for current user info
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

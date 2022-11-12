@@ -46,6 +46,22 @@ Future<String> createUser(String name, String surname, String email,
     print(response.body);
     return response.body;
   } else
-    ('Request failed with status: ${response.statusCode}.');
+    'Request failed with status: ${response.statusCode}.';
   return 'failed';
+}
+
+Future<String> getStoryCount(String token) async {
+  var url = Uri.parse(kServerURL + '/story/getstorycount');
+  Map<String, String> headers;
+  headers = {'token': token};
+  var response = await http.get(url, headers: headers);
+  return response.body;
+}
+
+Future<String> getAllStories(String token) async {
+  var url = Uri.parse(kServerURL + '/story/getstories');
+  Map<String, String> headers;
+  headers = {'token': token};
+  var response = await http.get(url, headers: headers);
+  return response.body;
 }

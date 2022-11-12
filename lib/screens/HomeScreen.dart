@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../utils/Responsive.dart';
 import '../widgets/Widgets.dart';
+import 'home_screen_widgets/HomeScreenWidgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({key});
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                       flex: 5,
                       child: Column(
                         children: [
-                          //MyFiles(),  ----- change to books
+                          MyBooks(), // ----- change to books
                           SizedBox(height: defaultPadding),
                           //RecentFiles(),  -- change to recent books
                           if (Responsive.isMobile(context))

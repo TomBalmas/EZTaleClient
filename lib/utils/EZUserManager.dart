@@ -8,17 +8,11 @@ class EZUserManager {
   }
 
   String getCurrentToken() {
-    if (_currentToken != null)
       return _currentToken;
-    else
-      return null;
   }
 
   String getCurrentUsername() {
-    if (_currentUsername != null)
       return _currentUsername;
-    else
-      return null;
   }
 
   void logout() {

@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:admin/models/MyFiles.dart'; -- get from mongoDB
 import '../../../constants.dart';
 import '../../utils/Responsive.dart';
+import '../Screens.dart';
 import 'EZBookInfo.dart';
+import 'EZBooks.dart';
 
 class MyBooks extends StatelessWidget {
   const MyBooks({
@@ -18,7 +23,7 @@ class MyBooks extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "My Files",
+              "My Books",
               style: Theme.of(context).textTheme.subtitle1,
             ),
             ElevatedButton.icon(
@@ -29,9 +34,14 @@ class MyBooks extends StatelessWidget {
                       defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => NewStoryScreen()),
+                );
+              },
               icon: Icon(Icons.add),
-              label: Text("Add New"),
+              label: Text("Add New Story"),
             ),
           ],
         ),
@@ -52,7 +62,7 @@ class MyBooks extends StatelessWidget {
 }
 
 class EZBookInfoCardGridView extends StatelessWidget {
-  const EZBookInfoCardGridView({
+  EZBookInfoCardGridView({
     Key key,
     this.crossAxisCount = 4,
     this.childAspectRatio = 1,
@@ -61,19 +71,49 @@ class EZBookInfoCardGridView extends StatelessWidget {
   final int crossAxisCount;
   final double childAspectRatio;
 
+  int getUserStoryCount() {
+    int cnt;
+    var res = getStoryCount(MyApp.userManager.getCurrentToken());
+    res.then((value) {
+      final data = jsonDecode(value);
+      if (data['success'])
+        cnt = data['count'] as int;
+      else
+        print('count didnt work');
+    });
+    return cnt;
+  }
+
+  List getUserStories() {
+    List retList = <EZBook>[];
+    var res = getAllStories(MyApp.userManager.getCurrentToken());
+    res.then((value) {
+      final data = jsonDecode(value);
+      for (int i = 0; i < getUserStoryCount(); i++) {
+        retList.add(new EZBook(
+            title: data[i]['name'],
+            description: data[i]['description'],
+            type: data[i]['type']));
+      }
+    });
+    return retList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: demoMyFiles.length, //book count from mongo
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: defaultPadding,
-        mainAxisSpacing: defaultPadding,
-        childAspectRatio: childAspectRatio,
-      ),
-      itemBuilder: (context, index) => BookInfoCard(info: demoMyFiles[index]), // demomyfiles - Get from mongoDB 
-    );
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: getUserStoryCount(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: defaultPadding,
+          mainAxisSpacing: defaultPadding,
+          childAspectRatio: childAspectRatio,
+        ),
+        itemBuilder: (context, index) {
+          List storyLists = getUserStories();
+          return BookInfoCard(storyLists[index]);
+        });
   }
 }

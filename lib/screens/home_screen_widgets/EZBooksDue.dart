@@ -1,11 +1,13 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
+import 'package:ez_tale/EZNetworking.dart';
 
-class RecentFiles extends StatelessWidget {
-  const RecentFiles({
+class EZBooksDue extends StatelessWidget {
+  const EZBooksDue({
     Key key,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class RecentFiles extends StatelessWidget {
               minWidth: 600,
               columns: [
                 DataColumn(
-                  label: Text("File Name"),
+                  label: Text("Story Name"),
                 ),
                 DataColumn(
                   label: Text("Date"),
@@ -38,10 +40,10 @@ class RecentFiles extends StatelessWidget {
                   label: Text("Size"),
                 ),
               ],
-              rows: List.generate(
-                demoRecentFiles.length, // TODO: change to due books
-                (index) => recentFileDataRow(demoRecentFiles[index]),//TODO: change to due books
-              ),
+              // rows: List.generate(
+              //   demoRecentFiles.length, // TODO: change to due books
+              //   (index) => recentFileDataRow(demoRecentFiles[index]),//TODO: change to due books
+              // ),
             ),
           ),
         ],
@@ -50,7 +52,7 @@ class RecentFiles extends StatelessWidget {
   }
 }
 
-DataRow recentFileDataRow(String bookDue) {
+DataRow dueBooksDataRow(String bookDue) {
   return DataRow(
     cells: [
       DataCell(
@@ -58,13 +60,13 @@ DataRow recentFileDataRow(String bookDue) {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-              child: Text(bookDue.title),
+              child: Text("bookDue.title"),
             ),
           ],
         ),
       ),
-      DataCell(Text(bookDue.date)),
-      DataCell(Text(bookDue.mission)),
+      DataCell(Text("bookDue.date")),
+      DataCell(Text("bookDue.mission")),
     ],
   );
 }
