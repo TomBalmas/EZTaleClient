@@ -1,18 +1,12 @@
 import 'dart:convert';
-
 import 'package:ez_tale/main.dart';
 import 'package:ez_tale/utils/AppModel.dart';
-import 'package:ez_tale/utils/EZUserManager.dart';
 import 'package:ez_tale/widgets/Widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../EZNetworking.dart';
-import '../widgets/EZTextField.dart';
 import 'Screens.dart';
-import 'dart:convert';
-
 import 'home_screen_widgets/EZBooks.dart';
 
 // Uses full-screen breakpoints to reflow the widget tree

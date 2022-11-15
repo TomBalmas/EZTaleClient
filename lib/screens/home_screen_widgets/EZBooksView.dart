@@ -40,7 +40,7 @@ class MyBooks extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => NewStoryScreen()),
+                  CupertinoPageRoute(builder: (context) => EditorScreen()),
                 );
               },
               icon: Icon(Icons.add),
