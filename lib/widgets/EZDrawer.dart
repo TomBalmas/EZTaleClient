@@ -28,7 +28,7 @@ class EZDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => HomeScreen()),
+                  CupertinoPageRoute(builder: (context) => HomeScreen(booksList: MyApp.userManager.getUserStoriesList(),)),
                 );
               },
             ),

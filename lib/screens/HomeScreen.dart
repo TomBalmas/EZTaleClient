@@ -1,17 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import '../EZNetworking.dart';
 import '../constants.dart';
 import '../utils/Responsive.dart';
 import '../widgets/Widgets.dart';
-import 'home_screen_widgets/EZBooks.dart';
 import 'home_screen_widgets/HomeScreenWidgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({key,@required this.booksList});
   final booksList;
-
   @override
   Widget build(BuildContext context) {
     

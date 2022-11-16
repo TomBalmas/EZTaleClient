@@ -72,23 +72,6 @@ class _LoginScreenState extends State<_LoginForm> {
     );
   }
 
-  Future<List<dynamic>> getUserStories() async {
-    var retList = <EZBook>[];
-    var res = getAllStories(MyApp.userManager.getCurrentToken());
-    res.then((value) {
-      print(value);
-      final data = jsonDecode(value);
-      print("len: ${data.length}");
-      print("name: ${data[0]['name']}");
-      for (int i = 0; i < data.length; i++) {
-        retList.add(new EZBook(
-            title: data[i]['name'],
-            description: data[i]['description'],
-            type: data[i]['type']));
-      }
-    });
-    return retList;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +113,11 @@ class _LoginScreenState extends State<_LoginForm> {
                     //backdoor: email 1 password 1
                     if (emailController.text == '1' &&
                         passwordContoller.text == '1') {
-                      var booksList;
-                      getUserStories().then((value) => booksList = value);
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => HomeScreen(
-                                    booksList: booksList,
+                                    booksList:  MyApp.userManager.getUserStoriesList(),
                                   )));
                       return;
                     }
@@ -158,8 +139,6 @@ class _LoginScreenState extends State<_LoginForm> {
                       if (data['success']) {
                         MyApp.userManager
                             .setCurrentUser(data['username'], data['token']);
-                        var booksList;
-                        getUserStories().then((value) => booksList = value);
                         showAlartDialog(
                             context,
                             "User Connected",
@@ -168,7 +147,7 @@ class _LoginScreenState extends State<_LoginForm> {
                                 context,
                                 CupertinoPageRoute(
                                     builder: (context) => HomeScreen(
-                                          booksList: booksList,
+                                          booksList: MyApp.userManager.getUserStoriesList(),
                                         ))));
                       } else {
                         showAlartDialog(
