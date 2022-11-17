@@ -1,6 +1,9 @@
 
 
+import 'dart:convert';
+
 import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -40,7 +43,20 @@ class _EditorScreenState extends State<EditorScreen> {
                           name: 'Characters',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            /*var charactersList = <String>[];
+                            var res = getBookCharacters('book1');
+                            res.then((value){ // TODO: get book name
+                              final data = jsonDecode(value);
+                              if()
+                            });
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: tableOfContents,
+                                      )));*/
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
@@ -66,6 +82,13 @@ class _EditorScreenState extends State<EditorScreen> {
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Attribute Templates',
+                          bgColor: Color.fromRGBO(0, 173, 181, 100),
+                          textColor: Colors.black87,
+                          onTap: (){}
+                        ),
+                        SizedBox(height: 16),
+                        BuildButton(
+                          name: 'Events',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
                           onTap: (){}
