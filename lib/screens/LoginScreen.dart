@@ -1,15 +1,13 @@
 import 'dart:convert';
-
+import 'package:ez_tale/main.dart';
 import 'package:ez_tale/utils/AppModel.dart';
 import 'package:ez_tale/widgets/Widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../EZNetworking.dart';
-import '../widgets/EZTextField.dart';
 import 'Screens.dart';
-import 'dart:convert';
+import 'home_screen_widgets/EZBooks.dart';
 
 // Uses full-screen breakpoints to reflow the widget tree
 class LoginScreen extends StatelessWidget {
@@ -57,7 +55,8 @@ class _LoginScreenState extends State<_LoginForm> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordContoller = new TextEditingController();
 
-  showAlartDialog(BuildContext context, String alt, String desc) async {
+  showAlartDialog(
+      BuildContext context, String alt, String desc, Function func) async {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -65,13 +64,14 @@ class _LoginScreenState extends State<_LoginForm> {
         content: Text(desc),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
+            onPressed: func,
             child: const Text('OK'),
           ),
         ],
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,14 +116,19 @@ class _LoginScreenState extends State<_LoginForm> {
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    booksList:  MyApp.userManager.getUserStoriesList(),
+                                  )));
                       return;
                     }
                     // check empty conditions
                     if (emailController.text.isEmpty ||
                         passwordContoller.text.isEmpty) {
                       showAlartDialog(
-                          context, "Error", "One or more fields are empty");
+                          context,
+                          "Error",
+                          "One or more fields are empty",
+                          () => Navigator.pop(context, 'OK'));
                       return;
                     }
                     // check auth on server
@@ -131,14 +136,25 @@ class _LoginScreenState extends State<_LoginForm> {
                         authUser(emailController.text, passwordContoller.text);
                     res.then((value) {
                       final data = jsonDecode(value);
-                      if (data['success'])
-                        Navigator.push(
+                      if (data['success']) {
+                        MyApp.userManager
+                            .setCurrentUser(data['username'], data['token']);
+                        showAlartDialog(
                             context,
-                            CupertinoPageRoute(
-                                builder: (context) => HomeScreen()));
-                      else {
-                        showAlartDialog(context, "Error",
-                            "Email / Username or password are not correct");
+                            "User Connected",
+                            "User ${emailController.text} Has Connected Successfully!",
+                            () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => HomeScreen(
+                                          booksList: MyApp.userManager.getUserStoriesList(),
+                                        ))));
+                      } else {
+                        showAlartDialog(
+                            context,
+                            "Error",
+                            "Email / Username or password are not correct",
+                            () => Navigator.pop(context, 'OK'));
                       }
                     });
                   },
