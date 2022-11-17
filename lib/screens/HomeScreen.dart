@@ -1,15 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../utils/Responsive.dart';
 import '../widgets/Widgets.dart';
 import 'home_screen_widgets/HomeScreenWidgets.dart';
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({key,@required this.booksList});
   final booksList;
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
