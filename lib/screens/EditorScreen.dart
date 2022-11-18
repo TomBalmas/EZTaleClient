@@ -24,7 +24,7 @@ class _EditorScreenState extends State<EditorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: EZDrawer(),
-      appBar: AppBar(title: Text('book1')), //TODO: correct the name
+      appBar: AppBar(title: Text('book1'),), //TODO: correct the name
       body: Container(
         child: Padding(
           padding: EdgeInsets.all(16),
