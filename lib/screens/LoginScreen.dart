@@ -55,7 +55,7 @@ class _LoginScreenState extends State<_LoginForm> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordContoller = new TextEditingController();
 
-  showAlartDialog(
+  showAlertDiaglog(
       BuildContext context, String alt, String desc, Function func) async {
     showDialog<String>(
       context: context,
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<_LoginForm> {
                     // check empty conditions
                     if (emailController.text.isEmpty ||
                         passwordContoller.text.isEmpty) {
-                      showAlartDialog(
+                      showAlertDiaglog(
                           context,
                           "Error",
                           "One or more fields are empty",
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<_LoginForm> {
                       if (data['success']) {
                         MyApp.userManager
                             .setCurrentUser(data['username'], data['token']);
-                        showAlartDialog(
+                        showAlertDiaglog(
                             context,
                             "User Connected",
                             "User ${emailController.text} Has Connected Successfully!",
@@ -152,7 +152,7 @@ class _LoginScreenState extends State<_LoginForm> {
                                               .getUserStoriesList(),
                                         ))));
                       } else {
-                        showAlartDialog(
+                        showAlertDiaglog(
                             context,
                             "Error",
                             "Email / Username or password are not correct",
