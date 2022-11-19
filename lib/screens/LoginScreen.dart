@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../EZNetworking.dart';
 import 'Screens.dart';
-import 'home_screen_widgets/EZBooks.dart';
 
 // Uses full-screen breakpoints to reflow the widget tree
 class LoginScreen extends StatelessWidget {

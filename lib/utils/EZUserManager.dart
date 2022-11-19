@@ -8,7 +8,7 @@ class EZUserManager {
   List<EZBook> _userBookList;
   Future<List<dynamic>> _getUserStories() async {
     var retList = <EZBook>[];
-    var res = getAllStories(_currentToken);
+    var res = getAllStories(_currentUsername);
     res.then((value) {
       print(value);
       final data = jsonDecode(value);
