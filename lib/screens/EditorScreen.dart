@@ -1,13 +1,10 @@
 
 
-import 'dart:convert';
 
-import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import '../constants.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/Widgets.dart';
 
@@ -203,28 +200,30 @@ class _EditorScreenState extends State<EditorScreen> {
                                   },
                                   width: 100,
                                 )
-                              ]),
+                              ]
                             ),
-                            SizedBox(height: 16),
-                            quill.QuillToolbar.basic(
-                              controller: _controller,
-                              showFontFamily: false,
-                              showFontSize: false,
-                            ),
-                            SizedBox(height: 16),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 5, color: Colors.blue),
-                                  color: Colors.white
-                                ),
-                                child: quill.QuillEditor.basic(
-                                  controller: _controller,
-                                  readOnly: false, // true for view only mode
-                                ),
+                          ),
+                          SizedBox(height: 16),
+                          quill.QuillToolbar.basic(
+                            controller: _controller,
+                            showFontFamily: false,
+                            showFontSize: false,
+                          ),
+                          SizedBox(height: 16),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 5, color: Colors.blue),
+                                color: Colors.white
+                              ),
+                              child: quill.QuillEditor.basic(
+                                controller: _controller,
+                                readOnly: false, // true for view only mode
                               ),
                             ),
-                    ])
+                          ),
+                        ]
+                      )
                     )
                   ]),
               ),

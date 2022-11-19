@@ -1,15 +1,12 @@
-import 'dart:convert';
 
-import 'package:ez_tale/main.dart';
+import 'package:ez_tale/screens/NewEntityScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../EZNetworking.dart';
-import '../constants.dart';
-import '../utils/Responsive.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZTableBuilder.dart';
 import '../widgets/Widgets.dart';
 
+// ignore: must_be_immutable
 class TablesScreen extends StatefulWidget {
 
   TablesScreen({
@@ -30,9 +27,7 @@ class _TablesScreenState extends State<TablesScreen> {
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
-          title: const Text('Home'),
-          foregroundColor: Colors.grey,
-          backgroundColor: kBackgroundColor,
+          title: Text(widget.nameOfTable),
         ),
         body: Container(
           child: Padding(
@@ -117,10 +112,18 @@ class _TablesScreenState extends State<TablesScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           BuildButton(
-                            name: 'New Character',
+                            name: nameOfNewEntityButton(widget.nameOfTable), // new entity's name
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
-                            onTap: (){},
+                            onTap: (){
+                              Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => NewEntityScreen(
+                                    nameOfEntity: nameOfNewEntityButton(widget.nameOfTable))
+                              )
+                            );
+                            },
                           ),
                           BuildButton(
                             name: 'Back',
@@ -149,4 +152,16 @@ Color colorButtonGrey(String nameOfTable, String nameOfButton){
     return Colors.grey;
   else
     return Color.fromRGBO(0, 173, 181, 100);
+}
+
+/*
+Removes the last character of a given string.
+This function is specific for the entity buttons on this screen.
+*/ 
+String nameOfNewEntityButton(String str){
+  if(str == 'Custom')
+    return 'New ' + str + ' Entity';
+  else if (str != null && str.length > 0) 
+    return 'New ' + str.substring(0, str.length - 1);
+  return str;
 }
