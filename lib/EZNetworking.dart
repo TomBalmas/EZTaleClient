@@ -3,6 +3,12 @@ import 'constants.dart';
 
 //TODO: add more requests
 
+Future<bool> isServerConnected() async {
+  var url = Uri.parse(kServerURL + '/');
+  var response = await http.get(url);
+  return response.statusCode == 200;
+}
+
 Future<String> authUser(String emailUsername, String password) async {
   var url = Uri.parse(kServerURL + '/auth');
   Map<String, String> body;
@@ -117,4 +123,20 @@ Future<String> getBookEvents(String bookName) async {
   headers = {'bookName': bookName};
   var response = await http.get(url, headers: headers);
   return response.body;
+}
+
+Future<String> savePage(String token,String bookName,String page) async {
+  var url = Uri.parse(kServerURL + '/story/savepage');
+    Map<String, String> body;
+    body = {'token': token, 'bookName': bookName,'page': page};
+    var response = await http.post(url, body: body);
+    return response.body;
+}
+
+Future<String> getPage(String token,String bookName,String page,String content) async {
+  var url = Uri.parse(kServerURL + '/story/getpage');
+    Map<String, String> headers;
+    headers = {'token': token, 'bookName': bookName,'page': page,'value':content};
+    var response = await http.get(url, headers: headers);
+    return response.body;
 }

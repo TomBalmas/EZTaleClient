@@ -6,8 +6,7 @@ class EZUserManager {
   String _currentUsername;
   String _currentToken;
   List<EZBook> _userBookList;
-
-  Future<List<dynamic>> _getUserStories() async{
+  Future<List<dynamic>> _getUserStories() async {
     var retList = <EZBook>[];
     var res = getAllStories(_currentToken);
     res.then((value) {
@@ -15,20 +14,26 @@ class EZUserManager {
       final data = jsonDecode(value);
       print("len: ${data.length}");
       print("name: ${data[0]['name']}");
-      for (int i = 0; i < data.length; i++) {
+      for (int i = 0; i < data.length; i++)
         retList.add(new EZBook(
             title: data[i]['name'],
             description: data[i]['description'],
             type: data[i]['type']));
-      }
     });
-    return  retList;
+
+    return retList;
   }
 
-  void setCurrentUser(String username, String token){
+  void setCurrentUser(String username, String token) {
     _currentUsername = username;
     _currentToken = token;
-    _getUserStories().then((value) => _userBookList = value);
+    if (username == '1' && token == '1') {
+      _userBookList = <EZBook>[];
+      for (int i = 0; i < 10; i++)
+        _userBookList.add(new EZBook(
+            title: 'book $i', description: 'this is book $i', type: 'Book'));
+    } else
+      _getUserStories().then((value) => _userBookList = value);
   }
 
   List<EZBook> getUserStoriesList() {

@@ -1,6 +1,7 @@
+import 'package:ez_tale/screens/Screens.dart';
 import 'package:ez_tale/screens/home_screen_widgets/EZBooks.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../constants.dart';
 
 // this class if for the preview of the
@@ -8,12 +9,110 @@ import '../../constants.dart';
 
 //get from https://github.com/abuanwar072/Flutter-Responsive-Admin-Panel-or-Dashboard
 
-class BookInfoCard extends StatelessWidget {
-  BookInfoCard(
-    @required this.bookInfo
-    );
-
+// ignore: must_be_immutable
+class BookInfoCard extends StatefulWidget {
+  BookInfoCard(this.bookInfo);
   EZBook bookInfo;
+
+  @override
+  State<BookInfoCard> createState() => _BookInfoCardState();
+}
+
+class _BookInfoCardState extends State<BookInfoCard> {
+  bool _toDel = false;
+  TextEditingController deleteTextController = new TextEditingController();
+  void _checkToDel() {
+    _toDel = deleteTextController.text == 'DELETE';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Start listening to changes.
+    deleteTextController.addListener(_checkToDel);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    deleteTextController.dispose();
+    super.dispose();
+  }
+
+  void showAlartDialog(BuildContext context, String alt, String desc,
+      Function delete_func, Function cancel_func) async {
+    showDialog<String>(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text(alt),
+              content: Text(desc),
+              actions: <Widget>[
+                TextFormField(
+                  controller: deleteTextController,
+                  onChanged: (text) {
+                    setState(() {
+                      _checkToDel();
+                    });
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: TextButton(
+                    key: Key('textDel'),
+                    onPressed: _toDel ? () => delete_func : null,
+                    child: const Text('Delete'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    deleteTextController.text = '';
+                    cancel_func();
+                  },
+                  child: const Text('Cancel'),
+                )
+              ],
+            );
+          });
+        });
+  }
+
+  void showPopUpMenuAtTap(BuildContext context, TapDownDetails details) {
+    showMenu(
+      context: context,
+      color: kBackgroundColor,
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy,
+        details.globalPosition.dx,
+        details.globalPosition.dy,
+      ),
+      items: [
+        PopupMenuItem<String>(child: const Text('Edit'), value: 'edit'),
+        PopupMenuItem<String>(child: const Text('Delete'), value: 'delete')
+      ],
+      elevation: 8.0,
+    ).then<void>((String itemSelected) {
+      if (itemSelected == null) return;
+      if (itemSelected == 'edit') {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) =>
+                    EditorScreen())); //add build book, entities
+      } else if (itemSelected == 'delete') {
+        showAlartDialog(
+            context,
+            'Delete?',
+            'Write \"DELETE\" to confirm:',
+            () => {}, //delete book function
+            () => Navigator.pop(context, 'cancel'));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,11 +136,13 @@ class BookInfoCard extends StatelessWidget {
                     color: primaryColor.withOpacity(0.1),
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                   )),
-              Icon(Icons.more_vert, color: Colors.white54)
+              GestureDetector(
+                  child: Icon(Icons.more_vert, color: Colors.white54),
+                  onTapDown: (details) => showPopUpMenuAtTap(context, details))
             ],
           ),
           Text(
-            bookInfo.title,
+            widget.bookInfo.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -49,14 +150,14 @@ class BookInfoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                bookInfo.description,
+                widget.bookInfo.description,
                 style: Theme.of(context)
                     .textTheme
                     .caption
                     .copyWith(color: Colors.white70),
               ),
               Text(
-                "type: " + bookInfo.type,
+                widget.bookInfo.type,
                 style: Theme.of(context)
                     .textTheme
                     .caption

@@ -1,8 +1,10 @@
+import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/utils/EZUserManager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 import 'screens/Screens.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +12,8 @@ void main() {
 
 // Main Function
 class MyApp extends StatelessWidget {
-  static final EZUserManager userManager = new EZUserManager(); //singleton for current user info
+  static final EZUserManager userManager =
+      new EZUserManager(); //singleton for current user info
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

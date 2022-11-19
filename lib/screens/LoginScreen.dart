@@ -72,7 +72,6 @@ class _LoginScreenState extends State<_LoginForm> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     // When login button is pressed, show the Dashboard page.
@@ -113,11 +112,13 @@ class _LoginScreenState extends State<_LoginForm> {
                     //backdoor: email 1 password 1
                     if (emailController.text == '1' &&
                         passwordContoller.text == '1') {
+                      MyApp.userManager.setCurrentUser('1', '1');
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => HomeScreen(
-                                    booksList:  MyApp.userManager.getUserStoriesList(),
+                                    booksList:
+                                        MyApp.userManager.getUserStoriesList(),
                                   )));
                       return;
                     }
@@ -147,7 +148,8 @@ class _LoginScreenState extends State<_LoginForm> {
                                 context,
                                 CupertinoPageRoute(
                                     builder: (context) => HomeScreen(
-                                          booksList: MyApp.userManager.getUserStoriesList(),
+                                          booksList: MyApp.userManager
+                                              .getUserStoriesList(),
                                         ))));
                       } else {
                         showAlartDialog(
