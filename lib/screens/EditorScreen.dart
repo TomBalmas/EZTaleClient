@@ -1,18 +1,22 @@
 
 
-import 'dart:convert';
 
-import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import '../constants.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/Widgets.dart';
 
 
 class EditorScreen extends StatefulWidget {
+
+    EditorScreen({
+    key,
+    this.bookName,
+  });
+  final bookName;
+
   @override
   State<EditorScreen> createState() => _EditorScreenState();
 }
@@ -64,35 +68,85 @@ class _EditorScreenState extends State<EditorScreen> {
                           name: 'Locations',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Locations',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Conversations',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Conversations',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Custom',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Custom',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Attribute Templates',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Attribute Templates',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Events',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Events',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
@@ -146,28 +200,30 @@ class _EditorScreenState extends State<EditorScreen> {
                                   },
                                   width: 100,
                                 )
-                              ]),
+                              ]
                             ),
-                            SizedBox(height: 16),
-                            quill.QuillToolbar.basic(
-                              controller: _controller,
-                              showFontFamily: false,
-                              showFontSize: false,
-                            ),
-                            SizedBox(height: 16),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 5, color: Colors.blue),
-                                  color: Colors.white
-                                ),
-                                child: quill.QuillEditor.basic(
-                                  controller: _controller,
-                                  readOnly: false, // true for view only mode
-                                ),
+                          ),
+                          SizedBox(height: 16),
+                          quill.QuillToolbar.basic(
+                            controller: _controller,
+                            showFontFamily: false,
+                            showFontSize: false,
+                          ),
+                          SizedBox(height: 16),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 5, color: Colors.blue),
+                                color: Colors.white
+                              ),
+                              child: quill.QuillEditor.basic(
+                                controller: _controller,
+                                readOnly: false, // true for view only mode
                               ),
                             ),
-                    ])
+                          ),
+                        ]
+                      )
                     )
                   ]),
               ),

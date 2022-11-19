@@ -11,38 +11,38 @@ class _BuildTable extends State<BuildTable> {
     return   DataTable(  
               columns: [  
                 DataColumn(label: Text(  
-                    'ID',  
+                    'Mock',  
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)  
                 )),  
                 DataColumn(label: Text(  
-                    'Name',  
+                    'Mock',  
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)  
                 )),  
                 DataColumn(label: Text(  
-                    'Profession',  
+                    'Mock',  
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)  
                 )),  
               ],  
               rows: [  
                 DataRow(cells: [  
-                  DataCell(Text('1')),  
-                  DataCell(Text('Stephen')),  
-                  DataCell(Text('Actor')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
                 ]),  
                 DataRow(cells: [  
-                  DataCell(Text('5')),  
-                  DataCell(Text('John')),  
-                  DataCell(Text('Student')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
                 ]),  
                 DataRow(cells: [  
-                  DataCell(Text('10')),  
-                  DataCell(Text('Harry')),  
-                  DataCell(Text('Leader')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),   
                 ]),  
                 DataRow(cells: [  
-                  DataCell(Text('15')),  
-                  DataCell(Text('Peter')),  
-                  DataCell(Text('Scientist')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),  
+                  DataCell(Text('Mock')),   
                 ]),  
               ],  
             ); 
