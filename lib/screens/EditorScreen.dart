@@ -13,6 +13,13 @@ import '../widgets/Widgets.dart';
 
 
 class EditorScreen extends StatefulWidget {
+
+    EditorScreen({
+    key,
+    this.bookName,
+  });
+  final bookName;
+
   @override
   State<EditorScreen> createState() => _EditorScreenState();
 }
@@ -64,35 +71,85 @@ class _EditorScreenState extends State<EditorScreen> {
                           name: 'Locations',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Locations',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Conversations',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Conversations',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Custom',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Custom',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Attribute Templates',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Attribute Templates',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Events',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => TablesScreen(
+                                        tableOfContents: null,
+                                        nameOfTable: 'Events',
+                                  )
+                              )
+                            );
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(

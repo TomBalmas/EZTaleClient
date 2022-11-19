@@ -14,18 +14,17 @@ class TablesScreen extends StatefulWidget {
 
   TablesScreen({
     key,
-    @required this.tableOfContents,
-    @required this.nameOfTable,
+    this.tableOfContents,
+    this.nameOfTable,
   });
-  final tableOfContents;
-  final nameOfTable;
+  var tableOfContents;
+  var nameOfTable;
 
   @override
   State<TablesScreen> createState() => _TablesScreenState();
 }
 
 class _TablesScreenState extends State<TablesScreen> {
-  var buttonColor = Color.fromRGBO(0, 173, 181, 100);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,48 +42,70 @@ class _TablesScreenState extends State<TablesScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if(widget.nameOfTable == 'Characters')
-                    //TODO: Color change
                         BuildButton(
                           name: 'Characters',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Characters'),
                           textColor: Colors.black87,
-                          onTap: (){},
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Characters';
+                            });
+                          },
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Locations',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Locations'),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Locations';
+                            });
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Conversations',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Conversations'),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Conversations';
+                            });
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Custom',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Custom'),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Custom';
+                            });
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Attribute Templates',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Attribute Templates'),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Attribute Templates';
+                            });
+                          }
                         ),
                         SizedBox(height: 16),
                         BuildButton(
                           name: 'Events',
-                          bgColor: buttonColor,
+                          bgColor: colorButtonGrey(widget.nameOfTable, 'Events'),
                           textColor: Colors.black87,
-                          onTap: (){}
+                          onTap: (){
+                            setState(() {
+                              widget.nameOfTable = 'Events';
+                            });
+                          }
                         ),
                 ]),
                 SizedBox(width: 80),
@@ -123,3 +144,9 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 }
 
+Color colorButtonGrey(String nameOfTable, String nameOfButton){
+  if(nameOfTable == nameOfButton)
+    return Colors.grey;
+  else
+    return Color.fromRGBO(0, 173, 181, 100);
+}
