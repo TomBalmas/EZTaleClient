@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import '../constants.dart';
+import '../widgets/EZBuildButton.dart';
 import '../widgets/Widgets.dart';
 
 
@@ -19,12 +20,15 @@ class EditorScreen extends StatefulWidget {
 class _EditorScreenState extends State<EditorScreen> {
   quill.QuillController _controller = quill.QuillController.basic();
   Color repeatedWordsColor = Colors.red, tenseTrackingColor = Colors.red, turningPointsColor = Colors.red;
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: EZDrawer(),
-      appBar: AppBar(title: Text('book1')), //TODO: correct the name
+      appBar: AppBar(
+        title: Text('book1'),
+      ), //TODO: correct the name
       body: Container(
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -44,18 +48,15 @@ class _EditorScreenState extends State<EditorScreen> {
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
                           onTap: (){
-                            /*var charactersList = <String>[];
-                            var res = getBookCharacters('book1');
-                            res.then((value){ // TODO: get book name
-                              final data = jsonDecode(value);
-                              if()
-                            });
                             Navigator.push(
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => TablesScreen(
-                                        tableOfContents: tableOfContents,
-                                      )));*/
+                                        tableOfContents: null,
+                                        nameOfTable: 'Characters',
+                                  )
+                              )
+                            );
                           }
                         ),
                         SizedBox(height: 16),
@@ -108,7 +109,7 @@ class _EditorScreenState extends State<EditorScreen> {
                           Expanded(
                             flex: 0,
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 BuildButton(
                                   name: 'Send',
@@ -133,6 +134,18 @@ class _EditorScreenState extends State<EditorScreen> {
                                   onTap: (){},
                                   width: 100,
                                 ),
+                                Spacer(
+                                  flex: 3
+                                ),
+                                BuildButton(
+                                  name: 'Back',
+                                  bgColor: Color.fromRGBO(0, 173, 181, 100),
+                                  textColor: Colors.black87,
+                                  onTap: (){
+                                    Navigator.pop(context);
+                                  },
+                                  width: 100,
+                                )
                               ]),
                             ),
                             SizedBox(height: 16),
@@ -234,7 +247,6 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: (){},
                       height: 100,
                     ),
-                    SizedBox(width: 16),
                   ])
               )
           ]),
@@ -242,54 +254,5 @@ class _EditorScreenState extends State<EditorScreen> {
       )
     );
 
-  }
-}
-
-
-
-class BuildButton extends StatelessWidget{
-  BuildButton({
-    Key key,
-    @required this.name,
-    this.onTap,
-    @required this.bgColor,
-    @required this.textColor,
-    this.height = 60,
-    this.width = 300,
-  }) : super(key: key);
-  final String name;
-  final Function onTap;
-  final Color bgColor;
-  final Color textColor;
-  final double width;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-      return Flexible(
-      child: SizedBox(
-        width: width,
-        child: Container(
-          height: height,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: TextButton(
-            style: ButtonStyle(
-              overlayColor: MaterialStateProperty.resolveWith(
-                (states) => Colors.black12,
-              ),
-            ),
-            onPressed: onTap,
-            child: Text(
-              name,
-              style: kButtonText.copyWith(color: textColor),
-            ),
-          )
-        )
-      )
-    );
   }
 }
