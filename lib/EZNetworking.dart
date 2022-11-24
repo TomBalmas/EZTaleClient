@@ -82,8 +82,8 @@ Future<String> addEntitiy(String bookName, String username, String type,
 }
 
 // attributes are filled in attributes string and seperated by "|"
-Future<String> addAttributeTemplate(String bookName, String username,
-    String name, String attributes) async {
+Future<String> addAttributeTemplate(
+    String bookName, String username, String name, String attributes) async {
   var url = Uri.parse(kServerURL + '/entity/addentity');
   Map<String, String> body;
   body = {
@@ -91,7 +91,7 @@ Future<String> addAttributeTemplate(String bookName, String username,
     'bookName': bookName,
     'type': 'atrributeTemplate',
     'name': name,
-    'attributes' : attributes
+    'attributes': attributes
   };
   var response = await http.post(url, body: body);
   return response.body;
@@ -100,8 +100,8 @@ Future<String> addAttributeTemplate(String bookName, String username,
 // attributes are filled in attributes string and seperated by "|".
 // same with values: seperated by "|".
 // the indexes of the attribute should be the same as the values.
-Future<String> addUserDefined(String bookName, String username,
-    String name, String attributes, String values) async {
+Future<String> addUserDefined(String bookName, String username, String name,
+    String attributes, String values) async {
   var url = Uri.parse(kServerURL + '/entity/addentity');
   Map<String, String> body;
   body = {
@@ -109,8 +109,8 @@ Future<String> addUserDefined(String bookName, String username,
     'bookName': bookName,
     'type': 'userDefined',
     'name': name,
-    'attributes' : attributes,
-    'values' : values
+    'attributes': attributes,
+    'values': values
   };
   var response = await http.post(url, body: body);
   return response.body;
@@ -132,24 +132,24 @@ Future<String> getAllTypeEntities(
   return response.body;
 }
 
-Future<String> savePage(String token, String bookName, String page) async {
+Future<String> savePage(
+    String username, String bookName, String page, String content) async {
   var url = Uri.parse(kServerURL + '/story/savepage');
   Map<String, String> body;
-  body = {'token': token, 'bookName': bookName, 'page': page};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'page': page,
+    'content': content
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
 
-Future<String> getPage(
-    String token, String bookName, String page, String content) async {
+Future<String> getPage(String username, String bookName, String page) async {
   var url = Uri.parse(kServerURL + '/story/getpage');
   Map<String, String> headers;
-  headers = {
-    'token': token,
-    'bookName': bookName,
-    'page': page,
-    'value': content
-  };
+  headers = {'username': username, 'bookName': bookName, 'page': page};
   var response = await http.get(url, headers: headers);
   return response.body;
 }
