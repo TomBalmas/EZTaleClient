@@ -15,6 +15,7 @@ class NewEntityScreen extends StatefulWidget {
   final nameOfEntity;
   var firstTimeFlag = true;
   List<Widget> attributeWidgets = [];
+  var attributeCounter = 0;
 
   @override
   State<NewEntityScreen> createState() => _NewEntityScreen();
@@ -41,7 +42,7 @@ class _NewEntityScreen extends State<NewEntityScreen> {
   }
   
   /*
-  Builds the "Custom Entity" screen
+  Builds the "New Custom Entity" screen
   */
   buildCustomScreen() {
   TextEditingController nameController = new TextEditingController();
@@ -55,7 +56,7 @@ class _NewEntityScreen extends State<NewEntityScreen> {
       )
     );
     widget.attributeWidgets.add(
-      SizedBox(width: 750)
+      SizedBox(width: 800)
     );
     widget.firstTimeFlag = false;
   }
@@ -86,16 +87,20 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                     textColor: Colors.black87,
                     height: 40,
                     width: 250,
-                    onTap: (){}
+                    onTap: (){} //TODO: add functionality
                   ),
                   Expanded(
                     flex: 10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: widget.attributeWidgets
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: widget.attributeWidgets
+                          )
                         ),
                         Column(
                           children: [
@@ -106,19 +111,20 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                               height: 50,
                               onTap: (){
                                 setState(() {
-                                  if(widget.attributeWidgets.length < 7)
-                                    widget.attributeWidgets.add(addAttribute());
-                                  else
-                                    showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Max 5 attributes per custom entity.",
-                                      () => Navigator.pop(context, 'OK')
-                                    );
+                                  widget.attributeWidgets.add(addAttribute());
+                                  widget.attributeCounter++;
                                 });
                               },
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Total attributes\n' + widget.attributeCounter.toString(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey
+                              ),
                             )
-                          ],
+                          ]
                         )
                       ]
                     ),
@@ -154,7 +160,52 @@ class _NewEntityScreen extends State<NewEntityScreen> {
   }
 
 /*
-Builds the "Templates" screen
+Adds a new attribute line (name + value + delete button)
+*/
+  Widget addAttribute() {
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController valueController = new TextEditingController();
+  Widget r = Row();
+  r = Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      EZEntityTextField(
+        hintText: 'Attribute Name',
+        inputType: TextInputType.name,
+        controller: nameController,
+        width: 200,
+      ),
+      SizedBox(width: 16),
+      EZEntityTextField(
+        hintText: 'Value',
+        inputType: TextInputType.name,
+        controller: valueController,
+        width: 500,
+      ),
+      SizedBox(width: 16),
+      BuildButton(
+          name: 'X',
+          bgColor: Color.fromRGBO(0, 173, 181, 100),
+          textColor: Colors.black87,
+          height: 50,
+          width: 50,
+          onTap: (){
+            setState(() {
+              widget.attributeWidgets.remove(r);
+              widget.attributeCounter--;
+            });
+          },
+      ),
+      SizedBox(width: 16),
+    ],
+  );
+  return r;
+}
+
+/*
+Builds the "New Attribute Template" screen
 */
 buildTemplatesScreen() {
   TextEditingController nameController = new TextEditingController();
@@ -168,7 +219,7 @@ buildTemplatesScreen() {
       )
     );
     widget.attributeWidgets.add(
-      SizedBox(width: 750)
+      SizedBox(width: 800)
     );
     widget.firstTimeFlag = false;
   }
@@ -197,10 +248,13 @@ buildTemplatesScreen() {
                     flex: 10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: widget.attributeWidgets
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widget.attributeWidgets
+                          )
                         ),
                         Column(
                           children: [
@@ -211,17 +265,18 @@ buildTemplatesScreen() {
                               height: 50,
                               onTap: (){
                                 setState(() {
-                                  if(widget.attributeWidgets.length < 7)
                                     widget.attributeWidgets.add(addAttribute());
-                                  else
-                                    showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Max 5 attributes per template.",
-                                      () => Navigator.pop(context, 'OK')
-                                    );
+                                    widget.attributeCounter++;
                                 });
                               },
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Total attributes\n' + widget.attributeCounter.toString(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey
+                              ),
                             )
                           ],
                         )
@@ -356,7 +411,7 @@ Widget buildEventScreen(BuildContext context, String title) {
         )
       );
 }
-
+/*
 showAlertDiaglog(
   BuildContext context, String alt, String desc, Function func) async {
   showDialog<String>(
@@ -373,29 +428,7 @@ showAlertDiaglog(
     ),
   );
 }
-
-
-Widget addAttribute() {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController valueController = new TextEditingController();
-  return Row(
-    children: [
-       EZEntityTextField(
-          hintText: 'Attribute Name',
-          inputType: TextInputType.name,
-          controller: nameController,
-          width: 200,
-        ),
-        SizedBox(width: 16),
-        EZEntityTextField(
-          hintText: 'Value',
-          inputType: TextInputType.name,
-          controller: valueController,
-          width: 500,
-        ),
-    ],
-  );
-}
+*/
 
 
 /*
