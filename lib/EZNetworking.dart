@@ -153,3 +153,11 @@ Future<String> getPage(String username, String bookName, String page) async {
   var response = await http.get(url, headers: headers);
   return response.body;
 }
+
+Future<String> deleteBook(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/deletestory');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}

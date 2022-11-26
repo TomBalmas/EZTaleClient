@@ -1,3 +1,4 @@
+import 'package:ez_tale/main.dart';
 import 'package:ez_tale/screens/Screens.dart';
 import 'package:ez_tale/screens/home_screen_widgets/EZBooks.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,11 +16,13 @@ class BookInfoCard extends StatefulWidget {
   EZBook bookInfo;
 
   @override
-  State<BookInfoCard> createState() => _BookInfoCardState();
+  State<BookInfoCard> createState() => _BookInfoCardState(bookInfo);
 }
 
 class _BookInfoCardState extends State<BookInfoCard> {
+  _BookInfoCardState(this.bookInfo);
   bool _toDel = false;
+  EZBook bookInfo;
   TextEditingController deleteTextController = new TextEditingController();
   void _checkToDel() {
     _toDel = deleteTextController.text == 'DELETE';
@@ -38,6 +41,23 @@ class _BookInfoCardState extends State<BookInfoCard> {
     // This also removes the _printLatestValue listener.
     deleteTextController.dispose();
     super.dispose();
+  }
+
+  void showAcceptDiaglog(
+      BuildContext context, String alt, String desc, Function func) async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(alt),
+        content: Text(desc),
+        actions: <Widget>[
+          TextButton(
+            onPressed: func,
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void showAlartDialog(BuildContext context, String alt, String desc,
@@ -62,7 +82,7 @@ class _BookInfoCardState extends State<BookInfoCard> {
                   padding: EdgeInsets.only(top: 5),
                   child: TextButton(
                     key: Key('textDel'),
-                    onPressed: _toDel ? () => delete_func : null,
+                    onPressed: _toDel ? delete_func : null,
                     child: const Text('Delete'),
                   ),
                 ),
@@ -79,7 +99,7 @@ class _BookInfoCardState extends State<BookInfoCard> {
         });
   }
 
-  void showPopUpMenuAtTap(BuildContext context, TapDownDetails details) {
+  void showPopUpMenuAtTap(BuildContext context, TapDownDetails details) async {
     showMenu(
       context: context,
       color: kBackgroundColor,
@@ -103,12 +123,27 @@ class _BookInfoCardState extends State<BookInfoCard> {
                 builder: (context) =>
                     EditorScreen())); //add build book, entities
       } else if (itemSelected == 'delete') {
-        showAlartDialog(
-            context,
-            'Delete?',
-            'Write \"DELETE\" to confirm:',
-            () => {}, //delete book function
-            () => Navigator.pop(context, 'cancel'));
+        showAlartDialog(context, 'Delete?', 'Write \"DELETE\" to confirm:', () {
+          MyApp.userManager
+              .deleteUsersBook(
+                  MyApp.userManager.getCurrentUsername(), bookInfo.title)
+              .then((boolValue) =>
+                  MyApp.userManager.updateUserStoriesList().then((booksListValue) {
+                    if (boolValue)
+                      showAcceptDiaglog(
+                          context,
+                          'Deleted',
+                          'Book deleted successfully',
+                          () => Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => HomeScreen(
+                                        booksList: booksListValue,
+                                      ))));
+                  })); //delete book function
+        },
+            () => Navigator.pop(
+                context, 'cancel')); // don't do anything when cancel
       }
     });
   }

@@ -15,6 +15,7 @@ class EZBookManager {
     return _username;
   }
 
+// getting the book's page from server
   String getBookPage(int pageNum) {
     String pageContent;
     getPage(_username, _bookName, pageNum as String).then(((value) {
@@ -24,7 +25,7 @@ class EZBookManager {
     return pageContent;
   }
 
-  //return true if saved successfully 
+  //return true if page saved successfully
   bool saveBookPage(String pageContent, int pageNum) {
     bool res;
     savePage(_username, _bookName, pageNum as String, pageContent)
@@ -34,5 +35,12 @@ class EZBookManager {
     });
     return res;
   }
+
+//call this function to init the book manager for other books
+  void exitBook() {
+    _bookName = null;
+    _username = null;
+  }
+
 
 }
