@@ -7,7 +7,6 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 // ignore: must_be_immutable
 class NewEntityScreen extends StatefulWidget {
-
   NewEntityScreen({
     key,
     @required this.nameOfEntity,
@@ -22,94 +21,81 @@ class NewEntityScreen extends StatefulWidget {
 }
 
 class _NewEntityScreen extends State<NewEntityScreen> {
-
-  
   @override
   Widget build(BuildContext context) {
-    if(widget.nameOfEntity == 'New Character')
+    if (widget.nameOfEntity == 'New Character')
       return buildCharacterScreen(context, widget.nameOfEntity);
-    if(widget.nameOfEntity == 'New Location')
+    if (widget.nameOfEntity == 'New Location')
       return buildLocationScreen(context, widget.nameOfEntity);
-    if(widget.nameOfEntity == 'New Conversation')
+    if (widget.nameOfEntity == 'New Conversation')
       return buildConversationScreen(context, widget.nameOfEntity);
-    if(widget.nameOfEntity == 'New Custom Entity')
-      return buildCustomScreen();
-    if(widget.nameOfEntity == 'New Event')
-      return buildEventScreen(context,widget.nameOfEntity);
-    if(widget.nameOfEntity == 'New Attribute Template')
+    if (widget.nameOfEntity == 'New Custom Entity') return buildCustomScreen();
+    if (widget.nameOfEntity == 'New Event')
+      return buildEventScreen(context, widget.nameOfEntity);
+    if (widget.nameOfEntity == 'New Attribute Template')
       return buildTemplatesScreen();
     return null;
   }
-  
+
   /*
   Builds the "New Custom Entity" screen
   */
   buildCustomScreen() {
-  TextEditingController nameController = new TextEditingController();
-  if(widget.firstTimeFlag){
-    widget.attributeWidgets.add(
-      EZEntityTextField(
+    TextEditingController nameController = new TextEditingController();
+    if (widget.firstTimeFlag) {
+      widget.attributeWidgets.add(EZEntityTextField(
         hintText: 'Entity Name',
         inputType: TextInputType.name,
         controller: nameController,
         width: 200,
-      )
-    );
-    widget.attributeWidgets.add(
-      SizedBox(width: 800)
-    );
-    widget.firstTimeFlag = false;
-  }
-  return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(widget.nameOfEntity),
-          ),
-          body: Container(
+      ));
+      widget.attributeWidgets.add(SizedBox(width: 800));
+      widget.firstTimeFlag = false;
+    }
+    return Scaffold(
+        drawer: EZDrawer(),
+        appBar: AppBar(
+          title: Text(widget.nameOfEntity),
+        ),
+        body: Container(
             child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
+                padding: EdgeInsets.all(16),
+                child: Column(children: [
                   Container(
                     alignment: Alignment.center,
                     child: Text(
                       widget.nameOfEntity,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
+                      style: TextStyle(fontSize: 64, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   BuildButton(
-                    name: 'Apply Attribute Template',
-                    bgColor: Color.fromRGBO(0, 173, 181, 100),
-                    textColor: Colors.black87,
-                    height: 40,
-                    width: 250,
-                    onTap: (){} //TODO: add functionality
-                  ),
+                      name: 'Apply Attribute Template',
+                      bgColor: Color.fromRGBO(0, 173, 181, 100),
+                      textColor: Colors.black87,
+                      height: 40,
+                      width: 250,
+                      onTap: () {} //TODO: add functionality
+                      ),
                   Expanded(
                     flex: 10,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: widget.attributeWidgets
-                          )
-                        ),
-                        Column(
-                          children: [
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SingleChildScrollView(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: widget.attributeWidgets)),
+                          Expanded(
+                              child: Column(children: [
                             BuildButton(
                               name: 'Add Attribute',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
                               height: 50,
-                              onTap: (){
+                              onTap: () {
                                 setState(() {
                                   widget.attributeWidgets.add(addAttribute());
                                   widget.attributeCounter++;
@@ -118,199 +104,175 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                             ),
                             SizedBox(height: 16),
                             Text(
-                              'Total attributes\n' + widget.attributeCounter.toString(),
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
-                              ),
+                              'Total attributes\n' +
+                                  widget.attributeCounter.toString(),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.grey),
                             )
-                          ]
-                        )
-                      ]
-                    ),
+                          ]))
+                        ]),
                   ),
                   Expanded(
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        BuildButton(
-                          name: 'Back',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                          width: 100,
-                        ),
-                        BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          BuildButton(
+                            name: 'Back',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            width: 100,
+                          ),
+                          BuildButton(
+                              name: 'Save',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              width: 100,
+                              onTap: () {})
+                        ]),
                   ),
-              ])
-          )
-        )
-      );
+                ]))));
   }
 
 /*
 Adds a new attribute line (name + value + delete button)
 */
   Widget addAttribute() {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController valueController = new TextEditingController();
-  Widget r = Row();
-  r = Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      EZEntityTextField(
-        hintText: 'Attribute Name',
-        inputType: TextInputType.name,
-        controller: nameController,
-        width: 200,
-      ),
-      SizedBox(width: 16),
-      EZEntityTextField(
-        hintText: 'Value',
-        inputType: TextInputType.name,
-        controller: valueController,
-        width: 500,
-      ),
-      SizedBox(width: 16),
-      BuildButton(
+    TextEditingController nameController = new TextEditingController();
+    TextEditingController valueController = new TextEditingController();
+    Widget r = Row();
+    r = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        EZEntityTextField(
+          hintText: 'Attribute Name',
+          inputType: TextInputType.name,
+          controller: nameController,
+          width: 200,
+        ),
+        SizedBox(width: 16),
+        EZEntityTextField(
+          hintText: 'Value',
+          inputType: TextInputType.name,
+          controller: valueController,
+          width: 500,
+        ),
+        SizedBox(width: 16),
+        BuildButton(
           name: 'X',
           bgColor: Color.fromRGBO(0, 173, 181, 100),
           textColor: Colors.black87,
           height: 50,
           width: 50,
-          onTap: (){
+          onTap: () {
             setState(() {
               widget.attributeWidgets.remove(r);
               widget.attributeCounter--;
             });
           },
-      ),
-      SizedBox(width: 16),
-    ],
-  );
-  return r;
-}
+        ),
+        SizedBox(width: 16),
+      ],
+    );
+    return r;
+  }
 
 /*
 Builds the "New Attribute Template" screen
 */
-buildTemplatesScreen() {
-  TextEditingController nameController = new TextEditingController();
-  if(widget.firstTimeFlag){
-    widget.attributeWidgets.add(
-      EZEntityTextField(
+  buildTemplatesScreen() {
+    TextEditingController nameController = new TextEditingController();
+    if (widget.firstTimeFlag) {
+      widget.attributeWidgets.add(EZEntityTextField(
         hintText: 'Template Name',
         inputType: TextInputType.name,
         controller: nameController,
         width: 200,
-      )
-    );
-    widget.attributeWidgets.add(
-      SizedBox(width: 800)
-    );
-    widget.firstTimeFlag = false;
-  }
-  return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(widget.nameOfEntity),
-          ),
-          body: Container(
+      ));
+      widget.attributeWidgets.add(SizedBox(width: 800));
+      widget.firstTimeFlag = false;
+    }
+    return Scaffold(
+        drawer: EZDrawer(),
+        appBar: AppBar(
+          title: Text(widget.nameOfEntity),
+        ),
+        body: Container(
             child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
+                padding: EdgeInsets.all(16),
+                child: Column(children: [
                   Container(
                     alignment: Alignment.center,
                     child: Text(
                       widget.nameOfEntity,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
+                      style: TextStyle(fontSize: 64, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Expanded(
                     flex: 10,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: widget.attributeWidgets
-                          )
-                        ),
-                        Column(
-                          children: [
-                            BuildButton(
-                              name: 'Add Attribute',
-                              bgColor: Color.fromRGBO(0, 173, 181, 100),
-                              textColor: Colors.black87,
-                              height: 50,
-                              onTap: (){
-                                setState(() {
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SingleChildScrollView(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: widget.attributeWidgets)),
+                          Expanded(
+                              child: Column(
+                            children: [
+                              BuildButton(
+                                name: 'Add Attribute',
+                                bgColor: Color.fromRGBO(0, 173, 181, 100),
+                                textColor: Colors.black87,
+                                height: 50,
+                                onTap: () {
+                                  setState(() {
                                     widget.attributeWidgets.add(addAttribute());
                                     widget.attributeCounter++;
-                                });
-                              },
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Total attributes\n' + widget.attributeCounter.toString(),
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
+                                  });
+                                },
                               ),
-                            )
-                          ],
-                        )
-                      ]
-                    ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Total attributes\n' +
+                                    widget.attributeCounter.toString(),
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                              )
+                            ],
+                          ))
+                        ]),
                   ),
                   Expanded(
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        BuildButton(
-                          name: 'Back',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                          width: 100,
-                        ),
-                        BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          BuildButton(
+                            name: 'Back',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            width: 100,
+                          ),
+                          BuildButton(
+                              name: 'Save',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              width: 100,
+                              onTap: () {})
+                        ]),
                   ),
-              ])
-          )
-        )
-      );
+                ]))));
   }
 }
 
@@ -321,69 +283,62 @@ Widget buildEventScreen(BuildContext context, String title) {
   quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: Container(
-            child: Padding(
+      drawer: EZDrawer(),
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Container(
+          child: Padding(
               padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              child: Column(children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 64, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  flex: 6,
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            EZEntityTextField(
-                              hintText: 'Event Name',
-                              inputType: TextInputType.name,
-                              controller: nameController,
-                            ),
-                            Text(
-                              'Description:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              EZEntityTextField(
+                                hintText: 'Event Name',
+                                inputType: TextInputType.name,
+                                controller: nameController,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 3, color: Colors.blue),
+                              Text(
+                                'Description:',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                textAlign: TextAlign.center,
                               ),
-                              child: SizedBox(
-                                width: 700,
-                                height: 300,
-                                child: quill.QuillEditor.basic(
-                                  controller: quillController,
-                                  readOnly: false, // true for view only mode
-                                ),
-                              )
-                            )
-                          ]
-                        ),
-                      ]
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 3, color: Colors.blue),
+                                  ),
+                                  child: SizedBox(
+                                    width: 700,
+                                    height: 300,
+                                    child: quill.QuillEditor.basic(
+                                      controller: quillController,
+                                      readOnly:
+                                          false, // true for view only mode
+                                    ),
+                                  ))
+                            ]),
+                      ]),
+                ),
+                Expanded(
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -391,45 +346,21 @@ Widget buildEventScreen(BuildContext context, String title) {
                           name: 'Back',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           width: 100,
                         ),
                         BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
-                  ),
-              ])
-          )
-        )
-      );
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {})
+                      ]),
+                ),
+              ]))));
 }
-/*
-showAlertDiaglog(
-  BuildContext context, String alt, String desc, Function func) async {
-  showDialog<String>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: Text(alt),
-      content: Text(desc),
-      actions: <Widget>[
-        TextButton(
-          onPressed: func,
-          child: const Text('OK'),
-        ),
-      ],
-    ),
-  );
-}
-*/
-
 
 /*
 Builds the "New Conversation" screen
@@ -438,81 +369,72 @@ Widget buildConversationScreen(BuildContext context, String title) {
   quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: Container(
-            child: Padding(
+      drawer: EZDrawer(),
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Container(
+          child: Padding(
               padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              child: Column(children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 64, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  flex: 6,
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            EZEntityTextField(
-                              hintText: 'Name of conversation',
-                              inputType: TextInputType.name,
-                              controller: nameController,
-                            ),
-                            Text(
-                              'Description:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              EZEntityTextField(
+                                hintText: 'Name of conversation',
+                                inputType: TextInputType.name,
+                                controller: nameController,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 3, color: Colors.blue),
+                              Text(
+                                'Description:',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                textAlign: TextAlign.center,
                               ),
-                              child: SizedBox(
-                                width: 500,
-                                height: 300,
-                                child: quill.QuillEditor.basic(
-                                  controller: quillController,
-                                  readOnly: false, // true for view only mode
-                                ),
-                              )
-                            )
-                          ]
-                        ),
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 3, color: Colors.blue),
+                                  ),
+                                  child: SizedBox(
+                                    width: 500,
+                                    height: 300,
+                                    child: quill.QuillEditor.basic(
+                                      controller: quillController,
+                                      readOnly:
+                                          false, // true for view only mode
+                                    ),
+                                  ))
+                            ]),
                         Column(
                           children: [
                             Text(
                               'Choose participants:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
-                              ),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.grey),
                             ),
                             BuildTable()
                           ],
                         )
-                      ]
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
+                      ]),
+                ),
+                Expanded(
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -520,25 +442,20 @@ Widget buildConversationScreen(BuildContext context, String title) {
                           name: 'Back',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           width: 100,
                         ),
                         BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
-                  ),
-              ])
-          )
-        )
-      );
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {})
+                      ]),
+                ),
+              ]))));
 }
 
 /*
@@ -548,69 +465,62 @@ Widget buildLocationScreen(BuildContext context, String title) {
   quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: Container(
-            child: Padding(
+      drawer: EZDrawer(),
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Container(
+          child: Padding(
               padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              child: Column(children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 64, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  flex: 6,
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            EZEntityTextField(
-                              hintText: 'Location Name',
-                              inputType: TextInputType.name,
-                              controller: nameController,
-                            ),
-                            Text(
-                              'Description:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              EZEntityTextField(
+                                hintText: 'Location Name',
+                                inputType: TextInputType.name,
+                                controller: nameController,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 3, color: Colors.blue),
+                              Text(
+                                'Description:',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                textAlign: TextAlign.center,
                               ),
-                              child: SizedBox(
-                                width: 700,
-                                height: 300,
-                                child: quill.QuillEditor.basic(
-                                  controller: quillController,
-                                  readOnly: false, // true for view only mode
-                                ),
-                              )
-                            )
-                          ]
-                        ),
-                      ]
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 3, color: Colors.blue),
+                                  ),
+                                  child: SizedBox(
+                                    width: 700,
+                                    height: 300,
+                                    child: quill.QuillEditor.basic(
+                                      controller: quillController,
+                                      readOnly:
+                                          false, // true for view only mode
+                                    ),
+                                  ))
+                            ]),
+                      ]),
+                ),
+                Expanded(
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -618,31 +528,26 @@ Widget buildLocationScreen(BuildContext context, String title) {
                           name: 'Back',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           width: 100,
                         ),
                         BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
-                  ),
-              ])
-          )
-        )
-      );
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {})
+                      ]),
+                ),
+              ]))));
 }
 
 /*
 Builds the "New Character" screen
 */
-Widget buildCharacterScreen(BuildContext context, String title){
+Widget buildCharacterScreen(BuildContext context, String title) {
   quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   TextEditingController sureNameController = new TextEditingController();
@@ -650,95 +555,82 @@ Widget buildCharacterScreen(BuildContext context, String title){
   TextEditingController traitsController = new TextEditingController();
   TextEditingController appearanceController = new TextEditingController();
   return Scaffold(
-          drawer: EZDrawer(),
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: Container(
-            child: Padding(
+      drawer: EZDrawer(),
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Container(
+          child: Padding(
               padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 64,
-                        color: Colors.grey
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              child: Column(children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 64, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  flex: 6,
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            EZEntityTextField(
-                              hintText: 'Name',
-                              inputType: TextInputType.name,
-                              controller: nameController,
-                            ),
-                            EZEntityTextField(
-                              hintText: 'Surename',
-                              inputType: TextInputType.name,
-                              controller: sureNameController
-                            ),
-                            EZEntityTextField(
-                              hintText: 'Gender',
-                              inputType: TextInputType.name,
-                              controller: genderController
-                            ),
-                            Text(
-                              'Description:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              EZEntityTextField(
+                                hintText: 'Name',
+                                inputType: TextInputType.name,
+                                controller: nameController,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 3, color: Colors.blue),
+                              EZEntityTextField(
+                                  hintText: 'Surename',
+                                  inputType: TextInputType.name,
+                                  controller: sureNameController),
+                              EZEntityTextField(
+                                  hintText: 'Gender',
+                                  inputType: TextInputType.name,
+                                  controller: genderController),
+                              Text(
+                                'Description:',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                textAlign: TextAlign.center,
                               ),
-                              child: SizedBox(
-                                width: 500,
-                                height: 170,
-                                child: quill.QuillEditor.basic(
-                                  controller: quillController,
-                                  readOnly: false, // true for view only mode
-                                ),
-                              )
-                            ),
-                          ]
-                        ),
-                        Column(
-                          children: [
-                            EZEntityTextField(
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 3, color: Colors.blue),
+                                  ),
+                                  child: SizedBox(
+                                    width: 500,
+                                    height: 170,
+                                    child: quill.QuillEditor.basic(
+                                      controller: quillController,
+                                      readOnly:
+                                          false, // true for view only mode
+                                    ),
+                                  )),
+                            ]),
+                        Column(children: [
+                          EZEntityTextField(
                               hintText: 'Personality Traits',
                               inputType: TextInputType.name,
                               controller: traitsController,
-                              width: 500
-                            ),
-                            EZEntityTextField(
+                              width: 500),
+                          EZEntityTextField(
                               hintText: 'Appearance',
                               inputType: TextInputType.name,
                               controller: appearanceController,
-                              width: 500
-                            ),
-                          ]
-                        )
-                      ]
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
+                              width: 500),
+                        ])
+                      ]),
+                ),
+                Expanded(
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -746,23 +638,18 @@ Widget buildCharacterScreen(BuildContext context, String title){
                           name: 'Back',
                           bgColor: Color.fromRGBO(0, 173, 181, 100),
                           textColor: Colors.black87,
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           width: 100,
                         ),
                         BuildButton(
-                          name: 'Save',
-                          bgColor: Color.fromRGBO(0, 173, 181, 100),
-                          textColor: Colors.black87,
-                          width: 100,
-                          onTap: (){}
-                        )
-                      ]
-                    ),
-                  ),
-              ])
-          )
-        )
-      );
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {})
+                      ]),
+                ),
+              ]))));
 }
