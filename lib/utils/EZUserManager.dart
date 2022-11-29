@@ -13,10 +13,10 @@ class EZUserManager {
       print(value);
       final data = jsonDecode(value);
       print("len: ${data.length}");
-      print("name: ${data[0]['name']}");
+      print("bookName: ${data[0]['bookName']}");
       for (int i = 0; i < data.length; i++)
         retList.add(new EZBook(
-            title: data[i]['name'],
+            title: data[i]['bookName'],
             description: data[i]['description'],
             type: data[i]['type']));
     });
@@ -34,6 +34,14 @@ class EZUserManager {
             title: 'book $i', description: 'this is book $i', type: 'Book'));
     } else
       _getUserStories().then((value) => _userBookList = value);
+  }
+
+  Future<List<EZBook>> updateUserStoriesList() async { //this will never be null
+  //this is called only if the user has logged in
+    await _getUserStories().then((value) {
+      _userBookList = value;
+    });
+    return _userBookList;
   }
 
   List<EZBook> getUserStoriesList() {
@@ -56,5 +64,14 @@ class EZUserManager {
     _currentUsername = null;
     _currentToken = null;
     _userBookList = null;
+  }
+
+  Future<bool> deleteUsersBook(String username, String bookName) async {
+    bool res;
+    await deleteBook(username, bookName).then((value) {
+      final data = jsonDecode(value);
+      res = data['msg'] == 'story deleted successfully';
+    });
+    return res;
   }
 }
