@@ -1,3 +1,4 @@
+import 'package:ez_tale/utils/EZBookManager.dart';
 import 'package:ez_tale/utils/EZUserManager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,8 @@ void main() {
 class MyApp extends StatelessWidget {
   static final EZUserManager userManager =
       new EZUserManager(); //singleton for current user info
+  static final EZBookManager bookManager =
+      new EZBookManager();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -2,7 +2,7 @@ import 'dart:convert';
 import '../EZNetworking.dart';
 
 class EZBookManager {
-  EZBookManager(this._bookName, this._username);
+  EZBookManager();
 
   String _bookName;
   String _username;
@@ -13,6 +13,11 @@ class EZBookManager {
 
   String getOwnerUsername() {
     return _username;
+  }
+
+  void setBook(String userName, String bookName) {
+    _bookName = bookName;
+    _username = userName;
   }
 
 // getting the book's page from server
@@ -41,6 +46,4 @@ class EZBookManager {
     _bookName = null;
     _username = null;
   }
-
-
 }

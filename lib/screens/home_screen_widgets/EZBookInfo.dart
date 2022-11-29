@@ -117,6 +117,8 @@ class _BookInfoCardState extends State<BookInfoCard> {
     ).then<void>((String itemSelected) {
       if (itemSelected == null) return;
       if (itemSelected == 'edit') {
+        MyApp.bookManager
+            .setBook(MyApp.userManager.getCurrentUsername(), bookInfo.title);
         Navigator.push(
             context,
             CupertinoPageRoute(
@@ -127,8 +129,9 @@ class _BookInfoCardState extends State<BookInfoCard> {
           MyApp.userManager
               .deleteUsersBook(
                   MyApp.userManager.getCurrentUsername(), bookInfo.title)
-              .then((boolValue) =>
-                  MyApp.userManager.updateUserStoriesList().then((booksListValue) {
+              .then((boolValue) => MyApp.userManager
+                      .updateUserStoriesList()
+                      .then((booksListValue) {
                     if (boolValue)
                       showAcceptDiaglog(
                           context,
