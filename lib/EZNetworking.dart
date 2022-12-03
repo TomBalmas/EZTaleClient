@@ -161,3 +161,14 @@ Future<String> deleteBook(String username, String bookName) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
+
+
+Future<String> updateUser(Map<String, String> map) async {
+  var url = Uri.parse(kServerURL + '/updateuser');
+  var response = await http.post(url, body: map);
+  return response.body;
+}
+
+
+
+
