@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
 import 'package:ez_tale/widgets/EZTableBuilder.dart';
 import 'package:flutter/material.dart';
@@ -402,9 +403,9 @@ Widget buildEventScreen(BuildContext context, String title) {
                               ),
                               Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: kBackgroundColor,
                                     border: Border.all(
-                                        width: 3, color: Colors.blue),
+                                        width: 3, color: Colors.black87),
                                   ),
                                   child: SizedBox(
                                     width: 700,
@@ -475,7 +476,6 @@ Widget buildEventScreen(BuildContext context, String title) {
 Builds the "New Conversation" screen
 */
 Widget buildConversationScreen(BuildContext context, String title) {
-  quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   return Scaffold(
       drawer: EZDrawer(),
@@ -620,9 +620,9 @@ Widget buildLocationScreen(BuildContext context, String title) {
                               ),
                               Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: kBackgroundColor,
                                     border: Border.all(
-                                        width: 3, color: Colors.blue),
+                                        width: 3, color: Colors.black87),
                                   ),
                                   child: SizedBox(
                                     width: 700,
