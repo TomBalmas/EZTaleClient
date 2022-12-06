@@ -1,6 +1,7 @@
 
 
 
+import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -213,8 +214,8 @@ class _EditorScreenState extends State<EditorScreen> {
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(width: 5, color: Colors.blue),
-                                color: Colors.white
+                                border: Border.all(width: 5, color: Colors.black87),
+                                color: kBackgroundColor
                               ),
                               child: quill.QuillEditor.basic(
                                 controller: _controller,
@@ -235,8 +236,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       width: 450,
                       height: 150,
                       decoration: BoxDecoration(
-                        border: Border.all(width: 5, color: Colors.blue),
-                        color: Colors.white
+                        border: Border.all(width: 5, color: Colors.black87),
+                        color: kBackgroundColor
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
