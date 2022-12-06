@@ -206,9 +206,7 @@ class _EditorScreenState extends State<EditorScreen> {
                           ),
                           SizedBox(height: 16),
                           quill.QuillToolbar.basic(
-                            controller: _controller,
-                            showFontFamily: false,
-                            showFontSize: false,
+                            controller: _controller
                           ),
                           SizedBox(height: 16),
                           Expanded(
