@@ -1,9 +1,18 @@
+import 'dart:convert';
+
+import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/main.dart';
 import 'package:ez_tale/widgets/EZTableBuilder.dart';
 import 'package:flutter/material.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZNewEntityTextField.dart';
 import '../widgets/Widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+
+final Map<String, String> newMap = {
+  "username": MyApp.userManager.getCurrentUsername(),
+  "bookName": MyApp.bookManager.getBookName(),
+};
 
 // ignore: must_be_immutable
 class NewEntityScreen extends StatefulWidget {
@@ -14,6 +23,10 @@ class NewEntityScreen extends StatefulWidget {
   final nameOfEntity;
   var firstTimeFlag = true;
   List<Widget> attributeWidgets = [];
+  List<TextEditingController> nameControllers= [];
+  List<TextEditingController> valueControllers= [];
+  TextEditingController attributeTemplateNameController = new TextEditingController();
+  TextEditingController customNameController = new TextEditingController();
   var attributeCounter = 0;
 
   @override
@@ -40,13 +53,12 @@ class _NewEntityScreen extends State<NewEntityScreen> {
   /*
   Builds the "New Custom Entity" screen
   */
-  buildCustomScreen() {
-    TextEditingController nameController = new TextEditingController();
+  buildCustomScreen() { //TODO: fix save button with Tom
     if (widget.firstTimeFlag) {
       widget.attributeWidgets.add(EZEntityTextField(
         hintText: 'Entity Name',
         inputType: TextInputType.name,
-        controller: nameController,
+        controller: widget.customNameController,
         width: 200,
       ));
       widget.attributeWidgets.add(SizedBox(width: 800));
@@ -127,11 +139,47 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                             width: 100,
                           ),
                           BuildButton(
-                              name: 'Save',
-                              bgColor: Color.fromRGBO(0, 173, 181, 100),
-                              textColor: Colors.black87,
-                              width: 100,
-                              onTap: () {})
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {
+                              final Map<String, String> newCustom = newMap;
+                              newCustom["type"] = "userDefined";
+                              newCustom["name"] = widget.customNameController.text;
+                              final Map<String,String> attributes = {};
+                              for (int i = 0 ; i < widget.attributeCounter ; i++){
+                                attributes[widget.nameControllers[i].text] = widget.valueControllers[i].text;
+                              }
+                              //TODO: save the attributes
+
+                              saveEntity(newCustom).then((value) {
+                                print('1');
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  print('2');
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Attribute template " +
+                                          widget.attributeTemplateNameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (widget.customNameController.text.isEmpty) {
+                                  print('3');
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                         ]),
                   ),
                 ]))));
@@ -143,6 +191,8 @@ Adds a new attribute line (name + value + delete button)
   Widget addAttribute() {
     TextEditingController nameController = new TextEditingController();
     TextEditingController valueController = new TextEditingController();
+    widget.nameControllers.add(nameController);
+    widget.valueControllers.add(valueController);
     Widget r = Row();
     r = Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -186,12 +236,11 @@ Adds a new attribute line (name + value + delete button)
 Builds the "New Attribute Template" screen
 */
   buildTemplatesScreen() {
-    TextEditingController nameController = new TextEditingController();
     if (widget.firstTimeFlag) {
       widget.attributeWidgets.add(EZEntityTextField(
         hintText: 'Template Name',
         inputType: TextInputType.name,
-        controller: nameController,
+        controller: widget.attributeTemplateNameController,
         width: 200,
       ));
       widget.attributeWidgets.add(SizedBox(width: 800));
@@ -264,12 +313,44 @@ Builds the "New Attribute Template" screen
                             },
                             width: 100,
                           ),
-                          BuildButton(
-                              name: 'Save',
-                              bgColor: Color.fromRGBO(0, 173, 181, 100),
-                              textColor: Colors.black87,
-                              width: 100,
-                              onTap: () {})
+                           BuildButton(
+                            name: 'Save',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            width: 100,
+                            onTap: () {
+                              final Map<String, String> newTemplate = newMap;
+                              newTemplate["type"] = "attributeTemplate";
+                              newTemplate["name"] = widget.attributeTemplateNameController.text;
+                              final Map<String,String> attributes = {};
+                              for (int i = 0 ; i < widget.attributeCounter ; i++){
+                                attributes[widget.nameControllers[i].text] = widget.valueControllers[i].text;
+                              }
+                              //TODO: save the attributes
+                              saveEntity(newTemplate).then((value) {
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Attribute template " +
+                                          widget.attributeTemplateNameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (widget.attributeTemplateNameController.text.isEmpty) {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                         ]),
                   ),
                 ]))));
@@ -356,7 +437,35 @@ Widget buildEventScreen(BuildContext context, String title) {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             width: 100,
-                            onTap: () {})
+                            onTap: () {
+                              final Map<String, String> newEvent = newMap;
+                              newEvent["type"] = "storyEvent";
+                              newEvent["name"] = nameController.text;
+                              newEvent["desc"] = quillController.document.toPlainText();
+                              saveEntity(newEvent).then((value) {
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Event " +
+                                          nameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (nameController.text.isEmpty) {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                       ]),
                 ),
               ]))));
@@ -399,27 +508,7 @@ Widget buildConversationScreen(BuildContext context, String title) {
                                 inputType: TextInputType.name,
                                 controller: nameController,
                               ),
-                              Text(
-                                'Description:',
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
-                                textAlign: TextAlign.center,
-                              ),
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 3, color: Colors.blue),
-                                  ),
-                                  child: SizedBox(
-                                    width: 500,
-                                    height: 300,
-                                    child: quill.QuillEditor.basic(
-                                      controller: quillController,
-                                      readOnly:
-                                          false, // true for view only mode
-                                    ),
-                                  ))
+                              //TODO: add participants
                             ]),
                         Column(
                           children: [
@@ -452,7 +541,35 @@ Widget buildConversationScreen(BuildContext context, String title) {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             width: 100,
-                            onTap: () {})
+                            onTap: () {
+                              final Map<String, String> newConversation = newMap;
+                              newConversation["type"] = "conversation";
+                              newConversation["name"] = nameController.text;
+                              // TODO: add participant selection.
+                              saveEntity(newConversation).then((value) {
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Conversation " +
+                                          nameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (nameController.text.isEmpty) {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                       ]),
                 ),
               ]))));
@@ -538,7 +655,36 @@ Widget buildLocationScreen(BuildContext context, String title) {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             width: 100,
-                            onTap: () {})
+                            onTap: () {
+                              final Map<String, String> newLocation = newMap;
+                              newLocation["type"] = "location";
+                              newLocation["name"] = nameController.text;
+                              newLocation["vista"] =
+                                  quillController.document.toPlainText();
+                              saveEntity(newLocation).then((value) {
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Location " +
+                                          nameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (nameController.text.isEmpty) {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                       ]),
                 ),
               ]))));
@@ -548,12 +694,12 @@ Widget buildLocationScreen(BuildContext context, String title) {
 Builds the "New Character" screen
 */
 Widget buildCharacterScreen(BuildContext context, String title) {
-  quill.QuillController quillController = quill.QuillController.basic();
   TextEditingController nameController = new TextEditingController();
   TextEditingController sureNameController = new TextEditingController();
   TextEditingController genderController = new TextEditingController();
   TextEditingController traitsController = new TextEditingController();
   TextEditingController appearanceController = new TextEditingController();
+  TextEditingController ageController = new TextEditingController();
   return Scaffold(
       drawer: EZDrawer(),
       appBar: AppBar(
@@ -590,30 +736,13 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                                   inputType: TextInputType.name,
                                   controller: sureNameController),
                               EZEntityTextField(
+                                  hintText: 'age',
+                                  inputType: TextInputType.name,
+                                  controller: ageController),
+                              EZEntityTextField(
                                   hintText: 'Gender',
                                   inputType: TextInputType.name,
                                   controller: genderController),
-                              Text(
-                                'Description:',
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
-                                textAlign: TextAlign.center,
-                              ),
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 3, color: Colors.blue),
-                                  ),
-                                  child: SizedBox(
-                                    width: 500,
-                                    height: 170,
-                                    child: quill.QuillEditor.basic(
-                                      controller: quillController,
-                                      readOnly:
-                                          false, // true for view only mode
-                                    ),
-                                  )),
                             ]),
                         Column(children: [
                           EZEntityTextField(
@@ -648,8 +777,59 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             width: 100,
-                            onTap: () {})
+                            onTap: () {
+                              final Map<String, String> newChar = newMap;
+                              newChar["type"] = "character";
+                              newChar["name"] = nameController.text;
+                              newChar["sure"] = sureNameController.text;
+                              newChar["personalityTraits"] =
+                                  traitsController.text;
+                              newChar["appearanceTraits"] =
+                                  appearanceController.text;
+                              newChar["age"] = ageController.text;
+                              newChar["gender"] = genderController.text;
+                              saveEntity(newChar).then((value) {
+                                final data = jsonDecode(value);
+                                if (data['msg'] == 'Successfully saved') {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Save Successeful",
+                                      "Character " +
+                                          nameController.text +
+                                          " has been saved.",
+                                      () => {
+                                            Navigator.pop(context, 'OK'),
+                                            Navigator.pop(context)
+                                            //TODO: update table
+                                          });
+                                } else if (nameController.text.isEmpty) {
+                                  showAlertDiaglog(
+                                      context,
+                                      "Error",
+                                      "Name must be filled.",
+                                      () => Navigator.pop(context, 'OK'));
+                                }
+                                //TODO: check if name exists
+                              });
+                            })
                       ]),
                 ),
               ]))));
+}
+
+showAlertDiaglog(
+    BuildContext context, String alt, String desc, Function func) async {
+  showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text(alt),
+      content: Text(desc),
+      actions: <Widget>[
+        TextButton(
+          onPressed: func,
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
 }
