@@ -39,7 +39,7 @@ class EZDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => NewStoryScreen()),
+                  CupertinoPageRoute(builder: (context) => EditorScreen()),
                 );
                 // Update the state of the app.
                 // ...

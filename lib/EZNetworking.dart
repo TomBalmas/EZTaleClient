@@ -169,6 +169,13 @@ Future<String> updateUser(Map<String, String> map) async {
   return response.body;
 }
 
+Future<String> deleteUser(String username, String token) async { 
+  var url = Uri.parse(kServerURL + '/deleteuser');
+  Map<String, String> body;
+  body = {'username': username, 'token': token};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
 
 
 

@@ -6,6 +6,10 @@ class EZUserManager {
   String _currentUsername;
   String _currentToken;
   List<EZBook> _userBookList;
+  String _currentName;
+  String _currentSurname;
+  String _currentEmail;
+
   Future<List<dynamic>> _getUserStories() async {
     var retList = <EZBook>[];
     var res = getAllStories(_currentUsername);
@@ -34,10 +38,17 @@ class EZUserManager {
             title: 'book $i', description: 'this is book $i', type: 'Book'));
     } else
       _getUserStories().then((value) => _userBookList = value);
+    getUserInfo(token).then((value) {
+      final data = jsonDecode(value);
+      _currentName = data['name'];
+      _currentSurname = data['surname'];
+      _currentEmail = data['email'];
+    });
   }
 
-  Future<List<EZBook>> updateUserStoriesList() async { //this will never be null
-  //this is called only if the user has logged in
+  Future<List<EZBook>> updateUserStoriesList() async {
+    //this will never be null
+    //this is called only if the user has logged in
     await _getUserStories().then((value) {
       _userBookList = value;
     });
@@ -60,10 +71,34 @@ class EZUserManager {
     return _currentUsername;
   }
 
+  String getCurrentName() {
+    return _currentName;
+  }
+
+  String getCurrentSurname() {
+    return _currentSurname;
+  }
+
+  String getCurrentEmail() {
+    return _currentEmail;
+  }
+
   void logout() {
     _currentUsername = null;
     _currentToken = null;
     _userBookList = null;
+    _currentName = null;
+    _currentSurname = null;
+    _currentEmail = null;
+  }
+
+  Future<bool> deleteCurrentUser() async {
+    bool res;
+    await deleteUser(_currentUsername, _currentToken).then((value) {
+      final data = jsonDecode(value);
+      res = data['msg'] == 'User has been deleted';
+    });
+    return res;
   }
 
   Future<bool> deleteUsersBook(String username, String bookName) async {

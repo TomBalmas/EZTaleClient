@@ -164,16 +164,16 @@ class _BookInfoCardState extends State<BookInfoCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                  padding: EdgeInsets.all(defaultPadding * 0.75),
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: primaryColor.withOpacity(0.1),
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  )),
+              // Container(
+              //     padding: EdgeInsets.all(defaultPadding * 0.75),
+              //     height: 40,
+              //     width: 40,
+              //     decoration: BoxDecoration(
+              //       color: primaryColor.withOpacity(0.1),
+              //       borderRadius: const BorderRadius.all(Radius.circular(10)),
+              //     )),
               GestureDetector(
                   child: Icon(Icons.more_vert, color: Colors.white54),
                   onTapDown: (details) => showPopUpMenuAtTap(context, details))
@@ -183,11 +183,13 @@ class _BookInfoCardState extends State<BookInfoCard> {
             widget.bookInfo.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
+                'Description: \n' +
                 widget.bookInfo.description,
                 style: Theme.of(context)
                     .textTheme
@@ -195,6 +197,7 @@ class _BookInfoCardState extends State<BookInfoCard> {
                     .copyWith(color: Colors.white70),
               ),
               Text(
+                'Type: \n' +
                 widget.bookInfo.type,
                 style: Theme.of(context)
                     .textTheme
