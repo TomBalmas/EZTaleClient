@@ -161,3 +161,9 @@ Future<String> deleteBook(String username, String bookName) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
+
+Future<String> saveEntity(Map<String,String> map) async {
+  var url = Uri.parse(kServerURL + '/entity/addentity');
+  var response = await http.post(url, body: map);
+  return response.body;
+}
