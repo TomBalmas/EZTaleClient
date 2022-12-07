@@ -100,8 +100,15 @@ class _TablesScreenState extends State<TablesScreen> {
                                 colorButtonGrey(widget.nameOfTable, 'Custom'),
                             textColor: Colors.black87,
                             onTap: () {
-                              setState(() {
-                                widget.nameOfTable = 'Custom';
+                              widget.nameOfTable = 'Custom';
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      'userDefined')
+                                  .then((value) {
+                                final data = jsonDecode(value);
+                                widget.tableContent = data;
+                                setState(() {});
                               });
                             }),
                         SizedBox(height: 16),
@@ -111,8 +118,15 @@ class _TablesScreenState extends State<TablesScreen> {
                                 widget.nameOfTable, 'Attribute Templates'),
                             textColor: Colors.black87,
                             onTap: () {
-                              setState(() {
-                                widget.nameOfTable = 'Attribute Templates';
+                              widget.nameOfTable = 'Attribute Templates';
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      'atrributeTemplate')
+                                  .then((value) {
+                                final data = jsonDecode(value);
+                                widget.tableContent = data;
+                                setState(() {});
                               });
                             }),
                         SizedBox(height: 16),
@@ -122,8 +136,15 @@ class _TablesScreenState extends State<TablesScreen> {
                                 colorButtonGrey(widget.nameOfTable, 'Events'),
                             textColor: Colors.black87,
                             onTap: () {
-                              setState(() {
-                                widget.nameOfTable = 'Events';
+                              widget.nameOfTable = 'Events';
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      'storyEvent')
+                                  .then((value) {
+                                final data = jsonDecode(value);
+                                widget.tableContent = data;
+                                setState(() {});
                               });
                             }),
                       ]),
