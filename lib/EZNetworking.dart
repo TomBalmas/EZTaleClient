@@ -126,9 +126,9 @@ Future<String> addUserDefined(String bookName, String username, String name,
 Future<String> getAllTypeEntities(
     String bookName, String username, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getalltype');
-  Map<String, String> headers;
-  headers = {'username': username, 'bookName': bookName, 'type': type};
-  var response = await http.get(url, headers: headers);
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'type': type};
+  var response = await http.post(url, body: body);
   return response.body;
 }
 

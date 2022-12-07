@@ -24,9 +24,10 @@ class NewEntityScreen extends StatefulWidget {
   final nameOfEntity;
   var firstTimeFlag = true;
   List<Widget> attributeWidgets = [];
-  List<TextEditingController> nameControllers= [];
-  List<TextEditingController> valueControllers= [];
-  TextEditingController attributeTemplateNameController = new TextEditingController();
+  List<TextEditingController> nameControllers = [];
+  List<TextEditingController> valueControllers = [];
+  TextEditingController attributeTemplateNameController =
+      new TextEditingController();
   TextEditingController customNameController = new TextEditingController();
   var attributeCounter = 0;
 
@@ -54,7 +55,8 @@ class _NewEntityScreen extends State<NewEntityScreen> {
   /*
   Builds the "New Custom Entity" screen
   */
-  buildCustomScreen() { //TODO: fix save button with Tom
+  buildCustomScreen() {
+    //TODO: fix save button with Tom
     if (widget.firstTimeFlag) {
       widget.attributeWidgets.add(EZEntityTextField(
         hintText: 'Entity Name',
@@ -139,48 +141,78 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                             },
                             width: 100,
                           ),
-                          BuildButton(
-                            name: 'Save',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            width: 100,
-                            onTap: () {
-                              final Map<String, String> newCustom = newMap;
-                              newCustom["type"] = "userDefined";
-                              newCustom["name"] = widget.customNameController.text;
-                              final Map<String,String> attributes = {};
-                              for (int i = 0 ; i < widget.attributeCounter ; i++){
-                                attributes[widget.nameControllers[i].text] = widget.valueControllers[i].text;
-                              }
-                              //TODO: save the attributes
+                          BuildButton( //TODO: ask Tom about this save
+                              name: 'Save',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              width: 100,
+                              onTap: () {
+                                bool nameExists = false;
+                                getAllTypeEntities(
+                                        MyApp.bookManager.getBookName(),
+                                        MyApp.userManager.getCurrentUsername(),
+                                        "userDefined")
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  for (final customEntity in data) {
+                                    if (customEntity["name"] ==
+                                        widget.attributeTemplateNameController
+                                            .text) {
+                                      nameExists = true;
+                                      showAlertDiaglog(
+                                          context,
+                                          "Error",
+                                          "Custom Entity " +
+                                              widget
+                                                  .attributeTemplateNameController
+                                                  .text +
+                                              " already exists.", () {
+                                        Navigator.pop(context, 'OK');
+                                      });
+                                      break;
+                                    }
+                                  }
+                                  if (nameExists) return;
+                                  final Map<String, String> newCustom = newMap;
+                                  newCustom["type"] = "userDefined";
+                                  newCustom["name"] =
+                                      widget.customNameController.text;
+                                  final Map<String, String> attributes = {};
+                                  for (int i = 0;
+                                      i < widget.attributeCounter;
+                                      i++) {
+                                    attributes[widget.nameControllers[i].text] =
+                                        widget.valueControllers[i].text;
+                                  }
+                                  //TODO: save the attributes
 
-                              saveEntity(newCustom).then((value) {
-                                print('1');
-                                final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  print('2');
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Attribute template " +
-                                          widget.attributeTemplateNameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (widget.customNameController.text.isEmpty) {
-                                  print('3');
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
-                                }
-                                //TODO: check if name exists
-                              });
-                            })
+                                  saveEntity(newCustom).then((value) {
+                                    final data = jsonDecode(value);
+                                    if (data['msg'] == 'Successfully saved') {
+                                      showAlertDiaglog(
+                                          context,
+                                          "Save Successeful",
+                                          "Custom Entity " +
+                                              widget
+                                                  .attributeTemplateNameController
+                                                  .text +
+                                              " has been saved.",
+                                          () => {
+                                                Navigator.pop(context, 'OK'),
+                                                Navigator.pop(context)
+                                                //TODO: update table
+                                              });
+                                    } else if (widget
+                                        .customNameController.text.isEmpty) {
+                                      showAlertDiaglog(
+                                          context,
+                                          "Error",
+                                          "Name must be filled.",
+                                          () => Navigator.pop(context, 'OK'));
+                                    }
+                                  });
+                                });
+                              })
                         ]),
                   ),
                 ]))));
@@ -314,44 +346,80 @@ Builds the "New Attribute Template" screen
                             },
                             width: 100,
                           ),
-                           BuildButton(
-                            name: 'Save',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            width: 100,
-                            onTap: () {
-                              final Map<String, String> newTemplate = newMap;
-                              newTemplate["type"] = "attributeTemplate";
-                              newTemplate["name"] = widget.attributeTemplateNameController.text;
-                              final Map<String,String> attributes = {};
-                              for (int i = 0 ; i < widget.attributeCounter ; i++){
-                                attributes[widget.nameControllers[i].text] = widget.valueControllers[i].text;
-                              }
-                              //TODO: save the attributes
-                              saveEntity(newTemplate).then((value) {
-                                final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Attribute template " +
-                                          widget.attributeTemplateNameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (widget.attributeTemplateNameController.text.isEmpty) {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
-                                }
-                                //TODO: check if name exists
-                              });
-                            })
+                          BuildButton(
+                              name: 'Save',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              width: 100,
+                              onTap: () {
+                                bool nameExists = false;
+                                getAllTypeEntities(
+                                        MyApp.bookManager.getBookName(),
+                                        MyApp.userManager.getCurrentUsername(),
+                                        "attributeTemplate")
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  for (final template in data) {
+                                    if (template["name"] ==
+                                        widget.attributeTemplateNameController
+                                            .text) {
+                                      nameExists = true;
+                                      showAlertDiaglog(
+                                          context,
+                                          "Error",
+                                          "Template " +
+                                              widget
+                                                  .attributeTemplateNameController
+                                                  .text +
+                                              " already exists.", () {
+                                        Navigator.pop(context, 'OK');
+                                      });
+                                      break;
+                                    }
+                                  }
+                                  if (nameExists) return;
+                                  final Map<String, String> newTemplate =
+                                      newMap;
+                                  newTemplate["type"] = "attributeTemplate";
+                                  newTemplate["name"] = widget
+                                      .attributeTemplateNameController.text;
+                                  final Map<String, String> attributes = {};
+                                  for (int i = 0;
+                                      i < widget.attributeCounter;
+                                      i++) {
+                                    attributes[widget.nameControllers[i].text] =
+                                        widget.valueControllers[i].text;
+                                  }
+                                  //TODO: save the attributes
+                                  saveEntity(newTemplate).then((value) {
+                                    final data = jsonDecode(value);
+                                    if (data['msg'] == 'Successfully saved') {
+                                      showAlertDiaglog(
+                                          context,
+                                          "Save Successeful",
+                                          "Attribute template " +
+                                              widget
+                                                  .attributeTemplateNameController
+                                                  .text +
+                                              " has been saved.",
+                                          () => {
+                                                Navigator.pop(context, 'OK'),
+                                                Navigator.pop(context)
+                                                //TODO: update table
+                                              });
+                                    } else if (widget
+                                        .attributeTemplateNameController
+                                        .text
+                                        .isEmpty) {
+                                      showAlertDiaglog(
+                                          context,
+                                          "Error",
+                                          "Name must be filled.",
+                                          () => Navigator.pop(context, 'OK'));
+                                    }
+                                  });
+                                });
+                              })
                         ]),
                   ),
                 ]))));
@@ -439,32 +507,55 @@ Widget buildEventScreen(BuildContext context, String title) {
                             textColor: Colors.black87,
                             width: 100,
                             onTap: () {
-                              final Map<String, String> newEvent = newMap;
-                              newEvent["type"] = "storyEvent";
-                              newEvent["name"] = nameController.text;
-                              newEvent["desc"] = quillController.document.toPlainText();
-                              saveEntity(newEvent).then((value) {
+                              bool nameExists = false;
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      "storyEvent")
+                                  .then((value) {
                                 final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Event " +
-                                          nameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (nameController.text.isEmpty) {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
+                                for (final event in data) {
+                                  if (event["name"] == nameController.text) {
+                                    nameExists = true;
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Event " +
+                                            nameController.text +
+                                            " already exists.", () {
+                                      Navigator.pop(context, 'OK');
+                                    });
+                                    break;
+                                  }
                                 }
-                                //TODO: check if name exists
+                                if (nameExists) return;
+                                final Map<String, String> newEvent = newMap;
+                                newEvent["type"] = "storyEvent";
+                                newEvent["name"] = nameController.text;
+                                newEvent["desc"] =
+                                    quillController.document.toPlainText();
+                                saveEntity(newEvent).then((value) {
+                                  final data = jsonDecode(value);
+                                  if (data['msg'] == 'Successfully saved') {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Save Successeful",
+                                        "Event " +
+                                            nameController.text +
+                                            " has been saved.",
+                                        () => {
+                                              Navigator.pop(context, 'OK'),
+                                              Navigator.pop(context)
+                                              //TODO: update table
+                                            });
+                                  } else if (nameController.text.isEmpty) {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Name must be filled.",
+                                        () => Navigator.pop(context, 'OK'));
+                                  }
+                                });
                               });
                             })
                       ]),
@@ -542,32 +633,56 @@ Widget buildConversationScreen(BuildContext context, String title) {
                             textColor: Colors.black87,
                             width: 100,
                             onTap: () {
-                              final Map<String, String> newConversation = newMap;
-                              newConversation["type"] = "conversation";
-                              newConversation["name"] = nameController.text;
-                              // TODO: add participant selection.
-                              saveEntity(newConversation).then((value) {
+                              bool nameExists = false;
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      "conversation")
+                                  .then((value) {
                                 final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Conversation " +
-                                          nameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (nameController.text.isEmpty) {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
+                                for (final conversation in data) {
+                                  if (conversation["name"] ==
+                                      nameController.text) {
+                                    nameExists = true;
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Conversation " +
+                                            nameController.text +
+                                            " already exists.", () {
+                                      Navigator.pop(context, 'OK');
+                                    });
+                                    break;
+                                  }
                                 }
-                                //TODO: check if name exists
+                                if (nameExists) return;
+                                final Map<String, String> newConversation =
+                                    newMap;
+                                newConversation["type"] = "conversation";
+                                newConversation["name"] = nameController.text;
+                                // TODO: add participant selection.
+                                saveEntity(newConversation).then((value) {
+                                  final data = jsonDecode(value);
+                                  if (data['msg'] == 'Successfully saved') {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Save Successeful",
+                                        "Conversation " +
+                                            nameController.text +
+                                            " has been saved.",
+                                        () => {
+                                              Navigator.pop(context, 'OK'),
+                                              Navigator.pop(context)
+                                              //TODO: update table
+                                            });
+                                  } else if (nameController.text.isEmpty) {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Name must be filled.",
+                                        () => Navigator.pop(context, 'OK'));
+                                  }
+                                });
                               });
                             })
                       ]),
@@ -656,33 +771,55 @@ Widget buildLocationScreen(BuildContext context, String title) {
                             textColor: Colors.black87,
                             width: 100,
                             onTap: () {
-                              final Map<String, String> newLocation = newMap;
-                              newLocation["type"] = "location";
-                              newLocation["name"] = nameController.text;
-                              newLocation["vista"] =
-                                  quillController.document.toPlainText();
-                              saveEntity(newLocation).then((value) {
+                              bool nameExists = false;
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      "location")
+                                  .then((value) {
                                 final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Location " +
-                                          nameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (nameController.text.isEmpty) {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
+                                for (final location in data) {
+                                  if (location["name"] == nameController.text) {
+                                    nameExists = true;
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Location " +
+                                            nameController.text +
+                                            " already exists.", () {
+                                      Navigator.pop(context, 'OK');
+                                    });
+                                    break;
+                                  }
                                 }
-                                //TODO: check if name exists
+                                if (nameExists) return;
+                                final Map<String, String> newLocation = newMap;
+                                newLocation["type"] = "location";
+                                newLocation["name"] = nameController.text;
+                                newLocation["vista"] =
+                                    quillController.document.toPlainText();
+                                saveEntity(newLocation).then((value) {
+                                  final data = jsonDecode(value);
+                                  if (data['msg'] == 'Successfully saved') {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Save Successeful",
+                                        "Location " +
+                                            nameController.text +
+                                            " has been saved.",
+                                        () => {
+                                              Navigator.pop(context, 'OK'),
+                                              Navigator.pop(context)
+                                              //TODO: update table
+                                            });
+                                  } else if (nameController.text.isEmpty) {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Name must be filled.",
+                                        () => Navigator.pop(context, 'OK'));
+                                  }
+                                });
                               });
                             })
                       ]),
@@ -778,38 +915,61 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                             textColor: Colors.black87,
                             width: 100,
                             onTap: () {
-                              final Map<String, String> newChar = newMap;
-                              newChar["type"] = "character";
-                              newChar["name"] = nameController.text;
-                              newChar["sure"] = sureNameController.text;
-                              newChar["personalityTraits"] =
-                                  traitsController.text;
-                              newChar["appearanceTraits"] =
-                                  appearanceController.text;
-                              newChar["age"] = ageController.text;
-                              newChar["gender"] = genderController.text;
-                              saveEntity(newChar).then((value) {
+                              bool nameExists = false;
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      "character")
+                                  .then((value) {
                                 final data = jsonDecode(value);
-                                if (data['msg'] == 'Successfully saved') {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Save Successeful",
-                                      "Character " +
-                                          nameController.text +
-                                          " has been saved.",
-                                      () => {
-                                            Navigator.pop(context, 'OK'),
-                                            Navigator.pop(context)
-                                            //TODO: update table
-                                          });
-                                } else if (nameController.text.isEmpty) {
-                                  showAlertDiaglog(
-                                      context,
-                                      "Error",
-                                      "Name must be filled.",
-                                      () => Navigator.pop(context, 'OK'));
+                                for (final character in data) {
+                                  if (character["name"] ==
+                                      nameController.text) {
+                                    nameExists = true;
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Character " +
+                                            nameController.text +
+                                            " already exists.", () {
+                                      Navigator.pop(context, 'OK');
+                                    });
+                                    break;
+                                  }
                                 }
-                                //TODO: check if name exists
+                                if (nameExists) return;
+                                final Map<String, String> newChar = newMap;
+                                newChar["type"] = "character";
+                                newChar["name"] = nameController.text;
+                                newChar["sure"] = sureNameController.text;
+                                newChar["personalityTraits"] =
+                                    traitsController.text;
+                                newChar["appearanceTraits"] =
+                                    appearanceController.text;
+                                newChar["age"] = ageController.text;
+                                newChar["gender"] = genderController.text;
+                                saveEntity(newChar).then((value) {
+                                  final data = jsonDecode(value);
+                                  if (data['msg'] == 'Successfully saved') {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Save Successeful",
+                                        "Character " +
+                                            nameController.text +
+                                            " has been saved.",
+                                        () => {
+                                              Navigator.pop(context, 'OK'),
+                                              Navigator.pop(context)
+                                              //TODO: update table
+                                            });
+                                  } else if (nameController.text.isEmpty) {
+                                    showAlertDiaglog(
+                                        context,
+                                        "Error",
+                                        "Name must be filled.",
+                                        () => Navigator.pop(context, 'OK'));
+                                  }
+                                });
                               });
                             })
                       ]),
