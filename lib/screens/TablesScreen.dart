@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/screens/NewEntityScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

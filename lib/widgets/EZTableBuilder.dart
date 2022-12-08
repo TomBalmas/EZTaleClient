@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/EntityScreen.dart';
+import 'EZBuildButton.dart';
 
 class BuildTable extends StatefulWidget {
   BuildTable({
@@ -20,7 +21,7 @@ class _BuildTable extends State<BuildTable> {
   Widget build(BuildContext context) {
     List<DataColumn> columns = [];
     List<DataRow> rows = [];
-    List<String> cells;
+    List<Widget> cells;
     String participants = '';
     switch (widget.nameOfTable) {
       case 'Characters':
@@ -28,12 +29,22 @@ class _BuildTable extends State<BuildTable> {
         columns.add(createColumn('Surename'));
         columns.add(createColumn('Age'));
         columns.add(createColumn('Gender'));
+        columns.add(createColumn('Delete'));
         for (final character in widget.tableContent) {
           cells = [];
-          cells.add(character["name"]);
-          cells.add(character["surename"]);
-          cells.add(character["age"].toString());
-          cells.add(character["gender"]);
+          cells.add(Text(character["name"]));
+          cells.add(Text(checkEmptyField(character["surename"])));
+          cells.add(Text(checkEmptyField(character["age"].toString())));
+          cells.add(Text(checkEmptyField(character["gender"])));
+          cells.add(BuildButton(
+              name: 'X',
+              bgColor: Color.fromRGBO(0, 173, 181, 100),
+              textColor: Colors.black87,
+              height: 40,
+              width: 40,
+              onTap: () {
+                setState(() {});
+              }));
           rows.add(createRow(cells));
         }
         break;
@@ -54,11 +65,11 @@ class _BuildTable extends State<BuildTable> {
           cells = [];
           cells.add(conversation["name"]);
           if (conversation["participants"].length == 0)
-            cells.add('-');
+            cells.add(Text('-'));
           else {
             for (final participant in conversation["participants"])
               participants += participant["name"];
-            cells.add(participants);
+            cells.add(Text(participants));
           }
           rows.add(createRow(cells));
         }
@@ -94,15 +105,21 @@ class _BuildTable extends State<BuildTable> {
     return DataTable(showCheckboxColumn: false, columns: columns, rows: rows);
   }
 
-  DataRow createRow(List<String> cellsWithNulls) {
+  String checkEmptyField(String entity) {
+    if (entity == null ||
+        entity == 'null' ||
+        entity == '' ||
+        entity == ' ' ||
+        entity == '\n')
+      return '-';
+    else
+      return entity;
+  }
+
+  DataRow createRow(List<Widget> cellsWithNulls) {
     List<DataCell> cellsWithoutNulls = [];
-    for (String cell in cellsWithNulls) {
-      if (cell == null ||
-          cell == 'null' ||
-          cell == '' ||
-          cell == ' ' ||
-          cell == '\n') cell = '-';
-      cellsWithoutNulls.add(DataCell(Text(cell)));
+    for (Widget cell in cellsWithNulls) {
+      cellsWithoutNulls.add(DataCell(cell));
     }
     return DataRow(
       cells: cellsWithoutNulls,
