@@ -51,7 +51,6 @@ class _BuildTable extends State<BuildTable> {
         columns.add(createColumn('Name'));
         columns.add(createColumn('Participants'));
         for (final conversation in widget.tableContent) {
-          print(conversation);
           cells = [];
           cells.add(conversation["name"]);
           if (conversation["participants"].length == 0)
@@ -61,6 +60,32 @@ class _BuildTable extends State<BuildTable> {
               participants += participant["name"];
             cells.add(participants);
           }
+          rows.add(createRow(cells));
+        }
+        break;
+      case 'Custom':
+        columns.add(createColumn('Name'));
+        for (final customEntity in widget.tableContent) {
+          cells = [];
+          cells.add(customEntity["name"]);
+          rows.add(createRow(cells));
+        }
+        break;
+      case 'Attribute Templates':
+        columns.add(createColumn('Name'));
+        for (final template in widget.tableContent) {
+          cells = [];
+          cells.add(template["name"]);
+          rows.add(createRow(cells));
+        }
+        break;
+      case 'Events':
+        columns.add(createColumn('Name'));
+        columns.add(createColumn('Description'));
+        for (final event in widget.tableContent) {
+          cells = [];
+          cells.add(event["name"]);
+          cells.add(event["desc"]);
           rows.add(createRow(cells));
         }
         break;
