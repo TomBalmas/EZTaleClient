@@ -34,12 +34,12 @@ class EZDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.book, color: Colors.white30),
-              title: const Text('New Story',
+              title: const Text('Co-Writers',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => EditorScreen()),
+                  CupertinoPageRoute(builder: (context) => CowritersScreen()),
                 );
                 // Update the state of the app.
                 // ...

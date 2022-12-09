@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
@@ -6,11 +10,103 @@ import '../Screens.dart';
 import 'EZBookInfo.dart';
 
 class MyBooks extends StatelessWidget {
-  MyBooks({
-    Key key,
-    @required
-    this.booksList
-  }) : super(key: key);
+  MyBooks({Key key, @required this.booksList}) : super(key: key);
+
+  List<DropdownMenuItem<String>> menuItems = [
+    DropdownMenuItem(child: Text("Book"), value: "Book"),
+    DropdownMenuItem(child: Text("Script"), value: "Script"),
+  ];
+
+  showAlertDiaglog(
+      BuildContext context, String alt, String desc, Function func) async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(alt),
+        content: Text(desc),
+        actions: <Widget>[
+          TextButton(
+            onPressed: func,
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  showNewStoryPopUp(BuildContext context) {
+    TextEditingController newStoryNameController = new TextEditingController();
+    TextEditingController descriptionController = new TextEditingController();
+    String selectedValue = "Book";
+    showDialog<String>(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Add New Story'),
+              content: Text('Type the name of the new story:'),
+              actions: <Widget>[
+                DropdownButton(
+                  value: selectedValue,
+                  items: menuItems,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedValue = newValue;
+                    });
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'Story Name'),
+                  controller: newStoryNameController,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'Description'),
+                  controller: descriptionController,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: TextButton(
+                    onPressed: () {
+                      addNewStory(
+                              MyApp.userManager.getCurrentUsername(),
+                              newStoryNameController.text,
+                              descriptionController.text,
+                              selectedValue)
+                          .then((value) {
+                        final data = jsonDecode(value);
+                        if (data['msg'] == 'Story already exists') {
+                          showAlertDiaglog(
+                              context,
+                              'Story already exists',
+                              'Story already exists',
+                              () => Navigator.pop(context, 'OK'));
+                        } else if (data['msg'] == 'Story Saved Successfully') {
+                          showAlertDiaglog(context, 'Story Saved Successfully',
+                              'Story Saved Successfully', () {
+                            MyApp.bookManager.setBook(
+                                MyApp.userManager.getCurrentUsername(),
+                                newStoryNameController.text);
+                            MyApp.userManager.updateUserStoriesList();
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => EditorScreen()));
+                          });
+                        }
+                      });
+                    },
+                    child: const Text('Accept'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                )
+              ],
+            );
+          });
+        });
+  }
 
   final booksList;
   @override
@@ -34,10 +130,7 @@ class MyBooks extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => EditorScreen()),
-                );
+                showNewStoryPopUp(context);
               },
               icon: Icon(Icons.add),
               label: Text("Add New Story"),

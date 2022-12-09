@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
+import 'package:ez_tale/screens/HomeScreen.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -154,10 +155,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       bgColor: Color.fromRGBO(0, 173, 181, 100),
                       textColor: Colors.black87,
                       onTap: () {
-                        getAllTypeEntities(
-                                MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
-                                'event')
+                        getAllTypeEntities(MyApp.bookManager.getBookName(),
+                                MyApp.userManager.getCurrentUsername(), 'event')
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -213,7 +212,13 @@ class _EditorScreenState extends State<EditorScreen> {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {
-                              Navigator.pop(context);
+                              MyApp.bookManager.exitBook();
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => HomeScreen(
+                                          booksList: MyApp.userManager
+                                              .getUserStoriesList())));
                             },
                             width: 100,
                           )
