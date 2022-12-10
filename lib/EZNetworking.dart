@@ -184,3 +184,13 @@ Future<String> deleteUser(String username, String token) async {
   return response.body;
 }
 
+Future<String> addNewStory(String username, String bookName, String description, String type) async { 
+  var url = Uri.parse(kServerURL + '/story/addnew');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'description':description, 'type':type};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+
+
