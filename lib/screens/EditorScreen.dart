@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
+import 'package:ez_tale/screens/HomeScreen.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,28 @@ class EditorScreen extends StatefulWidget {
 }
 
 class _EditorScreenState extends State<EditorScreen> {
-  quill.QuillController _controller = quill.QuillController.basic();
+  quill.QuillController quillController = quill.QuillController.basic();
   Color repeatedWordsColor = Colors.red,
       tenseTrackingColor = Colors.red,
-      turningPointsColor = Colors.red;
+      turningPointsColor = Colors.red,
+      saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+  Text pageNumber = Text('1');
+  Text lastPageNumber = Text('10'); //TODO: get from server
+  bool newPageStateFlag = false;
+  bool firstTimeFlag = true;
 
   @override
   Widget build(BuildContext context) {
+    if (firstTimeFlag) {
+      getPage(MyApp.userManager.getCurrentUsername(),
+              MyApp.bookManager.getBookName(), '1')
+          .then((value) {
+        final data = jsonDecode(value);
+        if (data == "not such page") print('1');
+      });
+      quillController.document.insert(0, 'test'); //TODO: get from server
+      firstTimeFlag = false;
+    }
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
@@ -154,10 +170,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       bgColor: Color.fromRGBO(0, 173, 181, 100),
                       textColor: Colors.black87,
                       onTap: () {
-                        getAllTypeEntities(
-                                MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
-                                'event')
+                        getAllTypeEntities(MyApp.bookManager.getBookName(),
+                                MyApp.userManager.getCurrentUsername(), 'event')
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -213,14 +227,20 @@ class _EditorScreenState extends State<EditorScreen> {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {
-                              Navigator.pop(context);
+                              MyApp.bookManager.exitBook();
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => HomeScreen(
+                                          booksList: MyApp.userManager
+                                              .getUserStoriesList())));
                             },
                             width: 100,
                           )
                         ]),
                   ),
                   SizedBox(height: 16),
-                  quill.QuillToolbar.basic(controller: _controller),
+                  quill.QuillToolbar.basic(controller: quillController),
                   SizedBox(height: 16),
                   Expanded(
                     child: Container(
@@ -228,11 +248,64 @@ class _EditorScreenState extends State<EditorScreen> {
                           border: Border.all(width: 5, color: Colors.black87),
                           color: kBackgroundColor),
                       child: quill.QuillEditor.basic(
-                        controller: _controller,
+                        controller: quillController,
                         readOnly: false, // true for view only mode
                       ),
                     ),
                   ),
+                  SizedBox(height: 16),
+                  Expanded(
+                      flex: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BuildButton(
+                            name: '<',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            onTap: () {
+                              setState(() {
+                                newPageStateFlag = false;
+                                saveButtonColor =
+                                    Color.fromRGBO(0, 173, 181, 100);
+                                int num = int.parse(pageNumber.data);
+                                if (num == 1) return;
+                                num--;
+                                pageNumber = Text(num.toString());
+                              });
+                            },
+                            width: 50,
+                            height: 50,
+                          ),
+                          SizedBox(width: 16),
+                          pageNumber,
+                          Text('/'),
+                          lastPageNumber,
+                          SizedBox(width: 16),
+                          BuildButton(
+                            name: '>',
+                            bgColor: Color.fromRGBO(0, 173, 181, 100),
+                            textColor: Colors.black87,
+                            onTap: () {
+                              setState(() {
+                                int pageNum = int.parse(pageNumber.data);
+                                int lastPageNum =
+                                    int.parse(lastPageNumber.data);
+                                if (pageNum == (lastPageNum + 1))
+                                  return; // TODO: add new page and update
+                                if (pageNum == lastPageNum) {
+                                  newPageStateFlag = true;
+                                  saveButtonColor = Colors.red;
+                                }
+                                pageNum++;
+                                pageNumber = Text(pageNum.toString());
+                              });
+                            },
+                            width: 50,
+                            height: 50,
+                          ),
+                        ],
+                      ))
                 ]))
               ]),
             ),
@@ -304,14 +377,40 @@ class _EditorScreenState extends State<EditorScreen> {
                       )),
                   SizedBox(width: 16),
                   BuildButton(
-                    name: 'Manual Save',
-                    bgColor: Color.fromRGBO(0, 173, 181, 100),
+                    name: 'Save',
+                    bgColor: saveButtonColor,
                     textColor: Colors.black87,
-                    onTap: () {},
+                    onTap: () {
+                      saveCurrentPage(pageNumber, quillController);
+                      setState(() {
+                        saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+                        if (newPageStateFlag) {
+                          int lastPageNum = int.parse(lastPageNumber.data);
+                          lastPageNum++;
+                          lastPageNumber = Text(lastPageNum.toString());
+                        }
+                      });
+                    },
                     height: 100,
-                  ),
+                  )
                 ]))
           ]),
         )));
   }
+}
+
+void saveCurrentPage(Text pageNumber, quill.QuillController quillController) {
+  savePage(
+          MyApp.userManager.getCurrentUsername(),
+          MyApp.bookManager.getBookName(),
+          pageNumber.data,
+          quillController.document.toPlainText())
+      .then((value) {
+    print('success');
+    final data = jsonDecode(value);
+    if (data['msg'] == 'page saved successfully') {
+      print('success');
+    }else
+    print('fail');
+  });
 }

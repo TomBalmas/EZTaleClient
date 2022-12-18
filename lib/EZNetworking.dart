@@ -169,6 +169,14 @@ Future<String> saveEntity(Map<String,String> map) async {
   return response.body;
 }
 
+Future<String> deleteEntity(String username, String bookName, String name) async {
+  var url = Uri.parse(kServerURL + '/entity/deleteentity');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'name': name};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 
 Future<String> updateUser(Map<String, String> map) async {
   var url = Uri.parse(kServerURL + '/updateuser');
@@ -183,4 +191,14 @@ Future<String> deleteUser(String username, String token) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
+
+Future<String> addNewStory(String username, String bookName, String description, String type) async { 
+  var url = Uri.parse(kServerURL + '/story/addnew');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'description':description, 'type':type};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+
 
