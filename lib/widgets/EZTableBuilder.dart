@@ -1,11 +1,15 @@
 import 'dart:convert';
 
 import 'package:ez_tale/EZNetworking.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../screens/EntityScreen.dart';
 import '../screens/NewEntityScreen.dart';
+import '../screens/TablesScreen.dart';
 
+// ignore: must_be_immutable
 class BuildTable extends StatefulWidget {
   BuildTable({
     key,
@@ -13,7 +17,7 @@ class BuildTable extends StatefulWidget {
     this.tableContent,
   });
   final nameOfTable;
-  final tableContent;
+  var tableContent;
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -51,7 +55,10 @@ class _BuildTable extends State<BuildTable> {
         for (final location in widget.tableContent) {
           cells = [];
           cells.add(Text(checkEmptyField(location["name"])));
-          cells.add(Text(checkEmptyField(location["vista"])));
+          if (checkEmptyField(location["vista"]).length > 150)
+            cells.add(Text(location["vista"].substring(0, 150) + '...'));
+          else
+            cells.add(Text(checkEmptyField(location["vista"])));
           cells.add(Text('X'));
           rows.add(createRow(cells));
         }
@@ -135,6 +142,15 @@ class _BuildTable extends State<BuildTable> {
               showAlertDiaglog(context, "Success",
                   "Entity " + entityName + " was deleted successfuly.", () {
                 Navigator.pop(context, 'OK');
+                getAllTypeEntities(
+                        MyApp.bookManager.getBookName(),
+                        MyApp.userManager.getCurrentUsername(),
+                        getType(widget.nameOfTable))
+                    .then((value) {
+                  final data = jsonDecode(value);
+                  widget.tableContent = data;
+                  setState(() {});
+                });
               });
           });
         })));
@@ -144,7 +160,7 @@ class _BuildTable extends State<BuildTable> {
     }
     return DataRow(
       cells: datacCells,
-      /*onSelectChanged: (selected) {
+      onSelectChanged: (selected) {
         Navigator.push(
             context,
             CupertinoPageRoute(
@@ -153,7 +169,7 @@ class _BuildTable extends State<BuildTable> {
                           .substring(0, widget.nameOfTable.length - 1),
                       content: datacCells,
                     )));
-      },*/
+      },
     );
   }
 }

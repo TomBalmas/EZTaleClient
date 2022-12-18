@@ -204,7 +204,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                           () => {
                                                 Navigator.pop(context, 'OK'),
                                                 Navigator.pop(context)
-                                                //TODO: update table
                                               });
                                     } else if (widget
                                         .customNameController.text.isEmpty) {
@@ -409,7 +408,6 @@ Builds the "New Attribute Template" screen
                                           () => {
                                                 Navigator.pop(context, 'OK'),
                                                 Navigator.pop(context)
-                                                //TODO: update table
                                               });
                                     } else if (widget
                                         .attributeTemplateNameController
@@ -550,7 +548,6 @@ Widget buildEventScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -677,7 +674,6 @@ Widget buildConversationScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -814,7 +810,6 @@ Widget buildLocationScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -963,9 +958,7 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                                             " has been saved.",
                                         () => {
                                               Navigator.pop(context, 'OK'),
-                                              
                                               Navigator.pop(context),
-                                              // TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
