@@ -25,7 +25,8 @@ class EntityScreen extends StatelessWidget {
     //TODO: create a screen for every entity type
   }
 
-  Widget buildCharacterScreen(BuildContext context, String title) { //TODO: ask tom to create "get entity function"
+  Widget buildCharacterScreen(BuildContext context, String title) {
+    //TODO: ask tom to create "get entity function"
     TextEditingController nameController = new TextEditingController();
     TextEditingController sureNameController = new TextEditingController();
     TextEditingController genderController = new TextEditingController();
@@ -33,13 +34,19 @@ class EntityScreen extends StatelessWidget {
     TextEditingController appearanceController = new TextEditingController();
     TextEditingController ageController = new TextEditingController();
     Text name = content[0].child;
-    Text surename = content[1].child;
-    Text age = content[2].child;
-    Text gender = content[3].child;
-    nameController.text = name.data;
-    sureNameController.text = surename.data;
-    ageController.text = age.data;
-    genderController.text = gender.data;
+    getEntity(MyApp.userManager.getCurrentUsername(),
+            MyApp.bookManager.getBookName(), name.data)
+        .then((value) {
+      final data = jsonDecode(value);
+      print(data);
+      Text surename = content[1].child;
+      Text age = content[2].child;
+      Text gender = content[3].child;
+      nameController.text = name.data;
+      sureNameController.text = surename.data;
+      ageController.text = age.data;
+      genderController.text = gender.data;
+    });
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
