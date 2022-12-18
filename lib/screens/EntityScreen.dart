@@ -26,7 +26,6 @@ class EntityScreen extends StatelessWidget {
   }
 
   Widget buildCharacterScreen(BuildContext context, String title) {
-    //TODO: ask tom to create "get entity function"
     TextEditingController nameController = new TextEditingController();
     TextEditingController sureNameController = new TextEditingController();
     TextEditingController genderController = new TextEditingController();
@@ -38,14 +37,12 @@ class EntityScreen extends StatelessWidget {
             MyApp.bookManager.getBookName(), name.data)
         .then((value) {
       final data = jsonDecode(value);
-      print(data);
-      Text surename = content[1].child;
-      Text age = content[2].child;
-      Text gender = content[3].child;
-      nameController.text = name.data;
-      sureNameController.text = surename.data;
-      ageController.text = age.data;
-      genderController.text = gender.data;
+      nameController.text = data['name'];
+      sureNameController.text = data['surename'];
+      if (data['age'] != null) ageController.text = data['age'].toString();
+      genderController.text = data['gender'];
+      traitsController.text = data['personalityTraits'];
+      appearanceController.text = data['appearanceTraits'];
     });
     return Scaffold(
         drawer: EZDrawer(),
@@ -73,34 +70,72 @@ class EntityScreen extends StatelessWidget {
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                EZEntityTextField(
-                                    hintText: 'Name',
-                                    inputType: TextInputType.name,
-                                    controller: nameController),
-                                EZEntityTextField(
-                                    hintText: 'Surename',
-                                    inputType: TextInputType.name,
-                                    controller: sureNameController),
-                                EZEntityTextField(
-                                    hintText: 'age',
-                                    inputType: TextInputType.name,
-                                    controller: ageController),
-                                EZEntityTextField(
-                                    hintText: 'Gender',
-                                    inputType: TextInputType.name,
-                                    controller: genderController),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text('Name:'),
+                                    SizedBox(width: 50),
+                                    EZEntityTextField(
+                                        hintText: 'Name',
+                                        readOnly: true,
+                                        inputType: TextInputType.name,
+                                        controller: nameController),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Surname:'),
+                                    SizedBox(width: 33),
+                                    EZEntityTextField(
+                                        hintText: 'Surename',
+                                        inputType: TextInputType.name,
+                                        controller: sureNameController),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Age:'),
+                                    SizedBox(width: 63),
+                                    EZEntityTextField(
+                                        hintText: 'age',
+                                        inputType: TextInputType.name,
+                                        controller: ageController),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Gender:'),
+                                    SizedBox(width: 43),
+                                    EZEntityTextField(
+                                        hintText: 'Gender',
+                                        inputType: TextInputType.name,
+                                        controller: genderController),
+                                  ],
+                                ),
                               ]),
                           Column(children: [
-                            EZEntityTextField(
-                                hintText: 'Personality Traits',
-                                inputType: TextInputType.name,
-                                controller: traitsController,
-                                width: 500),
-                            EZEntityTextField(
-                                hintText: 'Appearance',
-                                inputType: TextInputType.name,
-                                controller: appearanceController,
-                                width: 500),
+                            Row(
+                              children: [
+                                Text('Traits:'),
+                                SizedBox(width: 57),
+                                EZEntityTextField(
+                                    hintText: 'Personality Traits',
+                                    inputType: TextInputType.name,
+                                    controller: traitsController,
+                                    width: 500),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Appearance:'),
+                                SizedBox(width: 16),
+                                EZEntityTextField(
+                                    hintText: 'Appearance',
+                                    inputType: TextInputType.name,
+                                    controller: appearanceController,
+                                    width: 500),
+                              ],
+                            ),
                           ])
                         ]),
                   ),
@@ -123,63 +158,7 @@ class EntityScreen extends StatelessWidget {
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
                               width: 100,
-                              onTap: () {
-                                bool nameExists = false;
-                                getAllTypeEntities(
-                                        MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
-                                        "character")
-                                    .then((value) {
-                                  final data = jsonDecode(value);
-                                  for (final character in data) {
-                                    if (character["name"] ==
-                                        nameController.text) {
-                                      nameExists = true;
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Character " +
-                                              nameController.text +
-                                              " already exists.", () {
-                                        Navigator.pop(context, 'OK');
-                                      });
-                                      break;
-                                    }
-                                  }
-                                  if (nameExists) return;
-                                  final Map<String, String> newChar = newMap;
-                                  newChar["type"] = "character";
-                                  newChar["name"] = nameController.text;
-                                  newChar["surename"] = sureNameController.text;
-                                  newChar["personalityTraits"] =
-                                      traitsController.text;
-                                  newChar["appearanceTraits"] =
-                                      appearanceController.text;
-                                  newChar["age"] = ageController.text;
-                                  newChar["gender"] = genderController.text;
-                                  saveEntity(newChar).then((value) {
-                                    final data = jsonDecode(value);
-                                    if (data['msg'] == 'Successfully saved') {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Save Successeful",
-                                          "Character " +
-                                              nameController.text +
-                                              " has been saved.",
-                                          () => {
-                                                Navigator.pop(context, 'OK'),
-                                                Navigator.pop(context),
-                                              });
-                                    } else if (nameController.text.isEmpty) {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Name must be filled.",
-                                          () => Navigator.pop(context, 'OK'));
-                                    }
-                                  });
-                                });
-                              })
+                              onTap: () {})
                         ]),
                   ),
                 ]))));

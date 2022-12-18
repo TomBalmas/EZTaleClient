@@ -148,9 +148,9 @@ Future<String> savePage(
 
 Future<String> getPage(String username, String bookName, String page) async {
   var url = Uri.parse(kServerURL + '/story/getpage');
-  Map<String, String> headers;
-  headers = {'username': username, 'bookName': bookName, 'page': page};
-  var response = await http.get(url, headers: headers);
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'page': page};
+  var response = await http.post(url, body: body);
   return response.body;
 }
 
@@ -164,9 +164,9 @@ Future<String> deleteBook(String username, String bookName) async {
 
 Future<String> getEntity(String username, String bookName, String name) async {
   var url = Uri.parse(kServerURL + '/entity/getentity');
-  Map<String, String> headers;
-  headers = {'username': username, 'bookName': bookName, 'name': name};
-  var response = await http.get(url, headers: headers);
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'name': name};
+  var response = await http.post(url, body: body);
   return response.body;
 }
 

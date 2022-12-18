@@ -7,6 +7,7 @@ class EZEntityTextField extends StatelessWidget {
       @required this.hintText,
       @required this.inputType,
       @required this.controller,
+      this.readOnly = false,
       this.width = 300,
       this.height = 1,
       this.icon})
@@ -17,6 +18,7 @@ class EZEntityTextField extends StatelessWidget {
   final icon;
   final width;
   final height;
+  final readOnly;
   
 
   @override
@@ -28,6 +30,7 @@ class EZEntityTextField extends StatelessWidget {
           child: TextField(
             controller: controller,
             focusNode: FocusNode(),
+            readOnly: readOnly,
             style: kBodyText.copyWith(
               color: Colors.white,
               height: height.toDouble()
