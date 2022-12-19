@@ -160,13 +160,22 @@ class _TablesScreenState extends State<TablesScreen> {
                                 widget.nameOfTable), // new entity's name
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
-                            onTap: () {
-                              Navigator.push(
+                            onTap: () async {
+                              await Navigator.push(
                                   context,
                                   CupertinoPageRoute(
                                       builder: (context) => NewEntityScreen(
                                           nameOfEntity: nameOfNewEntityButton(
                                               widget.nameOfTable))));
+                              getAllTypeEntities(
+                                      MyApp.bookManager.getBookName(),
+                                      MyApp.userManager.getCurrentUsername(),
+                                      getType(widget.nameOfTable))
+                                  .then((value) {
+                                final data = jsonDecode(value);
+                                widget.tableContent = data;
+                                setState(() {});
+                              });
                             },
                           ),
                           BuildButton(
@@ -210,4 +219,14 @@ String nameOfNewEntityButton(String str) {
   else if (str != null && str.length > 0)
     return 'New ' + str.substring(0, str.length - 1);
   return str;
+}
+
+String getType(String tableName) {
+  if (tableName == 'Characters') return 'character';
+  if (tableName == 'Locations') return 'location';
+  if (tableName == 'Conversations') return 'conversation';
+  if (tableName == 'Custom') return 'userDefined';
+  if (tableName == 'Attribute Templates') return 'atrributeTemplate';
+  if (tableName == 'Evenets') return 'event';
+  return null;
 }

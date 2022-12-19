@@ -4,11 +4,14 @@ import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
 import 'package:ez_tale/widgets/EZTableBuilder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZNewEntityTextField.dart';
 import '../widgets/Widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+
+import 'TablesScreen.dart';
 
 final Map<String, String> newMap = {
   "username": MyApp.userManager.getCurrentUsername(),
@@ -141,7 +144,8 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                             },
                             width: 100,
                           ),
-                          BuildButton( //TODO: ask Tom about this save
+                          BuildButton(
+                              //TODO: ask Tom about this save
                               name: 'Save',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
@@ -200,7 +204,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                           () => {
                                                 Navigator.pop(context, 'OK'),
                                                 Navigator.pop(context)
-                                                //TODO: update table
                                               });
                                     } else if (widget
                                         .customNameController.text.isEmpty) {
@@ -405,7 +408,6 @@ Builds the "New Attribute Template" screen
                                           () => {
                                                 Navigator.pop(context, 'OK'),
                                                 Navigator.pop(context)
-                                                //TODO: update table
                                               });
                                     } else if (widget
                                         .attributeTemplateNameController
@@ -546,7 +548,6 @@ Widget buildEventScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -673,7 +674,6 @@ Widget buildConversationScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -810,7 +810,6 @@ Widget buildLocationScreen(BuildContext context, String title) {
                                         () => {
                                               Navigator.pop(context, 'OK'),
                                               Navigator.pop(context)
-                                              //TODO: update table
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
@@ -941,7 +940,7 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                                 final Map<String, String> newChar = newMap;
                                 newChar["type"] = "character";
                                 newChar["name"] = nameController.text;
-                                newChar["sure"] = sureNameController.text;
+                                newChar["surename"] = sureNameController.text;
                                 newChar["personalityTraits"] =
                                     traitsController.text;
                                 newChar["appearanceTraits"] =
@@ -959,8 +958,7 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                                             " has been saved.",
                                         () => {
                                               Navigator.pop(context, 'OK'),
-                                              Navigator.pop(context)
-                                              //TODO: update table
+                                              Navigator.pop(context),
                                             });
                                   } else if (nameController.text.isEmpty) {
                                     showAlertDiaglog(
