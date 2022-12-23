@@ -40,9 +40,12 @@ class _EditorScreenState extends State<EditorScreen> {
               MyApp.bookManager.getBookName(), '1')
           .then((value) {
         final data = jsonDecode(value);
-        if (data == "not such page") print('1');
+        if (data["content"] == "not such page")
+          print('1');
+        else
+          print('2');
       });
-      quillController.document.insert(0, 'test'); //TODO: get from server
+      quillController.document.insert(0, 'test');
       firstTimeFlag = false;
     }
     return Scaffold(
@@ -410,7 +413,7 @@ void saveCurrentPage(Text pageNumber, quill.QuillController quillController) {
     final data = jsonDecode(value);
     if (data['msg'] == 'page saved successfully') {
       print('success');
-    }else
-    print('fail');
+    } else
+      print('fail');
   });
 }

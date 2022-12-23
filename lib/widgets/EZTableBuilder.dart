@@ -160,8 +160,8 @@ class _BuildTable extends State<BuildTable> {
     }
     return DataRow(
       cells: datacCells,
-      onSelectChanged: (selected) {
-        Navigator.push(
+      onSelectChanged: (selected) async {
+        await Navigator.push(
             context,
             CupertinoPageRoute(
                 builder: (context) => EntityScreen(
@@ -169,6 +169,15 @@ class _BuildTable extends State<BuildTable> {
                           .substring(0, widget.nameOfTable.length - 1),
                       content: datacCells,
                     )));
+        getAllTypeEntities(
+                MyApp.bookManager.getBookName(),
+                MyApp.userManager.getCurrentUsername(),
+                getType(widget.nameOfTable))
+            .then((value) {
+          final data = jsonDecode(value);
+          widget.tableContent = data;
+          setState(() {});
+        });
       },
     );
   }
