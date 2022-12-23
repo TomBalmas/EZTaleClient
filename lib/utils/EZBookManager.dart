@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import '../EZNetworking.dart';
 
 class EZBookManager {
@@ -7,12 +8,19 @@ class EZBookManager {
   String _bookName;
   String _username;
 
+
   String getBookName() {
     return _bookName;
   }
 
   String getOwnerUsername() {
     return _username;
+  }
+  getCoWriters() {
+    getBookCoWriters(_username, _bookName).then((value) {
+      final data = jsonDecode(value);
+      return data;
+    });
   }
 
   void setBook(String userName, String bookName) {

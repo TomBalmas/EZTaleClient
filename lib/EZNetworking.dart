@@ -162,14 +162,14 @@ Future<String> deleteBook(String username, String bookName) async {
   return response.body;
 }
 
-
-Future<String> saveEntity(Map<String,String> map) async {
+Future<String> saveEntity(Map<String, String> map) async {
   var url = Uri.parse(kServerURL + '/entity/addentity');
   var response = await http.post(url, body: map);
   return response.body;
 }
 
-Future<String> deleteEntity(String username, String bookName, String name) async {
+Future<String> deleteEntity(
+    String username, String bookName, String name) async {
   var url = Uri.parse(kServerURL + '/entity/deleteentity');
   Map<String, String> body;
   body = {'username': username, 'bookName': bookName, 'name': name};
@@ -177,14 +177,13 @@ Future<String> deleteEntity(String username, String bookName, String name) async
   return response.body;
 }
 
-
 Future<String> updateUser(Map<String, String> map) async {
   var url = Uri.parse(kServerURL + '/updateuser');
   var response = await http.post(url, body: map);
   return response.body;
 }
 
-Future<String> deleteUser(String username, String token) async { 
+Future<String> deleteUser(String username, String token) async {
   var url = Uri.parse(kServerURL + '/deleteuser');
   Map<String, String> body;
   body = {'username': username, 'token': token};
@@ -192,13 +191,48 @@ Future<String> deleteUser(String username, String token) async {
   return response.body;
 }
 
-Future<String> addNewStory(String username, String bookName, String description, String type) async { 
+Future<String> addNewStory(
+    String username, String bookName, String description, String type) async {
   var url = Uri.parse(kServerURL + '/story/addnew');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'description':description, 'type':type};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'description': description,
+    'type': type
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
 
+Future<String> getUserByEmail(String email) async {
+  var url = Uri.parse(kServerURL + '/getuserbyemail');
+  Map<String, String> headers;
+  headers = {'email': email};
+  var response = await http.post(url, headers: headers);
+  return response.body;
+}
 
+// this function add co writer to story
+// and sends a mail to the writer
+Future<String> addCoWriter(
+    String coEmail, String bookName, String username, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/addCoWriter');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'coUsername': coUsername,
+    'coUserEmail': coEmail
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
 
+Future<String> getBookCoWriters(String username,String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getCoStories');
+  Map<String, String> headers;
+  headers = {'username': username, 'bookName' : bookName};
+  var response = await http.get(url, headers: headers);
+  return response.body;
+}
