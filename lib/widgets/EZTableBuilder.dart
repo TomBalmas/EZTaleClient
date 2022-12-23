@@ -108,6 +108,18 @@ class _BuildTable extends State<BuildTable> {
           rows.add(createRow(cells));
         }
         break;
+      case 'Co-writers':
+        columns.add(createColumn('Task'));
+        columns.add(createColumn('DeadLine'));
+        columns.add(createColumn(' '));
+        for (final writer in widget.tableContent) {
+          cells = [];
+          cells.add(Text(writer["task"]));
+          cells.add(Text(writer["deadline"]));
+          cells.add(Text('X'));
+          rows.add(createRow(cells));
+        }
+        break;
     }
 
     return DataTable(showCheckboxColumn: false, columns: columns, rows: rows);
