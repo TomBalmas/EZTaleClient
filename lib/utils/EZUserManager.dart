@@ -5,27 +5,49 @@ import '../screens/home_screen_widgets/EZBooks.dart';
 class EZUserManager {
   String _currentUsername;
   String _currentToken;
-  List<EZBook> _userBookList;
+  List<EZBook> _userBookList = [];
   String _currentName;
   String _currentSurname;
   String _currentEmail;
 
-  Future<List<dynamic>> _getUserStories() async {
+  void _getUserStories() {
     var retList = <EZBook>[];
-    var res = getAllStories(_currentUsername);
-    res.then((value) {
+    getAllStories(_currentUsername).then((value) {
+      print(value);
+      if (value != "[]") {
+        final data = jsonDecode(value);
+        print("len: ${data.length}");
+        print("bookName: ${data[0]['bookName']}");
+        for (int i = 0; i < data.length; i++)
+          retList.add(new EZBook(
+              title: data[i]['bookName'],
+              description: data[i]['description'],
+              type: data[i]['type'],
+              owner: _currentUsername));
+        _userBookList..addAll(retList);
+      }
+    });
+  }
+
+  Future<List<EZBook>> _getCoStories() async {
+    var retList = <EZBook>[];
+    getCoStories(_currentUsername).then((value) {
       print(value);
       final data = jsonDecode(value);
-      print("len: ${data.length}");
-      print("bookName: ${data[0]['bookName']}");
-      for (int i = 0; i < data.length; i++)
-        retList.add(new EZBook(
-            title: data[i]['bookName'],
-            description: data[i]['description'],
-            type: data[i]['type']));
+      if (data['success'] && data['msg'] != []) {
+        print("len: ${data['msg'].length}");
+        if (data['success'] && data['msg'].length != 0) {
+          print("bookName: ${data['msg'][0]['bookName']}");
+          for (int i = 0; i < data['msg'].length; i++)
+            retList.add(new EZBook(
+                title: data['msg'][i]['bookName'],
+                description: data['msg'][i]['description'],
+                type: 'Co-Book',
+                owner: data['msg'][i]['username']));
+          _userBookList..addAll(retList);
+        }
+      }
     });
-
-    return retList;
   }
 
   void setCurrentUser(String username, String token) {
@@ -36,8 +58,10 @@ class EZUserManager {
       for (int i = 0; i < 10; i++)
         _userBookList.add(new EZBook(
             title: 'book $i', description: 'this is book $i', type: 'Book'));
-    } else
-      _getUserStories().then((value) => _userBookList = value);
+    } else {
+      _getUserStories();
+      _getCoStories();
+    }
     getUserInfo(token).then((value) {
       final data = jsonDecode(value);
       _currentName = data['name'];
@@ -49,17 +73,15 @@ class EZUserManager {
   Future<List<EZBook>> updateUserStoriesList() async {
     //this will never be null
     //this is called only if the user has logged in
-    await _getUserStories().then((value) {
-      _userBookList = value;
-    });
-    return _userBookList;
+    _getUserStories();
+    _getCoStories();
   }
 
   List<EZBook> getUserStoriesList() {
-    if (_userBookList == null)
-      _getUserStories().then((value) {
-        _userBookList = value;
-      });
+    if (_userBookList == []) {
+      _getUserStories();
+      _getCoStories();
+    }
     return _userBookList;
   }
 
@@ -86,7 +108,7 @@ class EZUserManager {
   void logout() {
     _currentUsername = null;
     _currentToken = null;
-    _userBookList = null;
+    _userBookList = [];
     _currentName = null;
     _currentSurname = null;
     _currentEmail = null;

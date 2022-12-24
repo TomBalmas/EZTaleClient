@@ -37,14 +37,14 @@ class _EditorScreenState extends State<EditorScreen> {
   @override
   Widget build(BuildContext context) {
     if (firstTimeFlag) {
-      getNumberOfPages(MyApp.userManager.getCurrentUsername(),
+      getNumberOfPages(MyApp.bookManager.getOwnerUsername(),
               MyApp.bookManager.getBookName())
           .then((value) {
         final data = jsonDecode(value);
         lastPageNumber = Text(data['msg']);
         setState(() {});
       });
-      getPage(MyApp.userManager.getCurrentUsername(),
+      getPage(MyApp.bookManager.getOwnerUsername(),
               MyApp.bookManager.getBookName(), pageNumber.data)
           .then((value) {
         final data = jsonDecode(value);
@@ -76,7 +76,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: () {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
+                                MyApp.bookManager.getOwnerUsername(),
                                 'character')
                             .then((value) {
                           final data = jsonDecode(value);
@@ -97,7 +97,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: () {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
+                                MyApp.bookManager.getOwnerUsername(),
                                 'location')
                             .then((value) {
                           final data = jsonDecode(value);
@@ -118,7 +118,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: () {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
+                                MyApp.bookManager.getOwnerUsername(),
                                 'userDefined')
                             .then((value) {
                           final data = jsonDecode(value);
@@ -139,7 +139,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: () {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(),
+                                MyApp.bookManager.getOwnerUsername(),
                                 'atrributeTemplate')
                             .then((value) {
                           final data = jsonDecode(value);
@@ -160,6 +160,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTap: () {
                         getAllTypeEntities(MyApp.bookManager.getBookName(),
                                 MyApp.userManager.getCurrentUsername(), 'storyEvent')
+
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -257,7 +258,7 @@ class _EditorScreenState extends State<EditorScreen> {
                               String page =
                                   quillController.document.toPlainText();
                               savePage(
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       MyApp.bookManager.getBookName(),
                                       pageNumber.data,
                                       page)
@@ -265,7 +266,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                 num--;
                                 pageNumber = Text(num.toString());
                                 getPage(
-                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getOwnerUsername(),
                                         MyApp.bookManager.getBookName(),
                                         pageNumber.data)
                                     .then((value) {
@@ -296,7 +297,7 @@ class _EditorScreenState extends State<EditorScreen> {
                               int lastPageNum = int.parse(lastPageNumber.data);
                               if (pageNum == (lastPageNum + 1)) return;
                               savePage(
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       MyApp.bookManager.getBookName(),
                                       pageNumber.data,
                                       quillController.document.toPlainText())
@@ -314,8 +315,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                   pageNumber = Text(pageNum.toString());
                                   quillController.clear();
                                   getPage(
-                                          MyApp.userManager
-                                              .getCurrentUsername(),
+                                          MyApp.bookManager.getOwnerUsername(),
                                           MyApp.bookManager.getBookName(),
                                           pageNumber.data)
                                       .then((value) {
@@ -410,7 +410,7 @@ class _EditorScreenState extends State<EditorScreen> {
                     textColor: Colors.black87,
                     onTap: () {
                       savePage(
-                              MyApp.userManager.getCurrentUsername(),
+                              MyApp.bookManager.getOwnerUsername(),
                               MyApp.bookManager.getBookName(),
                               pageNumber.data,
                               quillController.document.toPlainText())

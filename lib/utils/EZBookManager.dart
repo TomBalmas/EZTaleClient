@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import '../EZNetworking.dart';
 
 class EZBookManager {
@@ -15,6 +16,15 @@ class EZBookManager {
     return _username;
   }
 
+  getCoWriters() {
+    var res;
+    getBookCoWriters(_username, _bookName).then((value) {
+      final data = jsonDecode(value);
+      res = data;
+    });
+    return res;
+  }
+
   void setBook(String userName, String bookName) {
     _bookName = bookName;
     _username = userName;
@@ -29,6 +39,7 @@ class EZBookManager {
     }));
     return pageContent;
   }
+
 
   //return true if page saved successfully
   bool saveBookPage(String pageContent, int pageNum) {

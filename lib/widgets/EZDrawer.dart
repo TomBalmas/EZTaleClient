@@ -28,23 +28,27 @@ class EZDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => HomeScreen(booksList: MyApp.userManager.getUserStoriesList(),)),
+                  CupertinoPageRoute(
+                      builder: (context) => HomeScreen(
+                            booksList: MyApp.userManager.getUserStoriesList(),
+                          )),
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.book, color: Colors.white30),
-              title: const Text('Co-Writers',
-                  style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => CowritersScreen()),
-                );
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            if (MyApp.bookManager.getBookName() != null)
+              ListTile(
+                leading: Icon(Icons.book, color: Colors.white30),
+                title: const Text('Co-Writers',
+                    style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(builder: (context) => CowritersScreen()),
+                  );
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
             ListTile(
               leading: Icon(Icons.settings, color: Colors.white30),
               title: const Text('User Settings',

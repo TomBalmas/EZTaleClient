@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
+import '../EZNetworking.dart';
 import '../widgets/Widgets.dart';
 import 'Screens.dart';
 
@@ -75,6 +79,8 @@ class UserSettingsScreen extends StatelessWidget {
     var name = MyApp.userManager.getCurrentName();
     var surname = MyApp.userManager.getCurrentSurname();
     var email = MyApp.userManager.getCurrentEmail();
+    var inviteCode = 'Paste your invitation code here';
+    TextEditingController codeController = new TextEditingController();
 
     return Scaffold(
         drawer: EZDrawer(),
@@ -123,6 +129,35 @@ class UserSettingsScreen extends StatelessWidget {
                 icon: Icon(Icons.password),
                 label: 'Password',
                 initialValue: 'initialPassword',
+              ),
+              CardSettingsText(
+                label: 'Invitation Code',
+                controller: codeController,
+                initialValue: inviteCode,
+                // ignore: missing_return
+                onSaved: (value) => inviteCode = value,
+              ),
+              CardSettingsButton(
+                label: 'Enter Invitation Code',
+                backgroundColor: kBackgroundColor,
+                textColor: Colors.white,
+                onPressed: () => {
+                  acceptInvitation(
+                          codeController.text, MyApp.userManager.getCurrentUsername())
+                      .then((value) {
+                    final data = jsonDecode(value);
+                    if (data['success'])
+                       showAcceptDiaglog(
+                          context, "Book is added", "Book is added", () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => HomeScreen(booksList: MyApp.userManager
+                                              .getUserStoriesList(),)),
+                        );
+                      });
+                  })
+                },
               ),
               CardSettingsButton(
                 label: 'Save Settings',
