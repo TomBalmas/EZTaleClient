@@ -119,7 +119,6 @@ Future<String> addUserDefined(String bookName, String username, String name,
 //Types:
 // character
 // location
-// conversation
 // storyEvent
 // userDefined
 // atrributeTemplate
