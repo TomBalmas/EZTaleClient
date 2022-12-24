@@ -40,6 +40,7 @@ class EZBookManager {
     return pageContent;
   }
 
+
   //return true if page saved successfully
   bool saveBookPage(String pageContent, int pageNum) {
     bool res;
