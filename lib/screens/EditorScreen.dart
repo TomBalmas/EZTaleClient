@@ -28,24 +28,30 @@ class _EditorScreenState extends State<EditorScreen> {
       tenseTrackingColor = Colors.red,
       turningPointsColor = Colors.red,
       saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+  String saveButtonName = 'Save';
   Text pageNumber = Text('1');
-  Text lastPageNumber = Text('10'); //TODO: get from server
+  Text lastPageNumber = Text('');
   bool newPageStateFlag = false;
   bool firstTimeFlag = true;
 
   @override
   Widget build(BuildContext context) {
     if (firstTimeFlag) {
-      getPage(MyApp.userManager.getCurrentUsername(),
-              MyApp.bookManager.getBookName(), '1')
+      getNumberOfPages(MyApp.userManager.getCurrentUsername(),
+              MyApp.bookManager.getBookName())
           .then((value) {
         final data = jsonDecode(value);
-        if (data["content"] == "not such page")
-          print('1');
-        else
-          print('2');
+        lastPageNumber = Text(data['msg']);
+        setState(() {});
       });
-      quillController.document.insert(0, 'test');
+      getPage(MyApp.userManager.getCurrentUsername(),
+              MyApp.bookManager.getBookName(), pageNumber.data)
+          .then((value) {
+        final data = jsonDecode(value);
+        data['content'] =
+            data['content'].substring(0, data['content'].length - 1);
+        quillController.document.insert(0, data['content']);
+      });
       firstTimeFlag = false;
     }
     return Scaffold(
@@ -267,14 +273,37 @@ class _EditorScreenState extends State<EditorScreen> {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {
-                              setState(() {
+                              int num = int.parse(pageNumber.data);
+                              if (num == 1) return;
+                              if (newPageStateFlag) {
                                 newPageStateFlag = false;
                                 saveButtonColor =
                                     Color.fromRGBO(0, 173, 181, 100);
-                                int num = int.parse(pageNumber.data);
-                                if (num == 1) return;
+                                saveButtonName = 'Save';
+                              }
+                              String page =
+                                  quillController.document.toPlainText();
+                              savePage(
+                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getBookName(),
+                                      pageNumber.data,
+                                      page)
+                                  .then((value) {
                                 num--;
                                 pageNumber = Text(num.toString());
+                                getPage(
+                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data)
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  quillController.clear();
+                                  data['content'] = data['content']
+                                      .substring(0, data['content'].length - 1);
+                                  quillController.document
+                                      .insert(0, data['content']);
+                                  setState(() {});
+                                });
                               });
                             },
                             width: 50,
@@ -290,18 +319,41 @@ class _EditorScreenState extends State<EditorScreen> {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {
-                              setState(() {
-                                int pageNum = int.parse(pageNumber.data);
-                                int lastPageNum =
-                                    int.parse(lastPageNumber.data);
-                                if (pageNum == (lastPageNum + 1))
-                                  return; // TODO: add new page and update
+                              int pageNum = int.parse(pageNumber.data);
+                              int lastPageNum = int.parse(lastPageNumber.data);
+                              if (pageNum == (lastPageNum + 1)) return;
+                              savePage(
+                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getBookName(),
+                                      pageNumber.data,
+                                      quillController.document.toPlainText())
+                                  .then((value) {
                                 if (pageNum == lastPageNum) {
                                   newPageStateFlag = true;
                                   saveButtonColor = Colors.red;
+                                  saveButtonName = 'Add new page';
+                                  quillController.clear();
+                                  pageNum++;
+                                  pageNumber = Text(pageNum.toString());
+                                  setState(() {});
+                                } else if (pageNum <= lastPageNum) {
+                                  pageNum++;
+                                  pageNumber = Text(pageNum.toString());
+                                  quillController.clear();
+                                  getPage(
+                                          MyApp.userManager
+                                              .getCurrentUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data)
+                                      .then((value) {
+                                    final data = jsonDecode(value);
+                                    data['content'] = data['content'].substring(
+                                        0, data['content'].length - 1);
+                                    quillController.document
+                                        .insert(0, data['content']);
+                                    setState(() {});
+                                  });
                                 }
-                                pageNum++;
-                                pageNumber = Text(pageNum.toString());
                               });
                             },
                             width: 50,
@@ -380,18 +432,25 @@ class _EditorScreenState extends State<EditorScreen> {
                       )),
                   SizedBox(width: 16),
                   BuildButton(
-                    name: 'Save',
+                    name: saveButtonName,
                     bgColor: saveButtonColor,
                     textColor: Colors.black87,
                     onTap: () {
-                      saveCurrentPage(pageNumber, quillController);
-                      setState(() {
+                      savePage(
+                              MyApp.userManager.getCurrentUsername(),
+                              MyApp.bookManager.getBookName(),
+                              pageNumber.data,
+                              quillController.document.toPlainText())
+                          .then((value) {
+                        saveButtonName = 'Save';
                         saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
                         if (newPageStateFlag) {
                           int lastPageNum = int.parse(lastPageNumber.data);
                           lastPageNum++;
                           lastPageNumber = Text(lastPageNum.toString());
+                          newPageStateFlag = false;
                         }
+                        setState(() {});
                       });
                     },
                     height: 100,
@@ -400,20 +459,4 @@ class _EditorScreenState extends State<EditorScreen> {
           ]),
         )));
   }
-}
-
-void saveCurrentPage(Text pageNumber, quill.QuillController quillController) {
-  savePage(
-          MyApp.userManager.getCurrentUsername(),
-          MyApp.bookManager.getBookName(),
-          pageNumber.data,
-          quillController.document.toPlainText())
-      .then((value) {
-    print('success');
-    final data = jsonDecode(value);
-    if (data['msg'] == 'page saved successfully') {
-      print('success');
-    } else
-      print('fail');
-  });
 }

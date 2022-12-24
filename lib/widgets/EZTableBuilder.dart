@@ -15,9 +15,11 @@ class BuildTable extends StatefulWidget {
     key,
     this.nameOfTable,
     this.tableContent,
+    this.secondaryUseFlag = false,
   });
   final nameOfTable;
   var tableContent;
+  var secondaryUseFlag;
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -37,14 +39,14 @@ class _BuildTable extends State<BuildTable> {
         columns.add(createColumn('Surename'));
         columns.add(createColumn('Age'));
         columns.add(createColumn('Gender'));
-        columns.add(createColumn('Delete'));
+        if (!widget.secondaryUseFlag) columns.add(createColumn('Delete'));
         for (final character in widget.tableContent) {
           cells = [];
           cells.add(Text(character["name"]));
           cells.add(Text(checkEmptyField(character["surename"])));
           cells.add(Text(checkEmptyField(character["age"].toString())));
           cells.add(Text(checkEmptyField(character["gender"])));
-          cells.add(Text('X'));
+          if (!widget.secondaryUseFlag) cells.add(Text('X'));
           rows.add(createRow(cells));
         }
         break;
@@ -173,23 +175,27 @@ class _BuildTable extends State<BuildTable> {
     return DataRow(
       cells: datacCells,
       onSelectChanged: (selected) async {
-        await Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => EntityScreen(
-                      type: widget.nameOfTable
-                          .substring(0, widget.nameOfTable.length - 1),
-                      content: datacCells,
-                    )));
-        getAllTypeEntities(
-                MyApp.bookManager.getBookName(),
-                MyApp.userManager.getCurrentUsername(),
-                getType(widget.nameOfTable))
-            .then((value) {
-          final data = jsonDecode(value);
-          widget.tableContent = data;
-          setState(() {});
-        });
+        if (!widget.secondaryUseFlag) {
+          await Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => EntityScreen(
+                        type: widget.nameOfTable
+                            .substring(0, widget.nameOfTable.length - 1),
+                        content: datacCells,
+                      )));
+          getAllTypeEntities(
+                  MyApp.bookManager.getBookName(),
+                  MyApp.userManager.getCurrentUsername(),
+                  getType(widget.nameOfTable))
+              .then((value) {
+            final data = jsonDecode(value);
+            widget.tableContent = data;
+            setState(() {});
+          });
+        } else {
+          //TODO: add participants to conversation using a list
+        }
       },
     );
   }

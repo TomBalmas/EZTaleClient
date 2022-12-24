@@ -224,6 +224,7 @@ class _EntityScreenState extends State<EntityScreen> {
       final data = jsonDecode(value);
       nameController.text = data['name'];
       if (firstTimeFlag) {
+        data['vista'] = data['vista'].substring(0, data['vista'].length - 1);
         quillController.document.insert(0, data['vista']);
         setState(() {});
         firstTimeFlag = false;
