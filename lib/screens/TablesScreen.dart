@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../EZNetworking.dart';
 import '../main.dart';
 import '../widgets/EZBuildButton.dart';
-import '../widgets/EZTableBuilder.dart';
 import '../widgets/Widgets.dart';
 
 // ignore: must_be_immutable
@@ -160,22 +159,35 @@ class _TablesScreenState extends State<TablesScreen> {
                                 widget.nameOfTable), // new entity's name
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
-                            onTap: () async {
-                              await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => NewEntityScreen(
-                                          nameOfEntity: nameOfNewEntityButton(
-                                              widget.nameOfTable))));
-                              getAllTypeEntities(
-                                      MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
-                                      getType(widget.nameOfTable))
-                                  .then((value) {
-                                final data = jsonDecode(value);
-                                widget.tableContent = data;
-                                setState(() {});
-                              });
+                            onTap: () {
+                              if (widget.nameOfTable == 'Conversations')
+                                getAllTypeEntities(
+                                        MyApp.bookManager.getBookName(),
+                                        MyApp.userManager.getCurrentUsername(),
+                                        'character')
+                                    .then((value) async {
+                                  final data = jsonDecode(value);
+                                  widget.tableContent = data;
+                                  await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) => NewEntityScreen(
+                                              nameOfEntity:
+                                                  nameOfNewEntityButton(
+                                                      widget.nameOfTable),
+                                              tableContent:
+                                                  widget.tableContent)));
+                                  getAllTypeEntities(
+                                          MyApp.bookManager.getBookName(),
+                                          MyApp.userManager
+                                              .getCurrentUsername(),
+                                          getType(widget.nameOfTable))
+                                      .then((value) {
+                                    final data = jsonDecode(value);
+                                    widget.tableContent = data;
+                                    setState(() {});
+                                  });
+                                });
                             },
                           ),
                           BuildButton(
