@@ -11,6 +11,10 @@ import '../constants.dart';
 class CowritersScreen extends StatelessWidget {
   TextEditingController emailController = new TextEditingController();
   TextEditingController codeController = new TextEditingController();
+  var coWriters;
+  CowritersScreen() {
+    coWriters = MyApp.bookManager.getCoWriters();
+  }
 
   showAlertDiaglog(
       BuildContext context, String alt, String desc, Function func) async {
@@ -53,6 +57,7 @@ class CowritersScreen extends StatelessWidget {
                                   .then((value) {
                                 var userToAdd;
                                 final data = jsonDecode(value);
+
                                 userToAdd = data['username'];
                                 if (data['success'] && userToAdd != null)
                                   addCoWriter(
@@ -75,6 +80,17 @@ class CowritersScreen extends StatelessWidget {
                                       });
                                     },
                                   );
+                                else {
+                                  showAlertDiaglog(context, 'Email not found!',
+                                      'Email not found!', () {
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              CowritersScreen()),
+                                    );
+                                  });
+                                }
                               });
                             },
                             bgColor: bgColor,
@@ -84,20 +100,6 @@ class CowritersScreen extends StatelessWidget {
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
                             controller: emailController),
-                      ]),
-                    ),
-                    Center(
-                      child: Row(children: [
-                        EZTextButton(
-                            buttonName: 'Enter invitation Code',
-                            onTap: () {},
-                            bgColor: bgColor,
-                            textColor: Colors.white),
-                        SizedBox(width: 16),
-                        EZTextField(
-                            hintText: 'Invitation code',
-                            inputType: TextInputType.text,
-                            controller: codeController),
                       ]),
                     ),
                     Align(

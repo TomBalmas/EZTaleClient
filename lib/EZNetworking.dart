@@ -231,8 +231,16 @@ Future<String> addCoWriter(
 
 Future<String> getBookCoWriters(String username,String bookName) async {
   var url = Uri.parse(kServerURL + '/story/getCoStories');
-  Map<String, String> headers;
-  headers = {'username': username, 'bookName' : bookName};
-  var response = await http.get(url, headers: headers);
+  Map<String, String> body;
+  body = {'username': username, 'bookName' : bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> acceptInvitation(String code,String username) async { 
+  var url = Uri.parse(kServerURL + '/story/acceptInvitationAddBook');
+  Map<String, String> body;
+  body = {'inviteCode': code, 'coUsername' : username};
+  var response = await http.post(url, body: body);
   return response.body;
 }

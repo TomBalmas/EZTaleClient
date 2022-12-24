@@ -8,7 +8,6 @@ class EZBookManager {
   String _bookName;
   String _username;
 
-
   String getBookName() {
     return _bookName;
   }
@@ -16,11 +15,14 @@ class EZBookManager {
   String getOwnerUsername() {
     return _username;
   }
+
   getCoWriters() {
+    var res;
     getBookCoWriters(_username, _bookName).then((value) {
       final data = jsonDecode(value);
-      return data;
+      res = data;
     });
+    return res;
   }
 
   void setBook(String userName, String bookName) {
