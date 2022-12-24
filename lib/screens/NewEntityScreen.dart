@@ -19,9 +19,8 @@ final Map<String, String> newMap = {
 
 // ignore: must_be_immutable
 class NewEntityScreen extends StatefulWidget {
-  NewEntityScreen({key, @required this.nameOfEntity, this.tableContent});
+  NewEntityScreen({key, @required this.nameOfEntity});
   final nameOfEntity;
-  var tableContent;
 
   var firstTimeFlag = true;
   List<Widget> attributeWidgets = [];
@@ -43,8 +42,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
       return buildCharacterScreen(context, widget.nameOfEntity);
     if (widget.nameOfEntity == 'New Location')
       return buildLocationScreen(context, widget.nameOfEntity);
-    if (widget.nameOfEntity == 'New Conversation')
-      return buildConversationScreen(context, widget.nameOfEntity);
     if (widget.nameOfEntity == 'New Custom Entity') return buildCustomScreen();
     if (widget.nameOfEntity == 'New Event')
       return buildEventScreen(context, widget.nameOfEntity);
@@ -411,148 +408,6 @@ Builds the "New Attribute Template" screen
                                         .attributeTemplateNameController
                                         .text
                                         .isEmpty) {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Name must be filled.",
-                                          () => Navigator.pop(context, 'OK'));
-                                    }
-                                  });
-                                });
-                              })
-                        ]),
-                  ),
-                ]))));
-  }
-
-/*
-Builds the "New Conversation" screen
-*/
-  Widget buildConversationScreen(BuildContext context, String title) {
-    TextEditingController nameController = new TextEditingController();
-    BuildTable table = BuildTable(
-        nameOfTable: 'Characters',
-        tableContent: widget.tableContent,
-        secondaryUseFlag: true);
-    return Scaffold(
-        drawer: EZDrawer(),
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Container(
-            child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(fontSize: 64, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                EZEntityTextField(
-                                  hintText: 'Name of conversation',
-                                  inputType: TextInputType.name,
-                                  controller: nameController,
-                                ),
-                                Text(
-                                  'Participants:',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.grey),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 16),
-                                Expanded(
-                                    child:
-                                        ListView(children: [Text('this time')]))
-                                //TODO: add participants
-                              ])),
-                          Expanded(
-                              child: Column(
-                            children: [
-                              Text(
-                                'Choose participants:',
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
-                              ),
-                              Expanded(child: ListView(children: [table]))
-                            ],
-                          ))
-                        ]),
-                  ),
-                  Expanded(
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BuildButton(
-                            name: 'Back',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            width: 100,
-                          ),
-                          BuildButton(
-                              name: 'Save',
-                              bgColor: Color.fromRGBO(0, 173, 181, 100),
-                              textColor: Colors.black87,
-                              width: 100,
-                              onTap: () {
-                                bool nameExists = false;
-                                getAllTypeEntities(
-                                        MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
-                                        "conversation")
-                                    .then((value) {
-                                  final data = jsonDecode(value);
-                                  for (final conversation in data) {
-                                    if (conversation["name"] ==
-                                        nameController.text) {
-                                      nameExists = true;
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Conversation " +
-                                              nameController.text +
-                                              " already exists.", () {
-                                        Navigator.pop(context, 'OK');
-                                      });
-                                      break;
-                                    }
-                                  }
-                                  if (nameExists) return;
-                                  final Map<String, String> newConversation =
-                                      newMap;
-                                  newConversation["type"] = "conversation";
-                                  newConversation["name"] = nameController.text;
-                                  // TODO: add participant selection.
-                                  saveEntity(newConversation).then((value) {
-                                    final data = jsonDecode(value);
-                                    if (data['msg'] == 'Successfully saved') {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Save Successeful",
-                                          "Conversation " +
-                                              nameController.text +
-                                              " has been saved.",
-                                          () => {
-                                                Navigator.pop(context, 'OK'),
-                                                Navigator.pop(context)
-                                              });
-                                    } else if (nameController.text.isEmpty) {
                                       showAlertDiaglog(
                                           context,
                                           "Error",

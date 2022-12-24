@@ -15,11 +15,9 @@ class BuildTable extends StatefulWidget {
     key,
     this.nameOfTable,
     this.tableContent,
-    this.secondaryUseFlag = false,
   });
   final nameOfTable;
   var tableContent;
-  var secondaryUseFlag;
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -32,21 +30,20 @@ class _BuildTable extends State<BuildTable> {
     List<DataColumn> columns = [];
     List<DataRow> rows = [];
     List<Text> cells;
-    String participants = '';
     switch (widget.nameOfTable) {
       case 'Characters':
         columns.add(createColumn('Name'));
         columns.add(createColumn('Surename'));
         columns.add(createColumn('Age'));
         columns.add(createColumn('Gender'));
-        if (!widget.secondaryUseFlag) columns.add(createColumn('Delete'));
+        columns.add(createColumn('Delete'));
         for (final character in widget.tableContent) {
           cells = [];
           cells.add(Text(character["name"]));
           cells.add(Text(checkEmptyField(character["surename"])));
           cells.add(Text(checkEmptyField(character["age"].toString())));
           cells.add(Text(checkEmptyField(character["gender"])));
-          if (!widget.secondaryUseFlag) cells.add(Text('X'));
+          cells.add(Text('X'));
           rows.add(createRow(cells));
         }
         break;
@@ -65,26 +62,9 @@ class _BuildTable extends State<BuildTable> {
           rows.add(createRow(cells));
         }
         break;
-      case 'Conversations':
-        columns.add(createColumn('Name'));
-        columns.add(createColumn('Participants'));
-        columns.add(createColumn('Delete'));
-        for (final conversation in widget.tableContent) {
-          cells = [];
-          cells.add(Text(conversation["name"]));
-          if (conversation["participants"].length == 0)
-            cells.add(Text('-'));
-          else {
-            for (final participant in conversation["participants"])
-              participants += participant["name"];
-            cells.add(Text(participants));
-          }
-          cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
       case 'Custom':
         columns.add(createColumn('Name'));
+        columns.add(createColumn('Delete'));
         for (final customEntity in widget.tableContent) {
           cells = [];
           cells.add(Text(customEntity["name"]));
@@ -94,19 +74,23 @@ class _BuildTable extends State<BuildTable> {
         break;
       case 'Attribute Templates':
         columns.add(createColumn('Name'));
+        columns.add(createColumn('Delete'));
         for (final template in widget.tableContent) {
           cells = [];
-          cells.add(template["name"]);
+          cells.add(Text(template["name"]));
+          cells.add(Text('X'));
           rows.add(createRow(cells));
         }
         break;
       case 'Events':
         columns.add(createColumn('Name'));
         columns.add(createColumn('Description'));
+        columns.add(createColumn('Delete'));
         for (final event in widget.tableContent) {
           cells = [];
-          cells.add(event["name"]);
-          cells.add(event["desc"]);
+          cells.add(Text(event["name"]));
+          cells.add(Text(event["desc"]));
+          cells.add(Text('X'));
           rows.add(createRow(cells));
         }
         break;
@@ -175,27 +159,23 @@ class _BuildTable extends State<BuildTable> {
     return DataRow(
       cells: datacCells,
       onSelectChanged: (selected) async {
-        if (!widget.secondaryUseFlag) {
-          await Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context) => EntityScreen(
-                        type: widget.nameOfTable
-                            .substring(0, widget.nameOfTable.length - 1),
-                        content: datacCells,
-                      )));
-          getAllTypeEntities(
-                  MyApp.bookManager.getBookName(),
-                  MyApp.userManager.getCurrentUsername(),
-                  getType(widget.nameOfTable))
-              .then((value) {
-            final data = jsonDecode(value);
-            widget.tableContent = data;
-            setState(() {});
-          });
-        } else {
-          //TODO: add participants to conversation using a list
-        }
+        await Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => EntityScreen(
+                      type: widget.nameOfTable
+                          .substring(0, widget.nameOfTable.length - 1),
+                      content: datacCells,
+                    )));
+        getAllTypeEntities(
+                MyApp.bookManager.getBookName(),
+                MyApp.userManager.getCurrentUsername(),
+                getType(widget.nameOfTable))
+            .then((value) {
+          final data = jsonDecode(value);
+          widget.tableContent = data;
+          setState(() {});
+        });
       },
     );
   }

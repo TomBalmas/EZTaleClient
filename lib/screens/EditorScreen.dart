@@ -112,27 +112,6 @@ class _EditorScreenState extends State<EditorScreen> {
                       }),
                   SizedBox(height: 16),
                   BuildButton(
-                      name: 'Conversations',
-                      bgColor: Color.fromRGBO(0, 173, 181, 100),
-                      textColor: Colors.black87,
-                      onTap: () {
-                        getAllTypeEntities(
-                                MyApp.bookManager.getBookName(),
-                                MyApp.bookManager.getOwnerUsername(),
-                                'conversation')
-                            .then((value) {
-                          final data = jsonDecode(value);
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => TablesScreen(
-                                        tableContent: data,
-                                        nameOfTable: 'Conversations',
-                                      )));
-                        });
-                      }),
-                  SizedBox(height: 16),
-                  BuildButton(
                       name: 'Custom',
                       bgColor: Color.fromRGBO(0, 173, 181, 100),
                       textColor: Colors.black87,
@@ -180,7 +159,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       textColor: Colors.black87,
                       onTap: () {
                         getAllTypeEntities(MyApp.bookManager.getBookName(),
-                                MyApp.bookManager.getOwnerUsername(), 'event')
+                                MyApp.userManager.getCurrentUsername(), 'storyEvent')
+
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -192,12 +172,6 @@ class _EditorScreenState extends State<EditorScreen> {
                                       )));
                         });
                       }),
-                  SizedBox(height: 16),
-                  BuildButton(
-                      name: 'Co-Writers',
-                      bgColor: Color.fromRGBO(0, 173, 181, 100),
-                      textColor: Colors.black87,
-                      onTap: () {}),
                 ]),
                 SizedBox(width: 16),
                 Expanded(
