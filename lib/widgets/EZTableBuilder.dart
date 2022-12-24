@@ -18,6 +18,7 @@ class BuildTable extends StatefulWidget {
   });
   final nameOfTable;
   var tableContent;
+  bool coWritersFlag = false;
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -95,6 +96,7 @@ class _BuildTable extends State<BuildTable> {
         }
         break;
       case 'Co-writers':
+        widget.coWritersFlag = true;
         columns.add(createColumn('Task'));
         columns.add(createColumn('DeadLine'));
         columns.add(createColumn(' '));
@@ -159,23 +161,25 @@ class _BuildTable extends State<BuildTable> {
     return DataRow(
       cells: datacCells,
       onSelectChanged: (selected) async {
-        await Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => EntityScreen(
-                      type: widget.nameOfTable
-                          .substring(0, widget.nameOfTable.length - 1),
-                      content: datacCells,
-                    )));
-        getAllTypeEntities(
-                MyApp.bookManager.getBookName(),
-                MyApp.userManager.getCurrentUsername(),
-                getType(widget.nameOfTable))
-            .then((value) {
-          final data = jsonDecode(value);
-          widget.tableContent = data;
-          setState(() {});
-        });
+        if (!widget.coWritersFlag) {
+          await Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => EntityScreen(
+                        type: widget.nameOfTable
+                            .substring(0, widget.nameOfTable.length - 1),
+                        content: datacCells,
+                      )));
+          getAllTypeEntities(
+                  MyApp.bookManager.getBookName(),
+                  MyApp.userManager.getCurrentUsername(),
+                  getType(widget.nameOfTable))
+              .then((value) {
+            final data = jsonDecode(value);
+            widget.tableContent = data;
+            setState(() {});
+          });
+        }
       },
     );
   }
