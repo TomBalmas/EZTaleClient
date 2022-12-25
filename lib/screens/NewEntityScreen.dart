@@ -3,17 +3,14 @@ import 'dart:convert';
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
-import 'package:ez_tale/widgets/EZTableBuilder.dart';
 import 'package:flutter/material.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZNewEntityTextField.dart';
 import '../widgets/Widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
-import 'TablesScreen.dart';
-
 final Map<String, String> newMap = {
-  "username": MyApp.userManager.getCurrentUsername(),
+  "username": MyApp.bookManager.getOwnerUsername(),
   "bookName": MyApp.bookManager.getBookName(),
 };
 
@@ -149,14 +146,17 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                 bool nameExists = false;
                                 getAllTypeEntities(
                                         MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getOwnerUsername(),
                                         "userDefined")
                                     .then((value) {
                                   final data = jsonDecode(value);
                                   for (final customEntity in data) {
-                                    if (customEntity["name"] ==
+                                    if (customEntity["name"]
+                                            .toString()
+                                            .toLowerCase() ==
                                         widget.attributeTemplateNameController
-                                            .text) {
+                                            .text
+                                            .toLowerCase()) {
                                       nameExists = true;
                                       showAlertDiaglog(
                                           context,
@@ -353,14 +353,17 @@ Builds the "New Attribute Template" screen
                                 bool nameExists = false;
                                 getAllTypeEntities(
                                         MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getOwnerUsername(),
                                         "attributeTemplate")
                                     .then((value) {
                                   final data = jsonDecode(value);
                                   for (final template in data) {
-                                    if (template["name"] ==
+                                    if (template["name"]
+                                            .toString()
+                                            .toLowerCase() ==
                                         widget.attributeTemplateNameController
-                                            .text) {
+                                            .text
+                                            .toLowerCase()) {
                                       nameExists = true;
                                       showAlertDiaglog(
                                           context,
@@ -507,12 +510,13 @@ Widget buildEventScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "storyEvent")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final event in data) {
-                                  if (event["name"] == nameController.text) {
+                                  if (event["name"].toString().toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,
@@ -643,12 +647,15 @@ Widget buildLocationScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "location")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final location in data) {
-                                  if (location["name"] == nameController.text) {
+                                  if (location["name"]
+                                          .toString()
+                                          .toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,
@@ -786,13 +793,15 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "character")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final character in data) {
-                                  if (character["name"] ==
-                                      nameController.text) {
+                                  if (character["name"]
+                                          .toString()
+                                          .toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,

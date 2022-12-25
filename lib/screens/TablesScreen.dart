@@ -46,7 +46,7 @@ class _TablesScreenState extends State<TablesScreen> {
                             widget.nameOfTable = 'Characters';
                             getAllTypeEntities(
                                     MyApp.bookManager.getBookName(),
-                                    MyApp.userManager.getCurrentUsername(),
+                                    MyApp.bookManager.getOwnerUsername(),
                                     'character')
                                 .then((value) {
                               final data = jsonDecode(value);
@@ -65,7 +65,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               widget.nameOfTable = 'Locations';
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       'location')
                                   .then((value) {
                                 final data = jsonDecode(value);
@@ -83,7 +83,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               widget.nameOfTable = 'Custom';
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       'userDefined')
                                   .then((value) {
                                 final data = jsonDecode(value);
@@ -101,7 +101,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               widget.nameOfTable = 'Attribute Templates';
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       'atrributeTemplate')
                                   .then((value) {
                                 final data = jsonDecode(value);
@@ -119,7 +119,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               widget.nameOfTable = 'Events';
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       'storyEvent')
                                   .then((value) {
                                 final data = jsonDecode(value);
@@ -150,7 +150,7 @@ class _TablesScreenState extends State<TablesScreen> {
                                               widget.nameOfTable))));
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       getType(widget.nameOfTable))
                                   .then((value) {
                                 final data = jsonDecode(value);
