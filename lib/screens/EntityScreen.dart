@@ -62,6 +62,7 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildCharacterScreen(BuildContext context, String title) {
     if (firstTimeFlag) {
       Text name = widget.content[0].child;
+      relations = [];
       getEntity(MyApp.bookManager.getOwnerUsername(),
               MyApp.bookManager.getBookName(), name.data)
           .then((value) {
@@ -72,7 +73,6 @@ class _EntityScreenState extends State<EntityScreen> {
         genderController.text = data['gender'];
         traitsController.text = data['personalityTraits'];
         appearanceController.text = data['appearanceTraits'];
-        relations = data['relations'];
         setState(() {});
         firstTimeFlag = false;
       });
