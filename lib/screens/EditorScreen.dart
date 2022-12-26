@@ -159,7 +159,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       textColor: Colors.black87,
                       onTap: () {
                         getAllTypeEntities(MyApp.bookManager.getBookName(),
-                                MyApp.userManager.getCurrentUsername(), 'storyEvent')
+                                MyApp.bookManager.getOwnerUsername(), 'storyEvent')
 
                             .then((value) {
                           final data = jsonDecode(value);

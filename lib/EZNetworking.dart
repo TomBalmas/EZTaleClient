@@ -131,6 +131,15 @@ Future<String> getAllTypeEntities(
   return response.body;
 }
 
+Future<String> getAllEntities(
+    String bookName, String username) async {
+  var url = Uri.parse(kServerURL + '/entity/getall');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 Future<String> savePage(
     String username, String bookName, String page, String content) async {
   var url = Uri.parse(kServerURL + '/story/savepage');
