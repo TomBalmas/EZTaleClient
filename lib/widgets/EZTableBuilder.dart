@@ -18,6 +18,7 @@ class BuildTable extends StatefulWidget {
   });
   final nameOfTable;
   var tableContent;
+  bool coWritersFlag = false;
 
   @override
   _BuildTable createState() => _BuildTable();

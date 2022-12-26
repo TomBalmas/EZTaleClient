@@ -5,8 +5,15 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class EZDrawer extends StatelessWidget {
+
+
+
+ 
+
   @override
   Widget build(BuildContext context) {
+
+    
     return Theme(
       data: Theme.of(context).copyWith(
           // Set the transparency here

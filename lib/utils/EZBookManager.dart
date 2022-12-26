@@ -16,14 +16,6 @@ class EZBookManager {
     return _username;
   }
 
-  getCoWriters() {
-    var res;
-    getBookCoWriters(_username, _bookName).then((value) {
-      final data = jsonDecode(value);
-      res = data;
-    });
-    return res;
-  }
 
   void setBook(String userName, String bookName) {
     _bookName = bookName;
