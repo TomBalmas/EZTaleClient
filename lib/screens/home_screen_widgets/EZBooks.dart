@@ -1,9 +1,9 @@
 import 'package:ez_tale/main.dart';
 
 class EZBook {
-  final String title, description, type;
+  final String title, description, type, owner;
 
-  EZBook({this.title, this.description, this.type});
+  EZBook({this.title, this.description, this.type,this.owner});
 }
 
 List demoEZBooks = [

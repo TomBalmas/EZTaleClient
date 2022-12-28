@@ -110,15 +110,28 @@ class _BookInfoCardState extends State<BookInfoCard> {
         details.globalPosition.dy,
       ),
       items: [
-        PopupMenuItem<String>(child: const Text('Edit'), value: 'edit'),
-        PopupMenuItem<String>(child: const Text('Delete'), value: 'delete')
+        if (bookInfo.type != 'Co-Book')
+          PopupMenuItem<String>(child: const Text('Edit'), value: 'edit')
+        else
+          PopupMenuItem<String>(child: const Text('Watch'), value: 'watch'),
+        if (bookInfo.type != 'Co-Book')
+          PopupMenuItem<String>(child: const Text('Delete'), value: 'delete')
+        else
+          PopupMenuItem<String>(child: const Text('Add'), value: 'add'),
       ],
       elevation: 8.0,
     ).then<void>((String itemSelected) {
       if (itemSelected == null) return;
       if (itemSelected == 'edit') {
-        MyApp.bookManager
-            .setBook(MyApp.userManager.getCurrentUsername(), bookInfo.title);
+        MyApp.bookManager.setBook(bookInfo.owner, bookInfo.title);
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) =>
+                    EditorScreen())); //add build book, entities
+      }
+        else if (itemSelected == 'watch') {
+        MyApp.bookManager.setBook(bookInfo.owner, bookInfo.title);
         Navigator.push(
             context,
             CupertinoPageRoute(
@@ -189,16 +202,14 @@ class _BookInfoCardState extends State<BookInfoCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Description: \n' +
-                widget.bookInfo.description,
+                'Description: \n' + widget.bookInfo.description,
                 style: Theme.of(context)
                     .textTheme
                     .caption
                     .copyWith(color: Colors.white70),
               ),
               Text(
-                'Type: \n' +
-                widget.bookInfo.type,
+                'Type: \n' + widget.bookInfo.type,
                 style: Theme.of(context)
                     .textTheme
                     .caption

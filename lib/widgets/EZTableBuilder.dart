@@ -15,11 +15,10 @@ class BuildTable extends StatefulWidget {
     key,
     this.nameOfTable,
     this.tableContent,
-    this.secondaryUseFlag = false,
   });
   final nameOfTable;
   var tableContent;
-  var secondaryUseFlag;
+  bool coWritersFlag = false;
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -27,104 +26,132 @@ class BuildTable extends StatefulWidget {
 
 class _BuildTable extends State<BuildTable> {
   bool nameFlag = true;
+  int _currentSortColumn = 0;
+  bool _isAscending = true;
+  List<DataColumn> columns = [];
+  List<DataRow> rows = [];
+  List<Text> cells;
+  bool sortFlag = false;
+
   @override
   Widget build(BuildContext context) {
-    List<DataColumn> columns = [];
-    List<DataRow> rows = [];
-    List<Text> cells;
-    String participants = '';
-    switch (widget.nameOfTable) {
-      case 'Characters':
-        columns.add(createColumn('Name'));
-        columns.add(createColumn('Surename'));
-        columns.add(createColumn('Age'));
-        columns.add(createColumn('Gender'));
-        if (!widget.secondaryUseFlag) columns.add(createColumn('Delete'));
-        for (final character in widget.tableContent) {
-          cells = [];
-          cells.add(Text(character["name"]));
-          cells.add(Text(checkEmptyField(character["surename"])));
-          cells.add(Text(checkEmptyField(character["age"].toString())));
-          cells.add(Text(checkEmptyField(character["gender"])));
-          if (!widget.secondaryUseFlag) cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Locations':
-        columns.add(createColumn('Name'));
-        columns.add(createColumn('Description'));
-        columns.add(createColumn('Delete'));
-        for (final location in widget.tableContent) {
-          cells = [];
-          cells.add(Text(checkEmptyField(location["name"])));
-          if (checkEmptyField(location["vista"]).length > 150)
-            cells.add(Text(location["vista"].substring(0, 150) + '...'));
-          else
-            cells.add(Text(checkEmptyField(location["vista"])));
-          cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Conversations':
-        columns.add(createColumn('Name'));
-        columns.add(createColumn('Participants'));
-        columns.add(createColumn('Delete'));
-        for (final conversation in widget.tableContent) {
-          cells = [];
-          cells.add(Text(conversation["name"]));
-          if (conversation["participants"].length == 0)
-            cells.add(Text('-'));
-          else {
-            for (final participant in conversation["participants"])
-              participants += participant["name"];
-            cells.add(Text(participants));
+    if (!sortFlag) {
+      columns = [];
+      rows = [];
+      _currentSortColumn = 0;
+      switch (widget.nameOfTable) {
+        case 'Characters':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Surename'));
+          columns.add(createColumn('Age'));
+          columns.add(createColumn('Gender'));
+          columns.add(createColumn('Delete'));
+          for (final character in widget.tableContent) {
+            cells = [];
+            cells.add(Text(character["name"]));
+            cells.add(Text(checkEmptyField(character["surename"])));
+            cells.add(Text(checkEmptyField(character["age"].toString())));
+            cells.add(Text(checkEmptyField(character["gender"])));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
           }
-          cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Custom':
-        columns.add(createColumn('Name'));
-        for (final customEntity in widget.tableContent) {
-          cells = [];
-          cells.add(Text(customEntity["name"]));
-          cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Attribute Templates':
-        columns.add(createColumn('Name'));
-        for (final template in widget.tableContent) {
-          cells = [];
-          cells.add(template["name"]);
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Events':
-        columns.add(createColumn('Name'));
-        columns.add(createColumn('Description'));
-        for (final event in widget.tableContent) {
-          cells = [];
-          cells.add(event["name"]);
-          cells.add(event["desc"]);
-          rows.add(createRow(cells));
-        }
-        break;
-      case 'Co-writers':
-        columns.add(createColumn('Task'));
-        columns.add(createColumn('DeadLine'));
-        columns.add(createColumn(' '));
-        for (final writer in widget.tableContent) {
-          cells = [];
-          cells.add(Text(writer["task"]));
-          cells.add(Text(writer["deadline"]));
-          cells.add(Text('X'));
-          rows.add(createRow(cells));
-        }
-        break;
+          break;
+        case 'Locations':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Description'));
+          columns.add(createColumn('Delete'));
+          for (final location in widget.tableContent) {
+            cells = [];
+            cells.add(Text(location["name"]));
+            if (checkEmptyField(location["vista"]).length > 150)
+              cells.add(Text(location["vista"].substring(0, 150) + '...'));
+            else
+              cells.add(Text(checkEmptyField(location["vista"])));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Custom':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Delete'));
+          for (final customEntity in widget.tableContent) {
+            cells = [];
+            cells.add(Text(customEntity["name"]));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Attribute Templates':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Delete'));
+          for (final template in widget.tableContent) {
+            cells = [];
+            cells.add(Text(template["name"]));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Events':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Description'));
+          columns.add(createColumn('Delete'));
+          for (final event in widget.tableContent) {
+            cells = [];
+            cells.add(Text(checkEmptyField(event["name"])));
+            cells.add(Text(checkEmptyField(event["desc"])));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Co-writers':
+          columns.add(createColumn('Task'));
+          columns.add(createColumn('DeadLine'));
+          columns.add(createColumn(' '));
+          for (final writer in widget.tableContent) {
+            cells = [];
+            cells.add(Text(writer["task"]));
+            cells.add(Text(writer["deadline"]));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Relations':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Type'));
+          columns.add(createColumn('Remove'));
+          for (final entity in widget.tableContent) {
+            cells = [];
+            cells.add(Text(entity["name"]));
+            if (entity["type"] == 'storyEvent')
+              cells.add(Text('event'));
+            else
+              cells.add(Text(entity["type"]));
+            cells.add(Text('X'));
+            rows.add(createRow(cells));
+          }
+          break;
+        case 'Choose Relations':
+          columns.add(createColumn('Name'));
+          columns.add(createColumn('Type'));
+          for (final entity in widget.tableContent) {
+            cells = [];
+            cells.add(Text(entity["name"]));
+            if (entity["type"] == 'storyEvent')
+              cells.add(Text('event'));
+            else
+              cells.add(Text(entity["type"]));
+            rows.add(createRow(cells));
+          }
+          break;
+      }
     }
-
-    return DataTable(showCheckboxColumn: false, columns: columns, rows: rows);
+    sortFlag = false;
+    return DataTable(
+        showCheckboxColumn: false,
+        columns: columns,
+        rows: rows,
+        sortColumnIndex: _currentSortColumn,
+        sortAscending: _isAscending);
   }
 
   String checkEmptyField(String entity) {
@@ -138,6 +165,7 @@ class _BuildTable extends State<BuildTable> {
       return entity;
   }
 
+  // ignore: missing_return
   DataRow createRow(List<Text> widgetCells) {
     String entityName;
     List<DataCell> datacCells = [];
@@ -146,9 +174,9 @@ class _BuildTable extends State<BuildTable> {
         entityName = cell.data;
         nameFlag = false;
       }
-      if (cell.data == 'X') {
+      if (cell.data == 'X' && widget.nameOfTable != 'Relations') {
         datacCells.add(DataCell(cell, onTap: (() {
-          deleteEntity(MyApp.userManager.getCurrentUsername(),
+          deleteEntity(MyApp.bookManager.getOwnerUsername(),
                   MyApp.bookManager.getBookName(), entityName)
               .then((value) {
             final data = jsonDecode(value);
@@ -158,7 +186,7 @@ class _BuildTable extends State<BuildTable> {
                 Navigator.pop(context, 'OK');
                 getAllTypeEntities(
                         MyApp.bookManager.getBookName(),
-                        MyApp.userManager.getCurrentUsername(),
+                        MyApp.bookManager.getOwnerUsername(),
                         getType(widget.nameOfTable))
                     .then((value) {
                   final data = jsonDecode(value);
@@ -169,13 +197,24 @@ class _BuildTable extends State<BuildTable> {
           });
         })));
         nameFlag = true;
+      } else if (cell.data == 'X' && widget.nameOfTable == 'Relations') {
+        datacCells.add(DataCell(cell, onTap: () {
+          Text name = datacCells[0].child, type = datacCells[1].child;
+          for (final relation in relations)
+            if (relation['name'] == name.data && relation['type'] == type.data) {
+              relations.remove(relation);
+              break;
+            }
+          setState(() {});
+        }));
       } else
         datacCells.add(DataCell(cell));
     }
-    return DataRow(
-      cells: datacCells,
-      onSelectChanged: (selected) async {
-        if (!widget.secondaryUseFlag) {
+    if (widget.nameOfTable != 'Relations' &&
+        widget.nameOfTable != 'Choose Relations')
+      return DataRow(
+        cells: datacCells,
+        onSelectChanged: (selected) async {
           await Navigator.push(
               context,
               CupertinoPageRoute(
@@ -186,23 +225,64 @@ class _BuildTable extends State<BuildTable> {
                       )));
           getAllTypeEntities(
                   MyApp.bookManager.getBookName(),
-                  MyApp.userManager.getCurrentUsername(),
+                  MyApp.bookManager.getOwnerUsername(),
                   getType(widget.nameOfTable))
               .then((value) {
             final data = jsonDecode(value);
             widget.tableContent = data;
             setState(() {});
           });
-        } else {
-          //TODO: add participants to conversation using a list
-        }
-      },
+        },
+      );
+    else if (widget.nameOfTable == 'Choose Relations') {
+      Text name = datacCells[0].child, type = datacCells[1].child;
+      return DataRow(
+        cells: datacCells,
+        onSelectChanged: (selected) {
+          relations.add({'name': name.data, 'type': type.data});
+          Navigator.pop(context);
+        },
+      );
+    } else if (widget.nameOfTable == 'Relations') {
+      return DataRow(
+        cells: datacCells,
+      );
+    }
+  }
+
+  DataColumn createColumn(String name) {
+    if (name != 'Delete' && name != 'Remove')
+      return DataColumn(
+        label: Text(name,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        onSort: (columnIndex, ascending) {
+          sortFlag = true;
+          _currentSortColumn = columnIndex;
+          if (rows.isNotEmpty) {
+            if (_isAscending == true) {
+              _isAscending = false;
+              // sort the list in Ascending, order by name
+              rows.sort((nameA, nameB) => nameB.cells[columnIndex].child
+                  .toString()
+                  .toLowerCase()
+                  .compareTo(
+                      nameA.cells[columnIndex].child.toString().toLowerCase()));
+            } else {
+              _isAscending = true;
+              // sort the list in Descending, order by name
+              rows.sort((nameA, nameB) => nameA.cells[columnIndex].child
+                  .toString()
+                  .toLowerCase()
+                  .compareTo(
+                      nameB.cells[columnIndex].child.toString().toLowerCase()));
+            }
+            setState(() {});
+          }
+        },
+      );
+    return DataColumn(
+      label: Text(name,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
     );
   }
-}
-
-DataColumn createColumn(String name) {
-  return DataColumn(
-      label: Text(name,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
 }

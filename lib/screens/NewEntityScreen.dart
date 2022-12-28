@@ -3,25 +3,21 @@ import 'dart:convert';
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
-import 'package:ez_tale/widgets/EZTableBuilder.dart';
 import 'package:flutter/material.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZNewEntityTextField.dart';
 import '../widgets/Widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
-import 'TablesScreen.dart';
-
 final Map<String, String> newMap = {
-  "username": MyApp.userManager.getCurrentUsername(),
+  "username": MyApp.bookManager.getOwnerUsername(),
   "bookName": MyApp.bookManager.getBookName(),
 };
 
 // ignore: must_be_immutable
 class NewEntityScreen extends StatefulWidget {
-  NewEntityScreen({key, @required this.nameOfEntity, this.tableContent});
+  NewEntityScreen({key, @required this.nameOfEntity});
   final nameOfEntity;
-  var tableContent;
 
   var firstTimeFlag = true;
   List<Widget> attributeWidgets = [];
@@ -43,8 +39,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
       return buildCharacterScreen(context, widget.nameOfEntity);
     if (widget.nameOfEntity == 'New Location')
       return buildLocationScreen(context, widget.nameOfEntity);
-    if (widget.nameOfEntity == 'New Conversation')
-      return buildConversationScreen(context, widget.nameOfEntity);
     if (widget.nameOfEntity == 'New Custom Entity') return buildCustomScreen();
     if (widget.nameOfEntity == 'New Event')
       return buildEventScreen(context, widget.nameOfEntity);
@@ -152,14 +146,17 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                 bool nameExists = false;
                                 getAllTypeEntities(
                                         MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getOwnerUsername(),
                                         "userDefined")
                                     .then((value) {
                                   final data = jsonDecode(value);
                                   for (final customEntity in data) {
-                                    if (customEntity["name"] ==
+                                    if (customEntity["name"]
+                                            .toString()
+                                            .toLowerCase() ==
                                         widget.attributeTemplateNameController
-                                            .text) {
+                                            .text
+                                            .toLowerCase()) {
                                       nameExists = true;
                                       showAlertDiaglog(
                                           context,
@@ -356,14 +353,17 @@ Builds the "New Attribute Template" screen
                                 bool nameExists = false;
                                 getAllTypeEntities(
                                         MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
+                                        MyApp.bookManager.getOwnerUsername(),
                                         "attributeTemplate")
                                     .then((value) {
                                   final data = jsonDecode(value);
                                   for (final template in data) {
-                                    if (template["name"] ==
+                                    if (template["name"]
+                                            .toString()
+                                            .toLowerCase() ==
                                         widget.attributeTemplateNameController
-                                            .text) {
+                                            .text
+                                            .toLowerCase()) {
                                       nameExists = true;
                                       showAlertDiaglog(
                                           context,
@@ -411,148 +411,6 @@ Builds the "New Attribute Template" screen
                                         .attributeTemplateNameController
                                         .text
                                         .isEmpty) {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Name must be filled.",
-                                          () => Navigator.pop(context, 'OK'));
-                                    }
-                                  });
-                                });
-                              })
-                        ]),
-                  ),
-                ]))));
-  }
-
-/*
-Builds the "New Conversation" screen
-*/
-  Widget buildConversationScreen(BuildContext context, String title) {
-    TextEditingController nameController = new TextEditingController();
-    BuildTable table = BuildTable(
-        nameOfTable: 'Characters',
-        tableContent: widget.tableContent,
-        secondaryUseFlag: true);
-    return Scaffold(
-        drawer: EZDrawer(),
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Container(
-            child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: TextStyle(fontSize: 64, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    flex: 6,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                EZEntityTextField(
-                                  hintText: 'Name of conversation',
-                                  inputType: TextInputType.name,
-                                  controller: nameController,
-                                ),
-                                Text(
-                                  'Participants:',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.grey),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 16),
-                                Expanded(
-                                    child:
-                                        ListView(children: [Text('this time')]))
-                                //TODO: add participants
-                              ])),
-                          Expanded(
-                              child: Column(
-                            children: [
-                              Text(
-                                'Choose participants:',
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
-                              ),
-                              Expanded(child: ListView(children: [table]))
-                            ],
-                          ))
-                        ]),
-                  ),
-                  Expanded(
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BuildButton(
-                            name: 'Back',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            width: 100,
-                          ),
-                          BuildButton(
-                              name: 'Save',
-                              bgColor: Color.fromRGBO(0, 173, 181, 100),
-                              textColor: Colors.black87,
-                              width: 100,
-                              onTap: () {
-                                bool nameExists = false;
-                                getAllTypeEntities(
-                                        MyApp.bookManager.getBookName(),
-                                        MyApp.userManager.getCurrentUsername(),
-                                        "conversation")
-                                    .then((value) {
-                                  final data = jsonDecode(value);
-                                  for (final conversation in data) {
-                                    if (conversation["name"] ==
-                                        nameController.text) {
-                                      nameExists = true;
-                                      showAlertDiaglog(
-                                          context,
-                                          "Error",
-                                          "Conversation " +
-                                              nameController.text +
-                                              " already exists.", () {
-                                        Navigator.pop(context, 'OK');
-                                      });
-                                      break;
-                                    }
-                                  }
-                                  if (nameExists) return;
-                                  final Map<String, String> newConversation =
-                                      newMap;
-                                  newConversation["type"] = "conversation";
-                                  newConversation["name"] = nameController.text;
-                                  // TODO: add participant selection.
-                                  saveEntity(newConversation).then((value) {
-                                    final data = jsonDecode(value);
-                                    if (data['msg'] == 'Successfully saved') {
-                                      showAlertDiaglog(
-                                          context,
-                                          "Save Successeful",
-                                          "Conversation " +
-                                              nameController.text +
-                                              " has been saved.",
-                                          () => {
-                                                Navigator.pop(context, 'OK'),
-                                                Navigator.pop(context)
-                                              });
-                                    } else if (nameController.text.isEmpty) {
                                       showAlertDiaglog(
                                           context,
                                           "Error",
@@ -652,12 +510,13 @@ Widget buildEventScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "storyEvent")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final event in data) {
-                                  if (event["name"] == nameController.text) {
+                                  if (event["name"].toString().toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,
@@ -788,12 +647,15 @@ Widget buildLocationScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "location")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final location in data) {
-                                  if (location["name"] == nameController.text) {
+                                  if (location["name"]
+                                          .toString()
+                                          .toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,
@@ -931,13 +793,15 @@ Widget buildCharacterScreen(BuildContext context, String title) {
                               bool nameExists = false;
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
-                                      MyApp.userManager.getCurrentUsername(),
+                                      MyApp.bookManager.getOwnerUsername(),
                                       "character")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 for (final character in data) {
-                                  if (character["name"] ==
-                                      nameController.text) {
+                                  if (character["name"]
+                                          .toString()
+                                          .toLowerCase() ==
+                                      nameController.text.toLowerCase()) {
                                     nameExists = true;
                                     showAlertDiaglog(
                                         context,
