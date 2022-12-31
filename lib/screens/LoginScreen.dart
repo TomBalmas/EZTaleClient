@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../EZNetworking.dart';
 import 'Screens.dart';
 
-
 // Uses full-screen breakpoints to reflow the widget tree
 class LoginScreen extends StatelessWidget {
   @override
@@ -76,6 +75,7 @@ class _LoginScreenState extends State<_LoginForm> {
   Widget build(BuildContext context) {
     // When login button is pressed, show the Dashboard page.
     void handleLoginPressed() => context.read<AppModel>().login();
+    var booksList;
 
     // Example Form, pressing the login button will show the Dashboard page
     return Center(
@@ -113,12 +113,12 @@ class _LoginScreenState extends State<_LoginForm> {
                     if (emailController.text == '1' &&
                         passwordContoller.text == '1') {
                       MyApp.userManager.setCurrentUser('1', '1');
+                      booksList = MyApp.userManager.getUserStoriesList();
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => HomeScreen(
-                                    booksList:
-                                        MyApp.userManager.getUserStoriesList(),
+                                    booksList: booksList,
                                   )));
                       return;
                     }

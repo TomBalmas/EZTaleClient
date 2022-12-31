@@ -240,6 +240,7 @@ class _BuildTable extends State<BuildTable> {
         cells: datacCells,
         onSelectChanged: (selected) {
           relations.add({'name': name.data, 'type': type.data});
+          //TODO: stopped here
           Navigator.pop(context);
         },
       );
