@@ -11,13 +11,15 @@ import '../screens/TablesScreen.dart';
 
 // ignore: must_be_immutable
 class BuildTable extends StatefulWidget {
-  BuildTable({
-    key,
-    this.nameOfTable,
-    this.tableContent,
-  });
+  BuildTable(
+      {key,
+      this.nameOfTable,
+      this.tableContent,
+      this.entityName,
+      this.entityType});
   final nameOfTable;
   var tableContent;
+  String entityName, entityType;
   bool coWritersFlag = false;
 
   @override
@@ -201,7 +203,8 @@ class _BuildTable extends State<BuildTable> {
         datacCells.add(DataCell(cell, onTap: () {
           Text name = datacCells[0].child, type = datacCells[1].child;
           for (final relation in relations)
-            if (relation['name'] == name.data && relation['type'] == type.data) {
+            if (relation['name'] == name.data &&
+                relation['type'] == type.data) {
               relations.remove(relation);
               break;
             }
@@ -240,7 +243,13 @@ class _BuildTable extends State<BuildTable> {
         cells: datacCells,
         onSelectChanged: (selected) {
           relations.add({'name': name.data, 'type': type.data});
-          //TODO: stopped here
+          addRelation(
+              MyApp.bookManager.getOwnerUsername(),
+              MyApp.bookManager.getBookName(),
+              widget.entityName,
+              widget.entityType,
+              name.data,
+              type.data);
           Navigator.pop(context);
         },
       );

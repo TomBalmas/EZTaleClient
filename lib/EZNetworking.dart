@@ -278,7 +278,7 @@ Future<String> getCoStories(String username) async {
 
 Future<String> addRelation(String username, String bookName, String name,
     String type, String relateTo, String relateToType) async {
-  var url = Uri.parse(kServerURL + '/entity/addRelation');
+  var url = Uri.parse(kServerURL + '/entity/addrelation');
   Map<String, String> body;
   body = {
     'username': username,
@@ -294,7 +294,7 @@ Future<String> addRelation(String username, String bookName, String name,
 
 Future<String> deleteRelation(String username, String bookName, String name,
     String type, String relateTo, String relateToType) async {
-  var url = Uri.parse(kServerURL + '/entity/deleteRelation');
+  var url = Uri.parse(kServerURL + '/entity/deleterelation');
   Map<String, String> body;
   body = {
     'username': username,
