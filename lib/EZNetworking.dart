@@ -177,10 +177,10 @@ Future<String> deleteBook(String username, String bookName) async {
   return response.body;
 }
 
-Future<String> getEntity(String username, String bookName, String name) async {
+Future<String> getEntity(String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name};
+  body = {'username': username, 'bookName': bookName, 'name': name, 'type': type};
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -192,10 +192,10 @@ Future<String> saveEntity(Map<String, String> map) async {
 }
 
 Future<String> deleteEntity(
-    String username, String bookName, String name) async {
+    String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/deleteentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name};
+  body = {'username': username, 'bookName': bookName, 'name': name, 'type' : type};
   var response = await http.post(url, body: body);
   return response.body;
 }
