@@ -102,7 +102,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               getAllTypeEntities(
                                       MyApp.bookManager.getBookName(),
                                       MyApp.bookManager.getOwnerUsername(),
-                                      'atrributeTemplate')
+                                      "attributeTemplate")
                                   .then((value) {
                                 final data = jsonDecode(value);
                                 widget.tableContent = data;
@@ -206,7 +206,7 @@ String getType(String tableName) {
   if (tableName == 'Characters') return 'character';
   if (tableName == 'Locations') return 'location';
   if (tableName == 'Custom') return 'userDefined';
-  if (tableName == 'Attribute Templates') return 'atrributeTemplate';
+  if (tableName == 'Attribute Templates') return 'attributeTemplate';
   if (tableName == 'Events') return 'storyEvent';
   return null;
 }

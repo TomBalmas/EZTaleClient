@@ -60,11 +60,13 @@ class _EntityScreenState extends State<EntityScreen> {
 */
 
   Widget buildCharacterScreen(BuildContext context, String title) {
+    Text name = widget.content[0].child;
+    String type = 'character';
     if (firstTimeFlag) {
-      Text name = widget.content[0].child;
+      name = widget.content[0].child;
       relations = [];
       getEntity(MyApp.bookManager.getOwnerUsername(),
-              MyApp.bookManager.getBookName(), name.data)
+              MyApp.bookManager.getBookName(), name.data, type)
           .then((value) {
         final data = jsonDecode(value);
         nameController.text = data['name'];
@@ -197,8 +199,11 @@ class _EntityScreenState extends State<EntityScreen> {
                                 Expanded(
                                     child: ListView(children: [
                                   BuildTable(
-                                      nameOfTable: 'Relations',
-                                      tableContent: relations)
+                                    nameOfTable: 'Relations',
+                                    tableContent: relations,
+                                    entityName: name.data,
+                                    entityType: type,
+                                  )
                                 ]))
                               ],
                             ))
@@ -238,7 +243,8 @@ class _EntityScreenState extends State<EntityScreen> {
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    editMap['name']);
+                                    editMap['name'],
+                                    editMap['type']);
                                 saveEntity(editMap).then((value) {
                                   showAlertDiaglog(
                                       context,
@@ -263,8 +269,9 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildLocationScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'location';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
@@ -368,7 +375,10 @@ class _EntityScreenState extends State<EntityScreen> {
                       Expanded(
                           child: ListView(children: [
                         BuildTable(
-                            nameOfTable: 'Relations', tableContent: relations)
+                            nameOfTable: 'Relations',
+                            tableContent: relations,
+                            entityName: name.data,
+                            entityType: type)
                       ]))
                     ],
                   ))
@@ -397,7 +407,8 @@ class _EntityScreenState extends State<EntityScreen> {
                               deleteEntity(
                                   MyApp.bookManager.getOwnerUsername(),
                                   MyApp.bookManager.getBookName(),
-                                  nameController.text);
+                                  nameController.text,
+                                  'location');
                               final Map<String, String> newLocation = newMap;
                               newLocation["type"] = "location";
                               newLocation["name"] = nameController.text;
@@ -431,8 +442,9 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildEventScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'storyEvent';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
@@ -537,7 +549,10 @@ class _EntityScreenState extends State<EntityScreen> {
                         Expanded(
                             child: ListView(children: [
                           BuildTable(
-                              nameOfTable: 'Relations', tableContent: relations)
+                              nameOfTable: 'Relations',
+                              tableContent: relations,
+                              entityName: name.data,
+                              entityType: type)
                         ]))
                       ],
                     ))
@@ -566,7 +581,8 @@ class _EntityScreenState extends State<EntityScreen> {
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    nameController.text);
+                                    nameController.text,
+                                    'storyEvent');
                                 final Map<String, String> newLocation = newMap;
                                 newLocation["type"] = "storyEvent";
                                 newLocation["name"] = nameController.text;
