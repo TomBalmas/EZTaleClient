@@ -73,6 +73,9 @@ class _EntityScreenState extends State<EntityScreen> {
         genderController.text = data['gender'];
         traitsController.text = data['personalityTraits'];
         appearanceController.text = data['appearanceTraits'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       });
@@ -232,7 +235,6 @@ class _EntityScreenState extends State<EntityScreen> {
                                     appearanceController.text;
                                 editMap["age"] = ageController.text;
                                 editMap["gender"] = genderController.text;
-                                editMap["relations"] = relations.toString();
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
@@ -267,9 +269,12 @@ class _EntityScreenState extends State<EntityScreen> {
       final data = jsonDecode(value);
       nameController.text = data['name'];
       if (firstTimeFlag) {
+        relations = [];
         data['vista'] = data['vista'].substring(0, data['vista'].length - 1);
         quillController.document.insert(0, data['vista']);
-        relations = data['relations'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       }
@@ -432,9 +437,12 @@ class _EntityScreenState extends State<EntityScreen> {
       final data = jsonDecode(value);
       nameController.text = data['name'];
       if (firstTimeFlag) {
+        relations = [];
         data['desc'] = data['desc'].substring(0, data['desc'].length - 1);
         quillController.document.insert(0, data['desc']);
-        relations = data['relations'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       }

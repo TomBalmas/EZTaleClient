@@ -205,6 +205,14 @@ class _BuildTable extends State<BuildTable> {
           for (final relation in relations)
             if (relation['name'] == name.data &&
                 relation['type'] == type.data) {
+              deleteRelation(
+                  MyApp.bookManager.getOwnerUsername(),
+                  MyApp.bookManager.getBookName(),
+                  name.data,
+                  type.data,
+                  name.data,
+                  type.data);
+
               relations.remove(relation);
               break;
             }
@@ -213,6 +221,9 @@ class _BuildTable extends State<BuildTable> {
       } else
         datacCells.add(DataCell(cell));
     }
+    /*
+    Table in the Tables screen
+    */
     if (widget.nameOfTable != 'Relations' &&
         widget.nameOfTable != 'Choose Relations')
       return DataRow(

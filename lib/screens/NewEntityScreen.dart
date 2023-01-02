@@ -53,13 +53,15 @@ class _NewEntityScreen extends State<NewEntityScreen> {
   buildCustomScreen() {
     //TODO: fix save button with Tom
     if (widget.firstTimeFlag) {
-      widget.attributeWidgets.add(EZEntityTextField(
-        hintText: 'Entity Name',
-        inputType: TextInputType.name,
-        controller: widget.customNameController,
-        width: 200,
-      ));
-      widget.attributeWidgets.add(SizedBox(width: 800));
+      widget.attributeWidgets.add(Row(children: [
+        EZEntityTextField(
+          hintText: 'Entity Name',
+          inputType: TextInputType.name,
+          controller: widget.customNameController,
+          width: 200,
+        ),
+        SizedBox(width: 600)
+      ]));
       widget.firstTimeFlag = false;
     }
     return Scaffold(
@@ -107,7 +109,8 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                               height: 50,
                               onTap: () {
                                 setState(() {
-                                  widget.attributeWidgets.add(addAttribute());
+                                  widget.attributeWidgets
+                                      .add(addAttributeClicked());
                                   widget.attributeCounter++;
                                 });
                               },
@@ -219,7 +222,7 @@ class _NewEntityScreen extends State<NewEntityScreen> {
 /*
 Adds a new attribute line (name + value + delete button)
 */
-  Widget addAttribute() {
+  Widget addAttributeClicked() {
     TextEditingController nameController = new TextEditingController();
     TextEditingController valueController = new TextEditingController();
     widget.nameControllers.add(nameController);
@@ -268,13 +271,15 @@ Builds the "New Attribute Template" screen
 */
   buildTemplatesScreen() {
     if (widget.firstTimeFlag) {
-      widget.attributeWidgets.add(EZEntityTextField(
-        hintText: 'Template Name',
-        inputType: TextInputType.name,
-        controller: widget.attributeTemplateNameController,
-        width: 200,
-      ));
-      widget.attributeWidgets.add(SizedBox(width: 800));
+      widget.attributeWidgets.add(Row(children: [
+        EZEntityTextField(
+          hintText: 'Template Name',
+          inputType: TextInputType.name,
+          controller: widget.attributeTemplateNameController,
+          width: 200,
+        ),
+        SizedBox(width: 600)
+      ]));
       widget.firstTimeFlag = false;
     }
     return Scaffold(
@@ -314,7 +319,8 @@ Builds the "New Attribute Template" screen
                                 height: 50,
                                 onTap: () {
                                   setState(() {
-                                    widget.attributeWidgets.add(addAttribute());
+                                    widget.attributeWidgets
+                                        .add(addAttributeClicked());
                                     widget.attributeCounter++;
                                   });
                                 },
@@ -350,7 +356,25 @@ Builds the "New Attribute Template" screen
                               textColor: Colors.black87,
                               width: 100,
                               onTap: () {
-                                bool nameExists = false;
+                                bool nameFlag = true;
+                                print('test');
+                                for (final attribute
+                                    in widget.attributeWidgets) {
+                                  if (nameFlag) {
+                                    nameFlag = false;
+                                    continue;
+                                  }
+                                  Row row = attribute;
+                                  for (final field in row.children) {
+                                    if (field is EZEntityTextField) {
+                                      EZEntityTextField text = field;
+                                      TextEditingController textController = text.controller;
+                                      print(textController.text);
+                                    }
+                                  }
+                                }
+                              }
+                              /*    bool nameExists = false;
                                 getAllTypeEntities(
                                         MyApp.bookManager.getBookName(),
                                         MyApp.bookManager.getOwnerUsername(),
@@ -395,6 +419,8 @@ Builds the "New Attribute Template" screen
                                   saveEntity(newTemplate).then((value) {
                                     final data = jsonDecode(value);
                                     if (data['msg'] == 'Successfully saved') {
+                                      for(final attribute in widget.attributeWidgets)
+                                        //addAttribute(MyApp.bookManager.getOwnerUsername(), MyApp.bookManager.getBookName(),newTemplate['name'], newTemplate['type']);
                                       showAlertDiaglog(
                                           context,
                                           "Save Successeful",
@@ -419,7 +445,8 @@ Builds the "New Attribute Template" screen
                                     }
                                   });
                                 });
-                              })
+                              }*/
+                              )
                         ]),
                   ),
                 ]))));
