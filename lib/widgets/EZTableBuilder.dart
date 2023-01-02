@@ -170,6 +170,14 @@ class _BuildTable extends State<BuildTable> {
   // ignore: missing_return
   DataRow createRow(List<Text> widgetCells) {
     String entityName;
+    String tableName = widget.nameOfTable;
+    String type = tableName.toLowerCase().substring(0, tableName.length - 1);
+    if (tableName == 'Custom')
+      type = 'userDefined';
+    else if (tableName == 'Attribute Templates')
+      type = 'attributeTemplate';
+    else if (tableName == 'Events') type = 'storyEvent';
+    print(type);
     List<DataCell> datacCells = [];
     for (Text cell in widgetCells) {
       if (nameFlag) {
@@ -179,7 +187,7 @@ class _BuildTable extends State<BuildTable> {
       if (cell.data == 'X' && widget.nameOfTable != 'Relations') {
         datacCells.add(DataCell(cell, onTap: (() {
           deleteEntity(MyApp.bookManager.getOwnerUsername(),
-                  MyApp.bookManager.getBookName(), entityName)
+                  MyApp.bookManager.getBookName(), entityName, type)
               .then((value) {
             final data = jsonDecode(value);
             if (data['msg'] == 'Entity Deleted')

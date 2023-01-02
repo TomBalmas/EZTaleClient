@@ -66,7 +66,7 @@ class _EntityScreenState extends State<EntityScreen> {
       name = widget.content[0].child;
       relations = [];
       getEntity(MyApp.bookManager.getOwnerUsername(),
-              MyApp.bookManager.getBookName(), name.data)
+              MyApp.bookManager.getBookName(), name.data, type)
           .then((value) {
         final data = jsonDecode(value);
         nameController.text = data['name'];
@@ -243,7 +243,8 @@ class _EntityScreenState extends State<EntityScreen> {
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    editMap['name']);
+                                    editMap['name'],
+                                    editMap['type']);
                                 saveEntity(editMap).then((value) {
                                   showAlertDiaglog(
                                       context,
@@ -270,7 +271,7 @@ class _EntityScreenState extends State<EntityScreen> {
     Text name = widget.content[0].child;
     String type = 'location';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
@@ -406,7 +407,8 @@ class _EntityScreenState extends State<EntityScreen> {
                               deleteEntity(
                                   MyApp.bookManager.getOwnerUsername(),
                                   MyApp.bookManager.getBookName(),
-                                  nameController.text);
+                                  nameController.text,
+                                  'location');
                               final Map<String, String> newLocation = newMap;
                               newLocation["type"] = "location";
                               newLocation["name"] = nameController.text;
@@ -442,7 +444,7 @@ class _EntityScreenState extends State<EntityScreen> {
     Text name = widget.content[0].child;
     String type = 'storyEvent';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
@@ -579,7 +581,8 @@ class _EntityScreenState extends State<EntityScreen> {
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    nameController.text);
+                                    nameController.text,
+                                    'storyEvent');
                                 final Map<String, String> newLocation = newMap;
                                 newLocation["type"] = "storyEvent";
                                 newLocation["name"] = nameController.text;
