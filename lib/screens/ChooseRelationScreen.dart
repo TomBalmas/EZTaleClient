@@ -1,22 +1,18 @@
-import 'dart:convert';
-
-import 'package:ez_tale/screens/NewEntityScreen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../EZNetworking.dart';
-import '../main.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/Widgets.dart';
 
 // ignore: must_be_immutable
 class ChooseRelation extends StatefulWidget {
-  ChooseRelation({
-    key,
-    this.tableContent,
-    this.nameOfTable,
-  });
+  ChooseRelation(
+      {key,
+      this.tableContent,
+      this.nameOfTable,
+      this.entityName,
+      this.entityType});
   var tableContent;
   var nameOfTable;
+  String entityName, entityType;
 
   @override
   State<ChooseRelation> createState() => _ChooseRelationState();
@@ -58,9 +54,17 @@ class _ChooseRelationState extends State<ChooseRelation> {
                         child: ListView(children: [
                       BuildTable(
                           nameOfTable: widget.nameOfTable,
-                          tableContent: widget.tableContent)
+                          tableContent: widget.tableContent,
+                          entityName: widget.entityName,
+                          entityType: createType(widget.entityType))
                     ]))
                   ],
                 ))));
+  }
+
+  String createType(String type) {
+    if (type == 'Event') return 'storyEvent';
+    if (type == 'Custom') return 'userDefined';
+    return type.toLowerCase();
   }
 }

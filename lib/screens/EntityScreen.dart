@@ -182,7 +182,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                       width: 150,
                                       height: 35,
                                       onTap: () {
-                                        addRelation();
+                                        addRelationButton();
                                       })
                                 ]),
                             SizedBox(height: 16),
@@ -355,7 +355,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                 width: 150,
                                 height: 35,
                                 onTap: () {
-                                  addRelation();
+                                  addRelationButton();
                                 }),
                           ]),
                       SizedBox(height: 16),
@@ -521,7 +521,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                   width: 150,
                                   height: 35,
                                   onTap: () {
-                                    addRelation();
+                                    addRelationButton();
                                   }),
                             ]),
                         SizedBox(height: 16),
@@ -618,8 +618,9 @@ and the attribute templates.
     return entities;
   }
 
-  void addRelation() {
+  void addRelationButton() {
     List<dynamic> entities = [];
+    Text entityName = widget.content[0].child;
     getAllEntities(MyApp.bookManager.getBookName(),
             MyApp.bookManager.getOwnerUsername())
         .then((value) async {
@@ -629,7 +630,11 @@ and the attribute templates.
           context,
           CupertinoPageRoute(
               builder: (context) => ChooseRelation(
-                  tableContent: entities, nameOfTable: 'Choose Relations')));
+                    tableContent: entities,
+                    nameOfTable: 'Choose Relations',
+                    entityName: entityName.data,
+                    entityType: widget.type,
+                  )));
       // TODO: Add the relation selected to the "relations"
       setState(() {});
     });
