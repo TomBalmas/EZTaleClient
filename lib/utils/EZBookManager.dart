@@ -16,7 +16,6 @@ class EZBookManager {
     return _username;
   }
 
-
   void setBook(String userName, String bookName) {
     _bookName = bookName;
     _username = userName;

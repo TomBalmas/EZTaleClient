@@ -8,9 +8,18 @@ import 'package:ez_tale/widgets/Widgets.dart';
 import '../constants.dart';
 
 // ignore: must_be_immutable
-class CowritersScreen extends StatelessWidget {
+class CowritersScreen extends StatefulWidget {
+  var deadlines = [];
+  CowritersScreen(this.deadlines);
+
+  @override
+  State<CowritersScreen> createState() => _CowritersScreenState();
+}
+
+class _CowritersScreenState extends State<CowritersScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController codeController = new TextEditingController();
+
   showAlertDiaglog(
       BuildContext context, String alt, String desc, Function func) async {
     showDialog<String>(
@@ -28,10 +37,82 @@ class CowritersScreen extends StatelessWidget {
     );
   }
 
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
+  showNewDeadLinePopUp(BuildContext context, String coWriter) {
+    TextEditingController descriptionController = new TextEditingController();
+    DateTime selectedDate;
+    showDialog<String>(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text(coWriter +' add deadline'),
+              content: Text('Add a new deadline:'),
+              actions: <Widget>[
+                SizedBox(
+                  height: 200,
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: DateTime.now(),
+                    onDateTimeChanged: (DateTime newDateTime) {
+                      selectedDate = newDateTime;
+                      print("writer: " + coWriter);
+                      print(selectedDate);
+                    },
+                  ),
+                ),
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'DeadLine Description'),
+                  controller: descriptionController,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: TextButton(
+                    onPressed: () {
+                      //add the deadline
+                      getEmailByUser(coWriter).then((value) {
+                        final data = jsonDecode(value);
+                        var coEmail = data['msg'];
+                        addDeadLine(
+                                MyApp.userManager.getCurrentUsername(),
+                                MyApp.bookManager.getBookName(),
+                                MyApp.userManager.getCurrentEmail(),
+                                coWriter,
+                                coEmail,
+                                daysBetween(DateTime.now(), selectedDate).toString(),
+                                descriptionController.text)
+                            .then((val) {
+                          if (jsonDecode(val)['success']) {
+                            //move back to cowriters
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => CowritersScreen(widget.deadlines)));
+                          }
+                        });
+                      });
+                    },
+                    child: const Text('Accept'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                )
+              ],
+            );
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     EZComboBox combo = new EZComboBox();
-    
 
     return Scaffold(
         drawer: EZDrawer(),
@@ -55,7 +136,6 @@ class CowritersScreen extends StatelessWidget {
                                   .then((value) {
                                 var userToAdd;
                                 final data = jsonDecode(value);
-
                                 userToAdd = data['username'];
                                 if (data['success'] && userToAdd != null)
                                   addCoWriter(
@@ -73,7 +153,7 @@ class CowritersScreen extends StatelessWidget {
                                           context,
                                           CupertinoPageRoute(
                                               builder: (context) =>
-                                                  CowritersScreen()),
+                                                  CowritersScreen(widget.deadlines)),
                                         );
                                       });
                                     },
@@ -81,12 +161,11 @@ class CowritersScreen extends StatelessWidget {
                                 else {
                                   showAlertDiaglog(context, 'Email not found!',
                                       'Email not found!', () {
-          
                                     Navigator.push(
                                       context,
                                       CupertinoPageRoute(
                                           builder: (context) =>
-                                              CowritersScreen()),
+                                              CowritersScreen(widget.deadlines)),
                                     );
                                   });
                                 }
@@ -110,12 +189,32 @@ class CowritersScreen extends StatelessWidget {
                             SizedBox(width: 400),
                             BuildTable(
                                 nameOfTable: 'Co-writers',
-                                tableContent: [
-                                  {'task': 'rick', 'deadline': '5/5/23'},
-                                  {'task': 'morty', 'deadline': '10/10/10'}
-                                ]),
+                                // tableContent: [
+                                //   {
+                                //     'Co-Writer': 'asdf',
+                                //     'Deadline': 'asdf',
+                                //     'Description': 'asdf'
+                                //   },
+                                //   {
+                                //     'Co-Writer': 'asdf',
+                                //     'Deadline': 'asdf',
+                                //     'Description': 'asdf'
+                                //   }
+                                // ])
+                                // build deadlines table
+                                tableContent: widget.deadlines)
                           ],
                         )),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: EZTextButton(
+                            buttonName: 'Set new deadline',
+                            onTap: () {
+                              var coWriter = combo.getMenuValue();
+                              showNewDeadLinePopUp(context, coWriter);
+                            },
+                            bgColor: bgColor,
+                            textColor: Colors.white)),
                   ]),
                 ))));
   }

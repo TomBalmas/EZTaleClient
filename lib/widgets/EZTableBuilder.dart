@@ -106,14 +106,14 @@ class _BuildTable extends State<BuildTable> {
           }
           break;
         case 'Co-writers':
-          columns.add(createColumn('Task'));
-          columns.add(createColumn('DeadLine'));
-          columns.add(createColumn(' '));
+          columns.add(createColumn('coUsername'));
+          columns.add(createColumn('deadLine'));
+          columns.add(createColumn('description'));
           for (final writer in widget.tableContent) {
             cells = [];
-            cells.add(Text(writer["task"]));
-            cells.add(Text(writer["deadline"]));
-            cells.add(Text('X'));
+            cells.add(Text(writer["coUsername"]));
+            cells.add(Text(writer["deadLine"]));
+            cells.add(Text(writer["description"]));
             rows.add(createRow(cells));
           }
           break;
@@ -262,6 +262,10 @@ class _BuildTable extends State<BuildTable> {
               type.data);
           Navigator.pop(context);
         },
+      );
+    } else if (widget.nameOfTable == 'Co-Writers') {
+      return DataRow(
+        cells: datacCells,
       );
     } else if (widget.nameOfTable == 'Relations') {
       return DataRow(
