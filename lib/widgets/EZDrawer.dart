@@ -1,19 +1,15 @@
+import 'dart:convert';
+
 import 'package:ez_tale/main.dart';
 import 'package:ez_tale/screens/Screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../EZNetworking.dart';
 import '../constants.dart';
 
 class EZDrawer extends StatelessWidget {
-
-
-
- 
-
   @override
   Widget build(BuildContext context) {
-
-    
     return Theme(
       data: Theme.of(context).copyWith(
           // Set the transparency here
@@ -48,10 +44,20 @@ class EZDrawer extends StatelessWidget {
                 title: const Text('Co-Writers',
                     style: TextStyle(color: Colors.white)),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => CowritersScreen()),
+                  getDeadLines(MyApp.userManager.getCurrentUsername(),
+                          MyApp.bookManager.getBookName())
+                      .then(
+                    (value) {
+                      final data = jsonDecode(value);
+                      print(data);
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CowritersScreen(data)),
+                      );
+                    },
                   );
+
                   // Update the state of the app.
                   // ...
                 },

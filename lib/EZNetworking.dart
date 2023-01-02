@@ -230,11 +230,20 @@ Future<String> addNewStory(
 
 Future<String> getUserByEmail(String email) async {
   var url = Uri.parse(kServerURL + '/getuserbyemail');
-  Map<String, String> headers;
-  headers = {'email': email};
-  var response = await http.post(url, headers: headers);
+  Map<String, String> body;
+  body = {'email': email};
+  var response = await http.post(url, body: body);
   return response.body;
 }
+
+Future<String> getEmailByUser(String username) async {
+  var url = Uri.parse(kServerURL + '/getEmailByUsername');
+  Map<String, String> body;
+  body = {'username': username};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 
 // this function add co writer to story
 // and sends a mail to the writer
@@ -308,7 +317,6 @@ Future<String> deleteRelation(String username, String bookName, String name,
   return response.body;
 }
 
-
 Future<String> addAttribute(String username, String bookName, String name,
     String type, String attr, String val) async {
   var url = Uri.parse(kServerURL + '/entity/addatribute');
@@ -325,7 +333,6 @@ Future<String> addAttribute(String username, String bookName, String name,
   return response.body;
 }
 
-
 Future<String> deleteAttribute(String username, String bookName, String name,
     String type, String attr, String val) async {
   var url = Uri.parse(kServerURL + '/entity/deleteattribute');
@@ -337,6 +344,37 @@ Future<String> deleteAttribute(String username, String bookName, String name,
     'attr': attr,
     'val': val,
     'type': type
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getDeadLines(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getDeadlines');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> addDeadLine(
+    String username,
+    String bookName,
+    String email,
+    String coUsername,
+    String coUsernameEmail,
+    String deadLine,
+    String description) async {
+  var url = Uri.parse(kServerURL + '/story/addDeadline');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'email': email,
+    'coUsername': coUsername,
+    'coUsernameEmail': coUsernameEmail,
+    'deadLine':deadLine,
+    'description':description
   };
   var response = await http.post(url, body: body);
   return response.body;
