@@ -285,7 +285,7 @@ Future<String> addRelation(String username, String bookName, String name,
     'bookName': bookName,
     'name': name,
     'relateTo': relateTo,
-    'relateToType': relateToType,
+    'typeRelateTo': relateToType,
     'type': type
   };
   var response = await http.post(url, body: body);
@@ -301,7 +301,7 @@ Future<String> deleteRelation(String username, String bookName, String name,
     'bookName': bookName,
     'name': name,
     'relateTo': relateTo,
-    'relateToType': relateToType,
+    'typeRelateTo': relateToType,
     'type': type
   };
   var response = await http.post(url, body: body);
