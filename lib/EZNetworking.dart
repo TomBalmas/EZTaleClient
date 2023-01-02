@@ -177,10 +177,16 @@ Future<String> deleteBook(String username, String bookName) async {
   return response.body;
 }
 
-Future<String> getEntity(String username, String bookName, String name, String type) async {
+Future<String> getEntity(
+    String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name, 'type': type};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'name': name,
+    'type': type
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -195,7 +201,12 @@ Future<String> deleteEntity(
     String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/deleteentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name, 'type' : type};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'name': name,
+    'type': type
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -243,7 +254,6 @@ Future<String> getEmailByUser(String username) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
-
 
 // this function add co writer to story
 // and sends a mail to the writer
@@ -373,9 +383,26 @@ Future<String> addDeadLine(
     'email': email,
     'coUsername': coUsername,
     'coUsernameEmail': coUsernameEmail,
-    'deadLine':deadLine,
-    'description':description
+    'deadLine': deadLine,
+    'description': description
   };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getMargeRequests(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getMargeRequests');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> deleteMargeRequest(
+    String username, String bookName, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/deleteMargeRequest');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'coUsername': coUsername};
   var response = await http.post(url, body: body);
   return response.body;
 }
