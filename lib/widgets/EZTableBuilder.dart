@@ -177,7 +177,6 @@ class _BuildTable extends State<BuildTable> {
     else if (tableName == 'Attribute Templates')
       type = 'attributeTemplate';
     else if (tableName == 'Events') type = 'storyEvent';
-    print(type);
     List<DataCell> datacCells = [];
     for (Text cell in widgetCells) {
       if (nameFlag) {
@@ -232,7 +231,8 @@ class _BuildTable extends State<BuildTable> {
     Table in the Tables screen
     */
     if (widget.nameOfTable != 'Relations' &&
-        widget.nameOfTable != 'Choose Relations')
+        widget.nameOfTable != 'Choose Relations' &&
+        widget.nameOfTable != 'Co-writers')
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) async {
@@ -271,7 +271,7 @@ class _BuildTable extends State<BuildTable> {
           Navigator.pop(context);
         },
       );
-    } else if (widget.nameOfTable == 'Co-Writers') {
+    } else if (widget.nameOfTable == 'Co-writers') {
       return DataRow(
         cells: datacCells,
       );
