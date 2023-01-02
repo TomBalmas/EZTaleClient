@@ -208,11 +208,10 @@ class _BuildTable extends State<BuildTable> {
               deleteRelation(
                   MyApp.bookManager.getOwnerUsername(),
                   MyApp.bookManager.getBookName(),
-                  name.data,
-                  type.data,
+                  widget.entityName,
+                  widget.entityType,
                   name.data,
                   type.data);
-
               relations.remove(relation);
               break;
             }

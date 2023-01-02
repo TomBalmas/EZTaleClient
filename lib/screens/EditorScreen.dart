@@ -141,7 +141,7 @@ class _EditorScreenState extends State<EditorScreen> {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
                                 MyApp.bookManager.getOwnerUsername(),
-                                'atrributeTemplate')
+                                'attributeTemplate')
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(

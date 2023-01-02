@@ -60,8 +60,10 @@ class _EntityScreenState extends State<EntityScreen> {
 */
 
   Widget buildCharacterScreen(BuildContext context, String title) {
+    Text name = widget.content[0].child;
+    String type = 'character';
     if (firstTimeFlag) {
-      Text name = widget.content[0].child;
+      name = widget.content[0].child;
       relations = [];
       getEntity(MyApp.bookManager.getOwnerUsername(),
               MyApp.bookManager.getBookName(), name.data)
@@ -197,8 +199,11 @@ class _EntityScreenState extends State<EntityScreen> {
                                 Expanded(
                                     child: ListView(children: [
                                   BuildTable(
-                                      nameOfTable: 'Relations',
-                                      tableContent: relations)
+                                    nameOfTable: 'Relations',
+                                    tableContent: relations,
+                                    entityName: name.data,
+                                    entityType: type,
+                                  )
                                 ]))
                               ],
                             ))
@@ -263,6 +268,7 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildLocationScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'location';
     getEntity(MyApp.bookManager.getOwnerUsername(),
             MyApp.bookManager.getBookName(), name.data)
         .then((value) {
@@ -368,7 +374,10 @@ class _EntityScreenState extends State<EntityScreen> {
                       Expanded(
                           child: ListView(children: [
                         BuildTable(
-                            nameOfTable: 'Relations', tableContent: relations)
+                            nameOfTable: 'Relations',
+                            tableContent: relations,
+                            entityName: name.data,
+                            entityType: type)
                       ]))
                     ],
                   ))
@@ -431,6 +440,7 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildEventScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'storyEvent';
     getEntity(MyApp.bookManager.getOwnerUsername(),
             MyApp.bookManager.getBookName(), name.data)
         .then((value) {
@@ -537,7 +547,10 @@ class _EntityScreenState extends State<EntityScreen> {
                         Expanded(
                             child: ListView(children: [
                           BuildTable(
-                              nameOfTable: 'Relations', tableContent: relations)
+                              nameOfTable: 'Relations',
+                              tableContent: relations,
+                              entityName: name.data,
+                              entityType: type)
                         ]))
                       ],
                     ))
