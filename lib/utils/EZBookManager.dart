@@ -6,7 +6,7 @@ class EZBookManager {
 
   String _bookName;
   String _username;
-  var margeRequests = [];
+  var mergeRequests = [];
 
   String getBookName() {
     return _bookName;
@@ -19,15 +19,15 @@ class EZBookManager {
   void setBook(String userName, String bookName) {
     _bookName = bookName;
     _username = userName;
-    getMargeRequests(_username, _bookName).then((value) {
+    getMergeRequests(_username, _bookName).then((value) {
       if (value == "") return;
       final data = jsonDecode(value);
-      margeRequests = data;
+      mergeRequests = data;
     });
   }
 
-  getBookMargeRequests() {
-    return margeRequests;
+  getBookMergeRequests() {
+    return mergeRequests;
   }
 
 // getting the book's page from server

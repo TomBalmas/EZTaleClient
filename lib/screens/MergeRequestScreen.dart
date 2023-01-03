@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 
 import '../widgets/Widgets.dart';
 
-class MargeRequestScreen extends StatefulWidget {
+class MergeRequestScreen extends StatefulWidget {
   @override
-  State<MargeRequestScreen> createState() => _MargeRequestScreenState();
+  State<MergeRequestScreen> createState() => _MergeRequestScreenState();
 }
 
-class _MargeRequestScreenState extends State<MargeRequestScreen> {
+class _MergeRequestScreenState extends State<MergeRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
-          title: Text('Marge Requests'),
+          title: Text('Merge Requests'),
         ),
         body: Container(
           alignment: Alignment.center,
-          child: BuildTable(nameOfTable: 'MargeRequests',
-            tableContent: MyApp.bookManager.getBookMargeRequests(),
+          child: BuildTable(nameOfTable: 'MergeRequests',
+            tableContent: MyApp.bookManager.getBookMergeRequests(),
           ),
 
 

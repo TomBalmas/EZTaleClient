@@ -145,7 +145,7 @@ class _BuildTable extends State<BuildTable> {
             rows.add(createRow(cells));
           }
           break;
-        case 'MargeRequests':
+        case 'MergeRequests':
           columns.add(createColumn('coUsername'));
           columns.add(createColumn('accepted'));
           columns.add(createColumn('     '));
@@ -239,14 +239,14 @@ class _BuildTable extends State<BuildTable> {
           setState(() {});
         }));
       } else if (cell.data == 'Approve' &&
-          widget.nameOfTable == 'MargeRequests') {
-        // TODO: add method accept marge request
-        // with dialog to tell which page to marge from
+          widget.nameOfTable == 'MergeRequests') {
+        // TODO: add method accept merge request
+        // with dialog to tell which page to merge from
 
       } else if (cell.data == 'Disapprove' &&
-          widget.nameOfTable == 'MargeRequests') {
+          widget.nameOfTable == 'MergeRequests') {
         //TODO: delete from requests (unmark)
-        //deleteMargeRequest(MyApp.bookManager.getOwnerUsername(), MyApp.bookManager.getBookName(), coUsername)
+        //deleteMergeRequest(MyApp.bookManager.getOwnerUsername(), MyApp.bookManager.getBookName(), coUsername)
       } else
         datacCells.add(DataCell(cell));
     }
@@ -256,7 +256,7 @@ class _BuildTable extends State<BuildTable> {
     if (widget.nameOfTable != 'Relations' &&
         widget.nameOfTable != 'Choose Relations' &&
         widget.nameOfTable != 'Co-writers' &&
-        widget.nameOfTable != 'MargeRequests')
+        widget.nameOfTable != 'MergeRequests')
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) async {
@@ -303,11 +303,11 @@ class _BuildTable extends State<BuildTable> {
       return DataRow(
         cells: datacCells,
       );
-    } else if (widget.nameOfTable == 'MargeRequests') {
+    } else if (widget.nameOfTable == 'MergeRequests') {
       return DataRow(
         cells: datacCells,
         onSelectChanged: (value) {
-          // TODO: add watch marge request
+          // TODO: add watch merge request
         },
       );
     }

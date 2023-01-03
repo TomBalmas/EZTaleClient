@@ -7,4 +7,4 @@ export './RegisterScreen.dart';
 export './UserSettingsScreen.dart';
 export './AddEntityScreen.dart';
 export './CowritersScreen.dart';
-export './MargeRequestScreen.dart';
+export 'MergeRequestScreen.dart';
