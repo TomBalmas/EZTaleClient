@@ -123,7 +123,7 @@ Future<String> addUserDefined(String bookName, String username, String name,
 // location
 // storyEvent
 // userDefined
-// atrributeTemplate
+// attributeTemplate
 Future<String> getAllTypeEntities(
     String bookName, String username, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getalltype');

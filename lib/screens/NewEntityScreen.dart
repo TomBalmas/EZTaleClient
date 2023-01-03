@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/main.dart';
+import 'package:ez_tale/screens/ApplyTemplateScreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/EZBuildButton.dart';
 import '../widgets/EZNewEntityTextField.dart';
@@ -87,7 +90,21 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                       textColor: Colors.black87,
                       height: 40,
                       width: 250,
-                      onTap: () {} //TODO: add functionality
+                      onTap: () {
+                        getAllTypeEntities(
+                                MyApp.bookManager.getBookName(),
+                                MyApp.bookManager.getOwnerUsername(),
+                                'attributeTemplate')
+                            .then((value) async {
+                          final data = jsonDecode(value);
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      ApplyTemplate(tableContent: data)));
+                          setState(() {});
+                        });
+                      } //TODO: add functionality
                       ),
                   Expanded(
                     flex: 10,
@@ -140,7 +157,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                             width: 100,
                           ),
                           BuildButton(
-                              //TODO: ask Tom about this save
                               name: 'Save',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
@@ -179,32 +195,26 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                   newCustom["type"] = "userDefined";
                                   newCustom["name"] =
                                       widget.customNameController.text;
-                                  final Map<String, String> attributes = {};
-                                  for (int i = 0;
-                                      i < widget.attributeCounter;
-                                      i++) {
-                                    attributes[widget.nameControllers[i].text] =
-                                        widget.valueControllers[i].text;
-                                  }
-                                  //TODO: save the attributes
 
-                                  saveEntity(newCustom).then((value) {
+                                  saveWithAttributes(
+                                          createAttributeList(), newCustom)
+                                      .then((value) {
                                     final data = jsonDecode(value);
                                     if (data['msg'] == 'Successfully saved') {
                                       showAlertDiaglog(
                                           context,
                                           "Save Successeful",
-                                          "Custom Entity " +
-                                              widget
-                                                  .attributeTemplateNameController
-                                                  .text +
+                                          "Custom entity " +
+                                              widget.customNameController.text +
                                               " has been saved.",
                                           () => {
                                                 Navigator.pop(context, 'OK'),
                                                 Navigator.pop(context)
                                               });
                                     } else if (widget
-                                        .customNameController.text.isEmpty) {
+                                        .attributeTemplateNameController
+                                        .text
+                                        .isEmpty) {
                                       showAlertDiaglog(
                                           context,
                                           "Error",
@@ -264,6 +274,20 @@ class _NewEntityScreen extends State<NewEntityScreen> {
       ],
     );
     return r;
+  }
+
+  /*
+  returns a list of the entity's attributes
+  */
+  List<Map<String, String>> createAttributeList() {
+    final List<Map<String, String>> attributes = [];
+    for (int i = 0; i < widget.attributeCounter; i++) {
+      attributes.add({
+        'attr': widget.nameControllers[i].text,
+        'val': widget.valueControllers[i].text
+      });
+    }
+    return attributes;
   }
 
   /*
@@ -390,18 +414,11 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                                   newTemplate["type"] = "attributeTemplate";
                                   newTemplate["name"] = widget
                                       .attributeTemplateNameController.text;
-                                  final Map<String, String> attributes = {};
-                                  for (int i = 0;
-                                      i < widget.attributeCounter;
-                                      i++) {
-                                    attributes[widget.nameControllers[i].text] =
-                                        widget.valueControllers[i].text;
-                                  }
-                                  saveEntity(newTemplate).then((value) {
+                                  saveWithAttributes(
+                                          createAttributeList(), newTemplate)
+                                      .then((value) {
                                     final data = jsonDecode(value);
                                     if (data['msg'] == 'Successfully saved') {
-                                      if (widget.attributeCounter != 0)
-                                        addAttributes();
                                       showAlertDiaglog(
                                           context,
                                           "Save Successeful",
@@ -430,41 +447,6 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                         ]),
                   ),
                 ]))));
-  }
-
-  addAttributes() {
-    TextEditingController textControllerAttribute;
-    TextEditingController textControllerValue;
-    TextEditingController textControllerName;
-    bool nameFlag = true, attibuteFlag = true;
-    Row row;
-    String attributeEntityName;
-    for (final attribute in widget.attributeWidgets) {
-      row = attribute;
-      for (final field in row.children) {
-        if (nameFlag && field is EZEntityTextField) {
-          textControllerName = field.controller;
-          attributeEntityName = textControllerName.text;
-          nameFlag = false;
-          break;
-        } else if (field is EZEntityTextField) {
-          if (attibuteFlag) {
-            textControllerAttribute = field.controller;
-            attibuteFlag = false;
-            continue;
-          } else
-            textControllerValue = field.controller;
-          attibuteFlag = true;
-        }
-      }
-      addAttribute(
-          MyApp.bookManager.getOwnerUsername(),
-          MyApp.bookManager.getBookName(),
-          attributeEntityName,
-          'attributeTemplate',
-          textControllerAttribute.text,
-          textControllerValue.text);
-    }
   }
 }
 

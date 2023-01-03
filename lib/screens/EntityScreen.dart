@@ -438,7 +438,7 @@ class _EntityScreenState extends State<EntityScreen> {
 
   /*
   Builds the "Event" screen
-*/
+  */
   Widget buildEventScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
@@ -642,6 +642,9 @@ and the attribute templates.
     return entities;
   }
 
+  /*
+  builds the choose relations screen
+  */
   void addRelationButton() {
     List<dynamic> entities = [];
     Text entityName = widget.content[0].child;
@@ -659,7 +662,6 @@ and the attribute templates.
                     entityName: entityName.data,
                     entityType: widget.type,
                   )));
-      // TODO: Add the relation selected to the "relations"
       setState(() {});
     });
   }
