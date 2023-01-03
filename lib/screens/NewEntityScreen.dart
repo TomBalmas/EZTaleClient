@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
@@ -432,13 +433,13 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                 ]))));
   }
 
-  addAttributes() {
+  void addAttributes() {
     TextEditingController textControllerAttribute;
     TextEditingController textControllerValue;
     TextEditingController textControllerName;
     bool nameFlag = true, attibuteFlag = true;
     Row row;
-    String attributeEntityName;
+    String attributeEntityName, attr, val;
     for (final attribute in widget.attributeWidgets) {
       row = attribute;
       for (final field in row.children) {
@@ -450,20 +451,28 @@ class _NewEntityScreen extends State<NewEntityScreen> {
         } else if (field is EZEntityTextField) {
           if (attibuteFlag) {
             textControllerAttribute = field.controller;
+            attr = textControllerAttribute.text;
             attibuteFlag = false;
             continue;
-          } else
+          } else {
             textControllerValue = field.controller;
-          attibuteFlag = true;
+            val = textControllerValue.text;
+            attibuteFlag = true;
+          }
         }
       }
+      if (attr == null) continue;
+      if (val == null) val = '-';
       addAttribute(
-          MyApp.bookManager.getOwnerUsername(),
-          MyApp.bookManager.getBookName(),
-          attributeEntityName,
-          'attributeTemplate',
-          textControllerAttribute.text,
-          textControllerValue.text);
+              MyApp.bookManager.getOwnerUsername(),
+              MyApp.bookManager.getBookName(),
+              attributeEntityName,
+              'attributeTemplate',
+              textControllerAttribute.text,
+              textControllerValue.text)
+          .then((value) {
+        sleep(Duration(seconds: 1));
+      });
     }
   }
 }
