@@ -20,6 +20,7 @@ class EZBookManager {
     _bookName = bookName;
     _username = userName;
     getMargeRequests(_username, _bookName).then((value) {
+      if (value == "") return;
       final data = jsonDecode(value);
       margeRequests = data;
     });
