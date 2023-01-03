@@ -329,7 +329,7 @@ Future<String> deleteRelation(String username, String bookName, String name,
 
 Future<String> addAttribute(String username, String bookName, String name,
     String type, String attr, String val) async {
-  var url = Uri.parse(kServerURL + '/entity/addatribute');
+  var url = Uri.parse(kServerURL + '/entity/addattribute');
   Map<String, String> body;
   body = {
     'username': username,
