@@ -73,8 +73,10 @@ class EZUserManager {
   Future<List<EZBook>> updateUserStoriesList() async {
     //this will never be null
     //this is called only if the user has logged in
+    _userBookList = [];
     _getUserStories();
     _getCoStories();
+    return _userBookList;
   }
 
   List<EZBook> getUserStoriesList() {
