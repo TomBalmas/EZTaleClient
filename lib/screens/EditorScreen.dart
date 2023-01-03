@@ -44,22 +44,46 @@ class _EditorScreenState extends State<EditorScreen> {
   @override
   Widget build(BuildContext context) {
     if (firstTimeFlag) {
-      getNumberOfPages(MyApp.bookManager.getOwnerUsername(),
-              MyApp.bookManager.getBookName())
-          .then((value) {
-        final data = jsonDecode(value);
-        lastPageNumber = Text(data['msg']);
-        setState(() {});
-      });
-      getPage(MyApp.bookManager.getOwnerUsername(),
-              MyApp.bookManager.getBookName(), pageNumber.data)
-          .then((value) {
-        final data = jsonDecode(value);
-        data['content'] =
-            data['content'].substring(0, data['content'].length - 1);
-        quillController.document.insert(0, data['content']);
-      });
-      firstTimeFlag = false;
+      if (!widget.isCoBook) {
+        getNumberOfPages(MyApp.bookManager.getOwnerUsername(),
+                MyApp.bookManager.getBookName())
+            .then((value) {
+          final data = jsonDecode(value);
+          lastPageNumber = Text(data['msg']);
+          setState(() {});
+        });
+        getPage(MyApp.bookManager.getOwnerUsername(),
+                MyApp.bookManager.getBookName(), pageNumber.data)
+            .then((value) {
+          final data = jsonDecode(value);
+          data['content'] =
+              data['content'].substring(0, data['content'].length - 1);
+          quillController.document.insert(0, data['content']);
+        });
+        firstTimeFlag = false;
+      } else {
+        getCowtiternumberofpages(
+                MyApp.bookManager.getOwnerUsername(),
+                MyApp.bookManager.getBookName(),
+                MyApp.userManager.getCurrentUsername())
+            .then((value) {
+          final data = jsonDecode(value);
+          lastPageNumber = Text(data['msg']);
+          setState(() {});
+        });
+        getCowriterPage(
+                MyApp.bookManager.getOwnerUsername(),
+                MyApp.bookManager.getBookName(),
+                pageNumber.data,
+                MyApp.userManager.getCurrentUsername())
+            .then((value) {
+          final data = jsonDecode(value);
+          data['content'] =
+              data['content'].substring(0, data['content'].length - 1);
+          quillController.document.insert(0, data['content']);
+        });
+        firstTimeFlag = false;
+      }
     }
     return Scaffold(
         drawer: EZDrawer(),
@@ -189,13 +213,16 @@ class _EditorScreenState extends State<EditorScreen> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          BuildButton(
-                            name: 'Send Merge request',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            onTap: () {},
-                            width: 100,
-                          ),
+                          if (MyApp.userManager.getCurrentUsername() !=
+                                  MyApp.bookManager.getOwnerUsername() &&
+                              !widget.isWatch)
+                            BuildButton(
+                              name: 'Send Merge request',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              onTap: () {},
+                              width: 100,
+                            ),
                           SizedBox(width: 16),
                           SizedBox(width: 16),
                           if (MyApp.userManager.getCurrentUsername() ==
@@ -277,14 +304,11 @@ class _EditorScreenState extends State<EditorScreen> {
                                       .then((value) {
                                     pageNum--;
                                     pageNumber = Text(pageNum.toString());
-                                    getCowriterPage(
-                                            MyApp.bookManager
-                                                .getOwnerUsername(),
-                                            MyApp.bookManager.getBookName(),
-                                            pageNumber.data,
-                                            MyApp.userManager
-                                                .getCurrentUsername())
-                                        .then((value) {
+                                    getPage(
+                                      MyApp.bookManager.getOwnerUsername(),
+                                      MyApp.bookManager.getBookName(),
+                                      pageNumber.data,
+                                    ).then((value) {
                                       final data = jsonDecode(value);
                                       quillController.clear();
                                       data['content'] = data['content']
@@ -306,11 +330,13 @@ class _EditorScreenState extends State<EditorScreen> {
                                       .then((value) {
                                     pageNum--;
                                     pageNumber = Text(pageNum.toString());
-                                    getPage(
+                                    getCowriterPage(
                                             MyApp.bookManager
                                                 .getOwnerUsername(),
                                             MyApp.bookManager.getBookName(),
-                                            pageNumber.data)
+                                            pageNumber.data,
+                                            MyApp.userManager
+                                                .getCurrentUsername())
                                         .then((value) {
                                       final data = jsonDecode(value);
                                       quillController.clear();

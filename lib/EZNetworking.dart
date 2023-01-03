@@ -199,6 +199,15 @@ Future<String> getNumberOfPages(String username, String bookName) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
+Future<String> getCowtiternumberofpages(String username, String bookName,String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/getCowtiternumberofpages');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName,'coUsername':coUsername};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+
 
 Future<String> deleteBook(String username, String bookName) async {
   var url = Uri.parse(kServerURL + '/story/deletestory');
