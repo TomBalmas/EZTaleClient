@@ -390,17 +390,17 @@ Future<String> addDeadLine(
   return response.body;
 }
 
-Future<String> getMargeRequests(String username, String bookName) async {
-  var url = Uri.parse(kServerURL + '/story/getMargeRequests');
+Future<String> getMergeRequests(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getMergeRequests');
   Map<String, String> body;
   body = {'username': username, 'bookName': bookName};
   var response = await http.post(url, body: body);
   return response.body;
 }
 
-Future<String> deleteMargeRequest(
+Future<String> deleteMergeRequest(
     String username, String bookName, String coUsername) async {
-  var url = Uri.parse(kServerURL + '/story/deleteMargeRequest');
+  var url = Uri.parse(kServerURL + '/story/deleteMergeRequest');
   Map<String, String> body;
   body = {'username': username, 'bookName': bookName, 'coUsername': coUsername};
   var response = await http.post(url, body: body);
