@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ez_tale/EZNetworking.dart';
 import 'package:ez_tale/constants.dart';
 import 'package:ez_tale/screens/HomeScreen.dart';
+import 'package:ez_tale/screens/MergeRequestScreen.dart';
 import 'package:ez_tale/screens/TablesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,16 @@ import '../widgets/Widgets.dart';
 import 'package:ez_tale/main.dart';
 
 class EditorScreen extends StatefulWidget {
-  EditorScreen({
-    key,
-    this.bookName,
-  });
+  EditorScreen(
+      {key,
+      this.bookName,
+      @required this.isWatch,
+      @required this.isCoBook,
+      this.coWriterName});
+  final isWatch;
   final bookName;
+  final isCoBook;
+  final coWriterName;
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -184,28 +190,29 @@ class _EditorScreenState extends State<EditorScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           BuildButton(
-                            name: 'Send',
+                            name: 'Send Merge request',
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {},
                             width: 100,
                           ),
                           SizedBox(width: 16),
-                          BuildButton(
-                            name: 'Update',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            onTap: () {},
-                            width: 100,
-                          ),
                           SizedBox(width: 16),
-                          BuildButton(
-                            name: 'Merge Requests',
-                            bgColor: Color.fromRGBO(0, 173, 181, 100),
-                            textColor: Colors.black87,
-                            onTap: () {},
-                            width: 100,
-                          ),
+                          if (MyApp.userManager.getCurrentUsername() ==
+                              MyApp.bookManager.getOwnerUsername())
+                            BuildButton(
+                              name: 'Merge Requests',
+                              bgColor: Color.fromRGBO(0, 173, 181, 100),
+                              textColor: Colors.black87,
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) =>
+                                            MergeRequestScreen()));
+                              },
+                              width: 100,
+                            ),
                           Spacer(flex: 3),
                           BuildButton(
                             name: 'Back',
@@ -260,13 +267,79 @@ class _EditorScreenState extends State<EditorScreen> {
                               }
                               String page =
                                   quillController.document.toPlainText();
-                              if (pageNum <= lastPageNum)
-                                savePage(
-                                        MyApp.bookManager.getOwnerUsername(),
-                                        MyApp.bookManager.getBookName(),
-                                        pageNumber.data,
-                                        page)
-                                    .then((value) {
+                              if (pageNum <= lastPageNum) {
+                                if (!widget.isWatch && !widget.isCoBook) {
+                                  savePage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data,
+                                          page)
+                                      .then((value) {
+                                    pageNum--;
+                                    pageNumber = Text(pageNum.toString());
+                                    getCowriterPage(
+                                            MyApp.bookManager
+                                                .getOwnerUsername(),
+                                            MyApp.bookManager.getBookName(),
+                                            pageNumber.data,
+                                            MyApp.userManager
+                                                .getCurrentUsername())
+                                        .then((value) {
+                                      final data = jsonDecode(value);
+                                      quillController.clear();
+                                      data['content'] = data['content']
+                                          .substring(
+                                              0, data['content'].length - 1);
+                                      quillController.document
+                                          .insert(0, data['content']);
+                                      setState(() {});
+                                    });
+                                  });
+                                } else if (widget.isCoBook) {
+                                  saveCowriterPage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data,
+                                          page,
+                                          MyApp.userManager
+                                              .getCurrentUsername())
+                                      .then((value) {
+                                    pageNum--;
+                                    pageNumber = Text(pageNum.toString());
+                                    getPage(
+                                            MyApp.bookManager
+                                                .getOwnerUsername(),
+                                            MyApp.bookManager.getBookName(),
+                                            pageNumber.data)
+                                        .then((value) {
+                                      final data = jsonDecode(value);
+                                      quillController.clear();
+                                      data['content'] = data['content']
+                                          .substring(
+                                              0, data['content'].length - 1);
+                                      quillController.document
+                                          .insert(0, data['content']);
+                                      setState(() {});
+                                    });
+                                  });
+                                } else if (widget.isCoBook && widget.isWatch) {
+                                  pageNum--;
+                                  pageNumber = Text(pageNum.toString());
+                                  getCowriterPage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data,
+                                          widget.coWriterName)
+                                      .then((value) {
+                                    final data = jsonDecode(value);
+                                    quillController.clear();
+                                    data['content'] = data['content'].substring(
+                                        0, data['content'].length - 1);
+                                    quillController.document
+                                        .insert(0, data['content']);
+                                    setState(() {});
+                                  });
+                                } else {
                                   pageNum--;
                                   pageNumber = Text(pageNum.toString());
                                   getPage(
@@ -282,8 +355,8 @@ class _EditorScreenState extends State<EditorScreen> {
                                         .insert(0, data['content']);
                                     setState(() {});
                                   });
-                                });
-                              else {
+                                }
+                              } else {
                                 pageNum--;
                                 pageNumber = Text(pageNum.toString());
                                 getPage(
@@ -317,38 +390,113 @@ class _EditorScreenState extends State<EditorScreen> {
                               int pageNum = int.parse(pageNumber.data);
                               int lastPageNum = int.parse(lastPageNumber.data);
                               if (pageNum == (lastPageNum + 1)) return;
-                              savePage(
-                                      MyApp.bookManager.getOwnerUsername(),
-                                      MyApp.bookManager.getBookName(),
-                                      pageNumber.data,
-                                      quillController.document.toPlainText())
-                                  .then((value) {
-                                if (pageNum == lastPageNum) {
-                                  newPageStateFlag = true;
-                                  saveButtonColor = Colors.red;
-                                  saveButtonName = 'Add new page';
-                                  quillController.clear();
-                                  pageNum++;
-                                  pageNumber = Text(pageNum.toString());
-                                  setState(() {});
-                                } else if (pageNum <= lastPageNum) {
-                                  pageNum++;
-                                  pageNumber = Text(pageNum.toString());
-                                  quillController.clear();
-                                  getPage(
-                                          MyApp.bookManager.getOwnerUsername(),
-                                          MyApp.bookManager.getBookName(),
-                                          pageNumber.data)
-                                      .then((value) {
-                                    final data = jsonDecode(value);
-                                    data['content'] = data['content'].substring(
-                                        0, data['content'].length - 1);
-                                    quillController.document
-                                        .insert(0, data['content']);
+                              if (!widget.isWatch && !widget.isCoBook) {
+                                savePage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data,
+                                        quillController.document.toPlainText())
+                                    .then((value) {
+                                  if (pageNum == lastPageNum) {
+                                    newPageStateFlag = true;
+                                    saveButtonColor = Colors.red;
+                                    saveButtonName = 'Add new page';
+                                    quillController.clear();
+                                    pageNum++;
+                                    pageNumber = Text(pageNum.toString());
                                     setState(() {});
-                                  });
-                                }
-                              });
+                                  } else if (pageNum <= lastPageNum) {
+                                    pageNum++;
+                                    pageNumber = Text(pageNum.toString());
+                                    quillController.clear();
+                                    getPage(
+                                            MyApp.bookManager
+                                                .getOwnerUsername(),
+                                            MyApp.bookManager.getBookName(),
+                                            pageNumber.data)
+                                        .then((value) {
+                                      final data = jsonDecode(value);
+                                      data['content'] = data['content']
+                                          .substring(
+                                              0, data['content'].length - 1);
+                                      quillController.document
+                                          .insert(0, data['content']);
+                                      setState(() {});
+                                    });
+                                  }
+                                });
+                              } else if (widget.isCoBook && !widget.isWatch) {
+                                saveCowriterPage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data,
+                                        quillController.document.toPlainText(),
+                                        MyApp.userManager.getCurrentUsername())
+                                    .then((value) {
+                                  if (pageNum == lastPageNum) {
+                                    newPageStateFlag = true;
+                                    saveButtonColor = Colors.red;
+                                    saveButtonName = 'Add new page';
+                                    quillController.clear();
+                                    pageNum++;
+                                    pageNumber = Text(pageNum.toString());
+                                    setState(() {});
+                                  } else if (pageNum <= lastPageNum) {
+                                    pageNum++;
+                                    pageNumber = Text(pageNum.toString());
+                                    quillController.clear();
+                                    getCowriterPage(
+                                            MyApp.bookManager
+                                                .getOwnerUsername(),
+                                            MyApp.bookManager.getBookName(),
+                                            pageNumber.data,
+                                            MyApp.userManager
+                                                .getCurrentUsername())
+                                        .then((value) {
+                                      final data = jsonDecode(value);
+                                      data['content'] = data['content']
+                                          .substring(
+                                              0, data['content'].length - 1);
+                                      quillController.document
+                                          .insert(0, data['content']);
+                                      setState(() {});
+                                    });
+                                  }
+                                });
+                              } else if (widget.isWatch && widget.isCoBook) {
+                                pageNum++;
+                                pageNumber = Text(pageNum.toString());
+                                quillController.clear();
+                                getCowriterPage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data,
+                                        widget.coWriterName)
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  data['content'] = data['content']
+                                      .substring(0, data['content'].length - 1);
+                                  quillController.document
+                                      .insert(0, data['content']);
+                                  setState(() {});
+                                });
+                              } else {
+                                pageNum++;
+                                pageNumber = Text(pageNum.toString());
+                                quillController.clear();
+                                getPage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data)
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  data['content'] = data['content']
+                                      .substring(0, data['content'].length - 1);
+                                  quillController.document
+                                      .insert(0, data['content']);
+                                  setState(() {});
+                                });
+                              }
                             },
                             width: 50,
                             height: 50,
@@ -429,30 +577,31 @@ class _EditorScreenState extends State<EditorScreen> {
                         ],
                       )),
                   SizedBox(width: 16),
-                  BuildButton(
-                    name: saveButtonName,
-                    bgColor: saveButtonColor,
-                    textColor: Colors.black87,
-                    onTap: () {
-                      savePage(
-                              MyApp.bookManager.getOwnerUsername(),
-                              MyApp.bookManager.getBookName(),
-                              pageNumber.data,
-                              quillController.document.toPlainText())
-                          .then((value) {
-                        saveButtonName = 'Save';
-                        saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
-                        if (newPageStateFlag) {
-                          int lastPageNum = int.parse(lastPageNumber.data);
-                          lastPageNum++;
-                          lastPageNumber = Text(lastPageNum.toString());
-                          newPageStateFlag = false;
-                        }
-                        setState(() {});
-                      });
-                    },
-                    height: 100,
-                  )
+                  if (!widget.isWatch)
+                    BuildButton(
+                      name: saveButtonName,
+                      bgColor: saveButtonColor,
+                      textColor: Colors.black87,
+                      onTap: () {
+                        savePage(
+                                MyApp.bookManager.getOwnerUsername(),
+                                MyApp.bookManager.getBookName(),
+                                pageNumber.data,
+                                quillController.document.toPlainText())
+                            .then((value) {
+                          saveButtonName = 'Save';
+                          saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+                          if (newPageStateFlag) {
+                            int lastPageNum = int.parse(lastPageNumber.data);
+                            lastPageNum++;
+                            lastPageNumber = Text(lastPageNum.toString());
+                            newPageStateFlag = false;
+                          }
+                          setState(() {});
+                        });
+                      },
+                      height: 100,
+                    )
                 ]))
           ]),
         )));

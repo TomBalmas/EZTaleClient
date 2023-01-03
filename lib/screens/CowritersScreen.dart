@@ -200,8 +200,10 @@ class _CowritersScreenState extends State<CowritersScreen> {
                         child: EZTextButton(
                             buttonName: 'Set new deadline',
                             onTap: () {
-                              var coWriter = combo.getMenuValue();
-                              showNewDeadLinePopUp(context, coWriter);
+                              if (combo.getMenuValue() != null) {
+                                var coWriter = combo.getMenuValue();
+                                showNewDeadLinePopUp(context, coWriter);
+                              }
                             },
                             bgColor: bgColor,
                             textColor: Colors.white)),
@@ -233,6 +235,7 @@ class _EZComboBoxState extends State<EZComboBox> {
             MyApp.bookManager.getBookName())
         .then((value) {
       final data = jsonDecode(value);
+      if (value == "[]") return;
       for (var val in data) list.add(val['username']);
       for (var val in list)
         menuItems.add(DropdownMenuItem(child: Text(val), value: val));

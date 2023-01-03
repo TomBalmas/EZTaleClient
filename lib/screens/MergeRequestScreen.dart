@@ -14,15 +14,18 @@ class _MergeRequestScreenState extends State<MergeRequestScreen> {
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
           title: Text('Merge Requests'),
         ),
         body: Container(
           alignment: Alignment.center,
-          child: BuildTable(nameOfTable: 'MergeRequests',
+          child: BuildTable(
+            nameOfTable: 'MergeRequests',
             tableContent: MyApp.bookManager.getBookMergeRequests(),
           ),
-
-
         ));
   }
 }

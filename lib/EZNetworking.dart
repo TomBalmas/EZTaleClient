@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
@@ -139,6 +141,35 @@ Future<String> getAllEntities(String bookName, String username) async {
   return response.body;
 }
 
+Future<String> saveCowriterPage(String username, String bookName, String page,
+    String content, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/saveCowriterPage');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'page': page,
+    'coUsername': coUsername,
+    'content': content
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getCowriterPage(
+    String username, String bookName, String page, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/getCowriterPage');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'page': page,
+    'coUsername': coUsername
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 Future<String> savePage(
     String username, String bookName, String page, String content) async {
   var url = Uri.parse(kServerURL + '/story/savepage');
@@ -200,9 +231,9 @@ Future<String> saveEntity(Map<String, String> map) async {
 Future<String> saveWithAttributes(
     List attributes, Map<String, String> map) async {
   var url = Uri.parse(kServerURL + '/entity/addentity');
-  Map<String, dynamic> body;
+  Map<String, dynamic> body = {};
   body.addAll(map);
-  body['attributes'] = attributes;
+  body['attributes'] = jsonEncode(attributes);
   var response = await http.post(url, body: body);
   return response.body;
 }
