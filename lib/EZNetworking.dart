@@ -197,6 +197,16 @@ Future<String> saveEntity(Map<String, String> map) async {
   return response.body;
 }
 
+Future<String> saveWithAttributes(
+    List attributes, Map<String, String> map) async {
+  var url = Uri.parse(kServerURL + '/entity/addentity');
+  Map<String, dynamic> body;
+  body.addAll(map);
+  body['attributes'] = attributes;
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 Future<String> deleteEntity(
     String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/deleteentity');
