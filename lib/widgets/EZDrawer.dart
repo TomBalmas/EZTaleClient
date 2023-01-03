@@ -29,6 +29,7 @@ class EZDrawer extends StatelessWidget {
               leading: Icon(Icons.home, color: Colors.white30),
               title: const Text('Home', style: TextStyle(color: Colors.white)),
               onTap: () {
+                MyApp.bookManager.exitBook();
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
@@ -38,7 +39,8 @@ class EZDrawer extends StatelessWidget {
                 );
               },
             ),
-            if (MyApp.bookManager.getBookName() != null)
+            if (MyApp.bookManager.getBookName() != null && MyApp.userManager.getCurrentUsername() ==
+                              MyApp.bookManager.getOwnerUsername())
               ListTile(
                 leading: Icon(Icons.book, color: Colors.white30),
                 title: const Text('Co-Writers',
@@ -67,6 +69,7 @@ class EZDrawer extends StatelessWidget {
               title: const Text('User Settings',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
+                MyApp.bookManager.exitBook();
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
@@ -81,6 +84,7 @@ class EZDrawer extends StatelessWidget {
               title:
                   const Text('Logout', style: TextStyle(color: Colors.white)),
               onTap: () {
+                MyApp.bookManager.exitBook();
                 MyApp.userManager.logout();
                 Navigator.push(
                   context,

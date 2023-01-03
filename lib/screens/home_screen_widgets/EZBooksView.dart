@@ -90,7 +90,7 @@ class MyBooks extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                    builder: (context) => EditorScreen()));
+                                    builder: (context) => EditorScreen(isWatch: false,isCoBook: false)));
                           });
                         }
                       });

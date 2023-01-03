@@ -141,6 +141,35 @@ Future<String> getAllEntities(String bookName, String username) async {
   return response.body;
 }
 
+Future<String> saveCowriterPage(String username, String bookName, String page,
+    String content, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/saveCowriterPage');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'page': page,
+    'coUsername': coUsername,
+    'content': content
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getCowriterPage(
+    String username, String bookName, String page, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/getCowriterPage');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'page': page,
+    'coUsername': coUsername
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 Future<String> savePage(
     String username, String bookName, String page, String content) async {
   var url = Uri.parse(kServerURL + '/story/savepage');
@@ -170,6 +199,15 @@ Future<String> getNumberOfPages(String username, String bookName) async {
   var response = await http.post(url, body: body);
   return response.body;
 }
+Future<String> getCowtiternumberofpages(String username, String bookName,String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/getCowtiternumberofpages');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName,'coUsername':coUsername};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+
 
 Future<String> deleteBook(String username, String bookName) async {
   var url = Uri.parse(kServerURL + '/story/deletestory');
