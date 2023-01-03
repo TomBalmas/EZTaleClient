@@ -51,7 +51,7 @@ class _CowritersScreenState extends State<CowritersScreen> {
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: Text(coWriter +' add deadline'),
+              title: Text(coWriter + ' add deadline'),
               content: Text('Add a new deadline:'),
               actions: <Widget>[
                 SizedBox(
@@ -84,7 +84,8 @@ class _CowritersScreenState extends State<CowritersScreen> {
                                 MyApp.userManager.getCurrentEmail(),
                                 coWriter,
                                 coEmail,
-                                daysBetween(DateTime.now(), selectedDate).toString(),
+                                daysBetween(DateTime.now(), selectedDate)
+                                    .toString(),
                                 descriptionController.text)
                             .then((val) {
                           if (jsonDecode(val)['success']) {
@@ -92,7 +93,8 @@ class _CowritersScreenState extends State<CowritersScreen> {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                    builder: (context) => CowritersScreen(widget.deadlines)));
+                                    builder: (context) =>
+                                        CowritersScreen(widget.deadlines)));
                           }
                         });
                       });
@@ -153,7 +155,8 @@ class _CowritersScreenState extends State<CowritersScreen> {
                                           context,
                                           CupertinoPageRoute(
                                               builder: (context) =>
-                                                  CowritersScreen(widget.deadlines)),
+                                                  CowritersScreen(
+                                                      widget.deadlines)),
                                         );
                                       });
                                     },
@@ -164,8 +167,8 @@ class _CowritersScreenState extends State<CowritersScreen> {
                                     Navigator.push(
                                       context,
                                       CupertinoPageRoute(
-                                          builder: (context) =>
-                                              CowritersScreen(widget.deadlines)),
+                                          builder: (context) => CowritersScreen(
+                                              widget.deadlines)),
                                     );
                                   });
                                 }
@@ -189,19 +192,6 @@ class _CowritersScreenState extends State<CowritersScreen> {
                             SizedBox(width: 400),
                             BuildTable(
                                 nameOfTable: 'Co-writers',
-                                // tableContent: [
-                                //   {
-                                //     'Co-Writer': 'asdf',
-                                //     'Deadline': 'asdf',
-                                //     'Description': 'asdf'
-                                //   },
-                                //   {
-                                //     'Co-Writer': 'asdf',
-                                //     'Deadline': 'asdf',
-                                //     'Description': 'asdf'
-                                //   }
-                                // ])
-                                // build deadlines table
                                 tableContent: widget.deadlines)
                           ],
                         )),

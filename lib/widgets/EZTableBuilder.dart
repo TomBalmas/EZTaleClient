@@ -145,6 +145,20 @@ class _BuildTable extends State<BuildTable> {
             rows.add(createRow(cells));
           }
           break;
+        case 'MargeRequests':
+          columns.add(createColumn('coUsername'));
+          columns.add(createColumn('accepted'));
+          columns.add(createColumn('     '));
+          columns.add(createColumn('     '));
+          for (final request in widget.tableContent) {
+            cells = [];
+            cells.add(Text(request["coUsername"]));
+            cells.add(Text(request["accepted"].toString()));
+            cells.add(Text("Approve"));
+            cells.add(Text("Disapprove"));
+            rows.add(createRow(cells));
+          }
+          break;
       }
     }
     sortFlag = false;
@@ -224,6 +238,15 @@ class _BuildTable extends State<BuildTable> {
             }
           setState(() {});
         }));
+      } else if (cell.data == 'Approve' &&
+          widget.nameOfTable == 'MargeRequests') {
+        // TODO: add method accept marge request
+        // with dialog to tell which page to marge from
+
+      } else if (cell.data == 'Disapprove' &&
+          widget.nameOfTable == 'MargeRequests') {
+        //TODO: delete from requests (unmark)
+        //deleteMargeRequest(MyApp.bookManager.getOwnerUsername(), MyApp.bookManager.getBookName(), coUsername)
       } else
         datacCells.add(DataCell(cell));
     }
@@ -232,7 +255,8 @@ class _BuildTable extends State<BuildTable> {
     */
     if (widget.nameOfTable != 'Relations' &&
         widget.nameOfTable != 'Choose Relations' &&
-        widget.nameOfTable != 'Co-writers')
+        widget.nameOfTable != 'Co-writers' &&
+        widget.nameOfTable != 'MargeRequests')
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) async {
@@ -278,6 +302,13 @@ class _BuildTable extends State<BuildTable> {
     } else if (widget.nameOfTable == 'Relations') {
       return DataRow(
         cells: datacCells,
+      );
+    } else if (widget.nameOfTable == 'MargeRequests') {
+      return DataRow(
+        cells: datacCells,
+        onSelectChanged: (value) {
+          // TODO: add watch marge request
+        },
       );
     }
   }

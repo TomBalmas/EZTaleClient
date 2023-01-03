@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import '../EZNetworking.dart';
 
 class EZBookManager {
@@ -7,6 +6,7 @@ class EZBookManager {
 
   String _bookName;
   String _username;
+  var margeRequests = [];
 
   String getBookName() {
     return _bookName;
@@ -19,6 +19,14 @@ class EZBookManager {
   void setBook(String userName, String bookName) {
     _bookName = bookName;
     _username = userName;
+    getMargeRequests(_username, _bookName).then((value) {
+      final data = jsonDecode(value);
+      margeRequests = data;
+    });
+  }
+
+  getBookMargeRequests() {
+    return margeRequests;
   }
 
 // getting the book's page from server
@@ -30,7 +38,6 @@ class EZBookManager {
     }));
     return pageContent;
   }
-
 
   //return true if page saved successfully
   bool saveBookPage(String pageContent, int pageNum) {
