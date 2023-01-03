@@ -60,11 +60,13 @@ class _EntityScreenState extends State<EntityScreen> {
 */
 
   Widget buildCharacterScreen(BuildContext context, String title) {
+    Text name = widget.content[0].child;
+    String type = 'character';
     if (firstTimeFlag) {
-      Text name = widget.content[0].child;
+      name = widget.content[0].child;
       relations = [];
       getEntity(MyApp.bookManager.getOwnerUsername(),
-              MyApp.bookManager.getBookName(), name.data)
+              MyApp.bookManager.getBookName(), name.data, type)
           .then((value) {
         final data = jsonDecode(value);
         nameController.text = data['name'];
@@ -73,6 +75,9 @@ class _EntityScreenState extends State<EntityScreen> {
         genderController.text = data['gender'];
         traitsController.text = data['personalityTraits'];
         appearanceController.text = data['appearanceTraits'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       });
@@ -182,57 +187,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                       width: 150,
                                       height: 35,
                                       onTap: () {
-                                        List<dynamic> entities = [];
-                                        getAllTypeEntities(
-                                                MyApp.bookManager.getBookName(),
-                                                MyApp.bookManager
-                                                    .getOwnerUsername(),
-                                                'character')
-                                            .then((value) {
-                                          final data = jsonDecode(value);
-                                          entities = checkInstance(data);
-                                          getAllTypeEntities(
-                                                  MyApp.bookManager
-                                                      .getBookName(),
-                                                  MyApp.bookManager
-                                                      .getOwnerUsername(),
-                                                  'location')
-                                              .then((value) {
-                                            final data = jsonDecode(value);
-                                            entities += checkInstance(data);
-                                            getAllTypeEntities(
-                                                    MyApp.bookManager
-                                                        .getBookName(),
-                                                    MyApp.bookManager
-                                                        .getOwnerUsername(),
-                                                    'userDefined')
-                                                .then((value) {
-                                              final data = jsonDecode(value);
-                                              entities += checkInstance(data);
-                                              getAllTypeEntities(
-                                                      MyApp.bookManager
-                                                          .getBookName(),
-                                                      MyApp.bookManager
-                                                          .getOwnerUsername(),
-                                                      'storyEvent')
-                                                  .then((value) async {
-                                                final data = jsonDecode(value);
-                                                entities += checkInstance(data);
-                                                await Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            ChooseRelation(
-                                                                tableContent:
-                                                                    entities,
-                                                                nameOfTable:
-                                                                    'Choose Relations')));
-                                                // TODO: Add the relation selected to the "relations"
-                                                setState(() {});
-                                              });
-                                            });
-                                          });
-                                        });
+                                        addRelationButton();
                                       })
                                 ]),
                             SizedBox(height: 16),
@@ -244,8 +199,11 @@ class _EntityScreenState extends State<EntityScreen> {
                                 Expanded(
                                     child: ListView(children: [
                                   BuildTable(
-                                      nameOfTable: 'Relations',
-                                      tableContent: relations)
+                                    nameOfTable: 'Relations',
+                                    tableContent: relations,
+                                    entityName: name.data,
+                                    entityType: type,
+                                  )
                                 ]))
                               ],
                             ))
@@ -282,11 +240,11 @@ class _EntityScreenState extends State<EntityScreen> {
                                     appearanceController.text;
                                 editMap["age"] = ageController.text;
                                 editMap["gender"] = genderController.text;
-                                editMap["relations"] = relations.toString();
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    editMap['name']);
+                                    editMap['name'],
+                                    editMap['type']);
                                 saveEntity(editMap).then((value) {
                                   showAlertDiaglog(
                                       context,
@@ -311,15 +269,19 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildLocationScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'location';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
       if (firstTimeFlag) {
+        relations = [];
         data['vista'] = data['vista'].substring(0, data['vista'].length - 1);
         quillController.document.insert(0, data['vista']);
-        relations = data['relations'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       }
@@ -405,53 +367,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                 width: 150,
                                 height: 35,
                                 onTap: () {
-                                  List<dynamic> entities = [];
-                                  getAllTypeEntities(
-                                          MyApp.bookManager.getBookName(),
-                                          MyApp.bookManager.getOwnerUsername(),
-                                          'character')
-                                      .then((value) {
-                                    final data = jsonDecode(value);
-                                    entities = checkInstance(data);
-                                    getAllTypeEntities(
-                                            MyApp.bookManager.getBookName(),
-                                            MyApp.bookManager
-                                                .getOwnerUsername(),
-                                            'location')
-                                        .then((value) {
-                                      final data = jsonDecode(value);
-                                      entities += checkInstance(data);
-                                      getAllTypeEntities(
-                                              MyApp.bookManager.getBookName(),
-                                              MyApp.bookManager
-                                                  .getOwnerUsername(),
-                                              'userDefined')
-                                          .then((value) {
-                                        final data = jsonDecode(value);
-                                        entities += checkInstance(data);
-                                        getAllTypeEntities(
-                                                MyApp.bookManager.getBookName(),
-                                                MyApp.bookManager
-                                                    .getOwnerUsername(),
-                                                'storyEvent')
-                                            .then((value) async {
-                                          final data = jsonDecode(value);
-                                          entities += checkInstance(data);
-                                          await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      ChooseRelation(
-                                                          tableContent:
-                                                              entities,
-                                                          nameOfTable:
-                                                              'Choose Relations')));
-                                          // TODO: Add the relation selected to the "relations"
-                                          setState(() {});
-                                        });
-                                      });
-                                    });
-                                  });
+                                  addRelationButton();
                                 }),
                           ]),
                       SizedBox(height: 16),
@@ -459,7 +375,10 @@ class _EntityScreenState extends State<EntityScreen> {
                       Expanded(
                           child: ListView(children: [
                         BuildTable(
-                            nameOfTable: 'Relations', tableContent: relations)
+                            nameOfTable: 'Relations',
+                            tableContent: relations,
+                            entityName: name.data,
+                            entityType: type)
                       ]))
                     ],
                   ))
@@ -488,7 +407,8 @@ class _EntityScreenState extends State<EntityScreen> {
                               deleteEntity(
                                   MyApp.bookManager.getOwnerUsername(),
                                   MyApp.bookManager.getBookName(),
-                                  nameController.text);
+                                  nameController.text,
+                                  'location');
                               final Map<String, String> newLocation = newMap;
                               newLocation["type"] = "location";
                               newLocation["name"] = nameController.text;
@@ -522,15 +442,19 @@ class _EntityScreenState extends State<EntityScreen> {
   Widget buildEventScreen(BuildContext context, String title) {
     TextEditingController nameController = new TextEditingController();
     Text name = widget.content[0].child;
+    String type = 'storyEvent';
     getEntity(MyApp.bookManager.getOwnerUsername(),
-            MyApp.bookManager.getBookName(), name.data)
+            MyApp.bookManager.getBookName(), name.data, type)
         .then((value) {
       final data = jsonDecode(value);
       nameController.text = data['name'];
       if (firstTimeFlag) {
+        relations = [];
         data['desc'] = data['desc'].substring(0, data['desc'].length - 1);
         quillController.document.insert(0, data['desc']);
-        relations = data['relations'];
+        for (final relation in data['relations'])
+          relations.add(
+              {'name': relation['relateTo'], 'type': relation['relateToType']});
         setState(() {});
         firstTimeFlag = false;
       }
@@ -617,55 +541,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                   width: 150,
                                   height: 35,
                                   onTap: () {
-                                    List<dynamic> entities = [];
-                                    getAllTypeEntities(
-                                            MyApp.bookManager.getBookName(),
-                                            MyApp.bookManager
-                                                .getOwnerUsername(),
-                                            'character')
-                                        .then((value) {
-                                      final data = jsonDecode(value);
-                                      entities = checkInstance(data);
-                                      getAllTypeEntities(
-                                              MyApp.bookManager.getBookName(),
-                                              MyApp.bookManager
-                                                  .getOwnerUsername(),
-                                              'location')
-                                          .then((value) {
-                                        final data = jsonDecode(value);
-                                        entities += checkInstance(data);
-                                        getAllTypeEntities(
-                                                MyApp.bookManager.getBookName(),
-                                                MyApp.bookManager
-                                                    .getOwnerUsername(),
-                                                'userDefined')
-                                            .then((value) {
-                                          final data = jsonDecode(value);
-                                          entities += checkInstance(data);
-                                          getAllTypeEntities(
-                                                  MyApp.bookManager
-                                                      .getBookName(),
-                                                  MyApp.bookManager
-                                                      .getOwnerUsername(),
-                                                  'storyEvent')
-                                              .then((value) async {
-                                            final data = jsonDecode(value);
-                                            entities += checkInstance(data);
-                                            await Navigator.push(
-                                                context,
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        ChooseRelation(
-                                                            tableContent:
-                                                                entities,
-                                                            nameOfTable:
-                                                                'Choose Relations')));
-                                            // TODO: Add the relation selected to the "relations"
-                                            setState(() {});
-                                          });
-                                        });
-                                      });
-                                    });
+                                    addRelationButton();
                                   }),
                             ]),
                         SizedBox(height: 16),
@@ -673,7 +549,10 @@ class _EntityScreenState extends State<EntityScreen> {
                         Expanded(
                             child: ListView(children: [
                           BuildTable(
-                              nameOfTable: 'Relations', tableContent: relations)
+                              nameOfTable: 'Relations',
+                              tableContent: relations,
+                              entityName: name.data,
+                              entityType: type)
                         ]))
                       ],
                     ))
@@ -702,7 +581,8 @@ class _EntityScreenState extends State<EntityScreen> {
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
-                                    nameController.text);
+                                    nameController.text,
+                                    'storyEvent');
                                 final Map<String, String> newLocation = newMap;
                                 newLocation["type"] = "storyEvent";
                                 newLocation["name"] = nameController.text;
@@ -730,7 +610,9 @@ class _EntityScreenState extends State<EntityScreen> {
   }
 
 /*
-removes the current entity from the possible relations list
+Removes the current entity from the possible relations list,
+and the entities that are in the relations list already,
+and the attribute templates.
  */
   List<dynamic> checkInstance(dynamic data) {
     List<dynamic> entities = data;
@@ -739,6 +621,10 @@ removes the current entity from the possible relations list
     String type = widget.type.toLowerCase();
     bool foundSelfFlag = false;
     for (final entity in data) {
+      if (entity['type'] == 'attributeTemplate') {
+        toRemove.add(entity);
+        continue;
+      }
       if (entity['name'] == name.data &&
           entity['type'] == type &&
           !foundSelfFlag) {
@@ -754,5 +640,27 @@ removes the current entity from the possible relations list
       entities.remove(entity);
     }
     return entities;
+  }
+
+  void addRelationButton() {
+    List<dynamic> entities = [];
+    Text entityName = widget.content[0].child;
+    getAllEntities(MyApp.bookManager.getBookName(),
+            MyApp.bookManager.getOwnerUsername())
+        .then((value) async {
+      final data = jsonDecode(value);
+      entities = checkInstance(data);
+      await Navigator.push(
+          context,
+          CupertinoPageRoute(
+              builder: (context) => ChooseRelation(
+                    tableContent: entities,
+                    nameOfTable: 'Choose Relations',
+                    entityName: entityName.data,
+                    entityType: widget.type,
+                  )));
+      // TODO: Add the relation selected to the "relations"
+      setState(() {});
+    });
   }
 }

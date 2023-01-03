@@ -177,10 +177,16 @@ Future<String> deleteBook(String username, String bookName) async {
   return response.body;
 }
 
-Future<String> getEntity(String username, String bookName, String name) async {
+Future<String> getEntity(
+    String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'name': name,
+    'type': type
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -192,10 +198,15 @@ Future<String> saveEntity(Map<String, String> map) async {
 }
 
 Future<String> deleteEntity(
-    String username, String bookName, String name) async {
+    String username, String bookName, String name, String type) async {
   var url = Uri.parse(kServerURL + '/entity/deleteentity');
   Map<String, String> body;
-  body = {'username': username, 'bookName': bookName, 'name': name};
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'name': name,
+    'type': type
+  };
   var response = await http.post(url, body: body);
   return response.body;
 }
@@ -230,9 +241,17 @@ Future<String> addNewStory(
 
 Future<String> getUserByEmail(String email) async {
   var url = Uri.parse(kServerURL + '/getuserbyemail');
-  Map<String, String> headers;
-  headers = {'email': email};
-  var response = await http.post(url, headers: headers);
+  Map<String, String> body;
+  body = {'email': email};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getEmailByUser(String username) async {
+  var url = Uri.parse(kServerURL + '/getEmailByUsername');
+  Map<String, String> body;
+  body = {'username': username};
+  var response = await http.post(url, body: body);
   return response.body;
 }
 
@@ -278,7 +297,7 @@ Future<String> getCoStories(String username) async {
 
 Future<String> addRelation(String username, String bookName, String name,
     String type, String relateTo, String relateToType) async {
-  var url = Uri.parse(kServerURL + '/entity/addRelation');
+  var url = Uri.parse(kServerURL + '/entity/addrelation');
   Map<String, String> body;
   body = {
     'username': username,
@@ -294,7 +313,7 @@ Future<String> addRelation(String username, String bookName, String name,
 
 Future<String> deleteRelation(String username, String bookName, String name,
     String type, String relateTo, String relateToType) async {
-  var url = Uri.parse(kServerURL + '/entity/deleteRelation');
+  var url = Uri.parse(kServerURL + '/entity/deleterelation');
   Map<String, String> body;
   body = {
     'username': username,
@@ -308,10 +327,9 @@ Future<String> deleteRelation(String username, String bookName, String name,
   return response.body;
 }
 
-
 Future<String> addAttribute(String username, String bookName, String name,
     String type, String attr, String val) async {
-  var url = Uri.parse(kServerURL + '/entity/addatribute');
+  var url = Uri.parse(kServerURL + '/entity/addattribute');
   Map<String, String> body;
   body = {
     'username': username,
@@ -325,7 +343,6 @@ Future<String> addAttribute(String username, String bookName, String name,
   return response.body;
 }
 
-
 Future<String> deleteAttribute(String username, String bookName, String name,
     String type, String attr, String val) async {
   var url = Uri.parse(kServerURL + '/entity/deleteattribute');
@@ -338,6 +355,54 @@ Future<String> deleteAttribute(String username, String bookName, String name,
     'val': val,
     'type': type
   };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getDeadLines(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getDeadlines');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> addDeadLine(
+    String username,
+    String bookName,
+    String email,
+    String coUsername,
+    String coUsernameEmail,
+    String deadLine,
+    String description) async {
+  var url = Uri.parse(kServerURL + '/story/addDeadline');
+  Map<String, String> body;
+  body = {
+    'username': username,
+    'bookName': bookName,
+    'email': email,
+    'coUsername': coUsername,
+    'coUsernameEmail': coUsernameEmail,
+    'deadLine': deadLine,
+    'description': description
+  };
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> getMergeRequests(String username, String bookName) async {
+  var url = Uri.parse(kServerURL + '/story/getMergeRequests');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> deleteMergeRequest(
+    String username, String bookName, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/deleteMergeRequest');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'coUsername': coUsername};
   var response = await http.post(url, body: body);
   return response.body;
 }

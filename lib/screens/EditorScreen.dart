@@ -28,6 +28,7 @@ class _EditorScreenState extends State<EditorScreen> {
       tenseTrackingColor = Colors.red,
       turningPointsColor = Colors.red,
       saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+  bool repeatedWordsFlag = false;
   String saveButtonName = 'Save';
   Text pageNumber = Text('1');
   Text lastPageNumber = Text('');
@@ -140,7 +141,7 @@ class _EditorScreenState extends State<EditorScreen> {
                         getAllTypeEntities(
                                 MyApp.bookManager.getBookName(),
                                 MyApp.bookManager.getOwnerUsername(),
-                                'atrributeTemplate')
+                                'attributeTemplate')
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -158,9 +159,10 @@ class _EditorScreenState extends State<EditorScreen> {
                       bgColor: Color.fromRGBO(0, 173, 181, 100),
                       textColor: Colors.black87,
                       onTap: () {
-                        getAllTypeEntities(MyApp.bookManager.getBookName(),
-                                MyApp.bookManager.getOwnerUsername(), 'storyEvent')
-
+                        getAllTypeEntities(
+                                MyApp.bookManager.getBookName(),
+                                MyApp.bookManager.getOwnerUsername(),
+                                'storyEvent')
                             .then((value) {
                           final data = jsonDecode(value);
                           Navigator.push(
@@ -247,8 +249,9 @@ class _EditorScreenState extends State<EditorScreen> {
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
                             onTap: () {
-                              int num = int.parse(pageNumber.data);
-                              if (num == 1) return;
+                              int pageNum = int.parse(pageNumber.data);
+                              int lastPageNum = int.parse(lastPageNumber.data);
+                              if (pageNum == 1) return;
                               if (newPageStateFlag) {
                                 newPageStateFlag = false;
                                 saveButtonColor =
@@ -257,14 +260,32 @@ class _EditorScreenState extends State<EditorScreen> {
                               }
                               String page =
                                   quillController.document.toPlainText();
-                              savePage(
-                                      MyApp.bookManager.getOwnerUsername(),
-                                      MyApp.bookManager.getBookName(),
-                                      pageNumber.data,
-                                      page)
-                                  .then((value) {
-                                num--;
-                                pageNumber = Text(num.toString());
+                              if (pageNum <= lastPageNum)
+                                savePage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data,
+                                        page)
+                                    .then((value) {
+                                  pageNum--;
+                                  pageNumber = Text(pageNum.toString());
+                                  getPage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data)
+                                      .then((value) {
+                                    final data = jsonDecode(value);
+                                    quillController.clear();
+                                    data['content'] = data['content'].substring(
+                                        0, data['content'].length - 1);
+                                    quillController.document
+                                        .insert(0, data['content']);
+                                    setState(() {});
+                                  });
+                                });
+                              else {
+                                pageNum--;
+                                pageNumber = Text(pageNum.toString());
                                 getPage(
                                         MyApp.bookManager.getOwnerUsername(),
                                         MyApp.bookManager.getBookName(),
@@ -278,7 +299,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                       .insert(0, data['content']);
                                   setState(() {});
                                 });
-                              });
+                              }
                             },
                             width: 50,
                             height: 50,
@@ -362,10 +383,14 @@ class _EditorScreenState extends State<EditorScreen> {
                                   textColor: Colors.black87,
                                   onTap: () {
                                     setState(() {
-                                      if (repeatedWordsColor == Colors.red)
+                                      if (repeatedWordsColor == Colors.red) {
                                         repeatedWordsColor = Colors.green;
-                                      else
+                                        repeatedWordsFlag = true;
+                                        repeatedWordsTracker(true);
+                                      } else {
                                         repeatedWordsColor = Colors.red;
+                                        repeatedWordsFlag = false;
+                                      }
                                     });
                                   },
                                   width: 100,
@@ -431,5 +456,25 @@ class _EditorScreenState extends State<EditorScreen> {
                 ]))
           ]),
         )));
+  }
+
+  void repeatedWordsTracker(bool flag) {
+    List<String> words = [];
+    words = quillController.document.toPlainText().toLowerCase().split(' ');
+    words.sort();
+    print(words);
+    if (flag) {
+      if (words.isNotEmpty)
+        for (final word in words) {
+          words.remove(word);
+          if (words.contains(word)) {
+            quillController.document.changes.listen((event) {
+              print(event.item1);
+              print(event.item2);
+              print(event.item3);
+            });
+          }
+        }
+    }
   }
 }
