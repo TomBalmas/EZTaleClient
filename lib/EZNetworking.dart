@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
@@ -121,7 +123,7 @@ Future<String> addUserDefined(String bookName, String username, String name,
 // location
 // storyEvent
 // userDefined
-// atrributeTemplate
+// attributeTemplate
 Future<String> getAllTypeEntities(
     String bookName, String username, String type) async {
   var url = Uri.parse(kServerURL + '/entity/getalltype');
@@ -200,9 +202,9 @@ Future<String> saveEntity(Map<String, String> map) async {
 Future<String> saveWithAttributes(
     List attributes, Map<String, String> map) async {
   var url = Uri.parse(kServerURL + '/entity/addentity');
-  Map<String, dynamic> body;
+  Map<String, dynamic> body = {};
   body.addAll(map);
-  body['attributes'] = attributes;
+  body['attributes'] = jsonEncode(attributes);
   var response = await http.post(url, body: body);
   return response.body;
 }

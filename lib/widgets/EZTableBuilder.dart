@@ -159,6 +159,14 @@ class _BuildTable extends State<BuildTable> {
             rows.add(createRow(cells));
           }
           break;
+        case 'Apply Template':
+          columns.add(createColumn('Name'));
+          for (final template in widget.tableContent) {
+            cells = [];
+            cells.add(Text(template["name"]));
+            rows.add(createRow(cells));
+          }
+          break;
       }
     }
     sortFlag = false;
@@ -170,6 +178,9 @@ class _BuildTable extends State<BuildTable> {
         sortAscending: _isAscending);
   }
 
+  /*
+  fills empty field
+  */
   String checkEmptyField(String entity) {
     if (entity == null ||
         entity == 'null' ||
@@ -186,17 +197,22 @@ class _BuildTable extends State<BuildTable> {
     String entityName;
     String tableName = widget.nameOfTable;
     String type = tableName.toLowerCase().substring(0, tableName.length - 1);
+    //correct the type
     if (tableName == 'Custom')
       type = 'userDefined';
-    else if (tableName == 'Attribute Templates')
+    else if (tableName == 'Attribute Templates' ||
+        tableName == 'Apply Template')
       type = 'attributeTemplate';
     else if (tableName == 'Events') type = 'storyEvent';
     List<DataCell> datacCells = [];
     for (Text cell in widgetCells) {
+      //gets the name of the entity
       if (nameFlag) {
         entityName = cell.data;
         nameFlag = false;
       }
+
+      //adds the delete button
       if (cell.data == 'X' && widget.nameOfTable != 'Relations') {
         datacCells.add(DataCell(cell, onTap: (() {
           deleteEntity(MyApp.bookManager.getOwnerUsername(),
@@ -220,7 +236,9 @@ class _BuildTable extends State<BuildTable> {
           });
         })));
         nameFlag = true;
-      } else if (cell.data == 'X' && widget.nameOfTable == 'Relations') {
+      }
+      //adds the remove relation button
+      else if (cell.data == 'X' && widget.nameOfTable == 'Relations') {
         datacCells.add(DataCell(cell, onTap: () {
           Text name = datacCells[0].child, type = datacCells[1].child;
           for (final relation in relations)
@@ -250,13 +268,15 @@ class _BuildTable extends State<BuildTable> {
       } else
         datacCells.add(DataCell(cell));
     }
+
     /*
-    Table in the Tables screen
+    Table in the tables screen
     */
     if (widget.nameOfTable != 'Relations' &&
         widget.nameOfTable != 'Choose Relations' &&
         widget.nameOfTable != 'Co-writers' &&
-        widget.nameOfTable != 'MergeRequests')
+        widget.nameOfTable != 'MergeRequests' &&
+        widget.nameOfTable != 'Apply Template')
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) async {
@@ -310,7 +330,8 @@ class _BuildTable extends State<BuildTable> {
           // TODO: add watch merge request
         },
       );
-    }
+    } else
+      return DataRow(cells: datacCells);
   }
 
   DataColumn createColumn(String name) {
