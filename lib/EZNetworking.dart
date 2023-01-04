@@ -456,3 +456,23 @@ Future<String> deleteMergeRequest(
   var response = await http.post(url, body: body);
   return response.body;
 }
+
+Future<String> approveMergeRequest(
+    String username, String bookName, String coUsername, String page) async {
+  var url = Uri.parse(kServerURL + '/story/acceptMergeRequest');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'coUsername': coUsername, 'page': page};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+Future<String> sendMergeRequest(
+    String username, String bookName, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/addMergeRequest');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'coUsername': coUsername};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
+

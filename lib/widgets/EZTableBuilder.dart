@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ez_tale/EZNetworking.dart';
+import 'package:ez_tale/screens/EditorScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,71 @@ import '../main.dart';
 import '../screens/EntityScreen.dart';
 import '../screens/NewEntityScreen.dart';
 import '../screens/TablesScreen.dart';
+
+void showAcceptRequestDiaglog(
+    BuildContext context, String alt, String desc, String coUsername) async {
+  TextEditingController pageController = new TextEditingController();
+  showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text(alt),
+      content: Text(desc),
+      actions: <Widget>[
+        TextFormField(
+          decoration: InputDecoration(hintText: 'Page to merge'),
+          controller: pageController,
+        ),
+        TextButton(
+          onPressed: () {
+            approveMergeRequest(
+                    MyApp.bookManager.getOwnerUsername(),
+                    MyApp.bookManager.getBookName(),
+                    coUsername,
+                    pageController.text)
+                .then((value) => Navigator.pop(context));
+          },
+          child: const Text('OK'),
+        ),
+        TextButton(
+          onPressed: (() => Navigator.pop(context)),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<bool> showDisapproveRequestDiaglog(
+    BuildContext context, String alt, String desc, String coUsername) async {
+  showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text(alt),
+      content: Text(desc),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            deleteMergeRequest(MyApp.bookManager.getOwnerUsername(),
+                    MyApp.bookManager.getBookName(), coUsername)
+                .then((value) {
+              Navigator.pop(context);
+              return true;
+            });
+          },
+          child: const Text('Delete'),
+        ),
+        TextButton(
+          onPressed: (() {
+            Navigator.pop(context);
+            return false;
+          }),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+  return false;
+}
 
 // ignore: must_be_immutable
 class BuildTable extends StatefulWidget {
@@ -106,9 +172,9 @@ class _BuildTable extends State<BuildTable> {
           }
           break;
         case 'Co-writers':
-          columns.add(createColumn('coUsername'));
-          columns.add(createColumn('deadLine'));
-          columns.add(createColumn('description'));
+          columns.add(createColumn('Username'));
+          columns.add(createColumn('Deadline'));
+          columns.add(createColumn('Description'));
           for (final writer in widget.tableContent) {
             cells = [];
             cells.add(Text(writer["coUsername"]));
@@ -146,8 +212,8 @@ class _BuildTable extends State<BuildTable> {
           }
           break;
         case 'MergeRequests':
-          columns.add(createColumn('coUsername'));
-          columns.add(createColumn('accepted'));
+          columns.add(createColumn('Username'));
+          columns.add(createColumn('Accepted'));
           columns.add(createColumn('     '));
           columns.add(createColumn('     '));
           for (final request in widget.tableContent) {
@@ -258,13 +324,39 @@ class _BuildTable extends State<BuildTable> {
         }));
       } else if (cell.data == 'Approve' &&
           widget.nameOfTable == 'MergeRequests') {
-        // TODO: add method accept merge request
-        // with dialog to tell which page to merge from
-
+        datacCells.add(DataCell(cell, onTap: () {
+          Text username = datacCells[0].child, approved = datacCells[1].child;
+          for (final request in MyApp.bookManager.getBookMergeRequests()) {
+            if (request['coUsername'] == username.data &&
+                approved.data != 'true') {
+              showAcceptRequestDiaglog(
+                  context,
+                  'Which page to merge?',
+                  'Please select a page to merge to and press OK',
+                  username.data);
+              break;
+            }
+            setState(() {});
+          }
+        }));
       } else if (cell.data == 'Disapprove' &&
           widget.nameOfTable == 'MergeRequests') {
-        //TODO: delete from requests (unmark)
-        //deleteMergeRequest(MyApp.bookManager.getOwnerUsername(), MyApp.bookManager.getBookName(), coUsername)
+        datacCells.add(DataCell(cell, onTap: () {
+          Text username = datacCells[0].child, approved = datacCells[1].child;
+          for (final request in MyApp.bookManager.getBookMergeRequests()) {
+            if (request['coUsername'] == username.data &&
+                approved.data != 'true') {
+              showDisapproveRequestDiaglog(
+                  context,
+                  'Disapprove Merge Request?',
+                  'Are you sure you want to disapprove\n the merge request?',
+                  username.data);
+              MyApp.bookManager.mergeRequests.remove(request);
+              break;
+            }
+            setState(() {});
+          }
+        }));
       } else
         datacCells.add(DataCell(cell));
     }
@@ -327,7 +419,14 @@ class _BuildTable extends State<BuildTable> {
       return DataRow(
         cells: datacCells,
         onSelectChanged: (value) {
-          // TODO: add watch merge request
+          Text username = datacCells[0].child;
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => EditorScreen(
+                      isCoBook: true,
+                      isWatch: true,
+                      coWriterName: username.data)));
         },
       );
     } else

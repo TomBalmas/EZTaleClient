@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../widgets/Widgets.dart';
 
+
+
 class MergeRequestScreen extends StatefulWidget {
   @override
   State<MergeRequestScreen> createState() => _MergeRequestScreenState();
@@ -11,6 +13,7 @@ class MergeRequestScreen extends StatefulWidget {
 class _MergeRequestScreenState extends State<MergeRequestScreen> {
   @override
   Widget build(BuildContext context) {
+    print(MyApp.bookManager.getBookMergeRequests());
     return Scaffold(
         drawer: EZDrawer(),
         appBar: AppBar(
@@ -21,7 +24,7 @@ class _MergeRequestScreenState extends State<MergeRequestScreen> {
           title: Text('Merge Requests'),
         ),
         body: Container(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           child: BuildTable(
             nameOfTable: 'MergeRequests',
             tableContent: MyApp.bookManager.getBookMergeRequests(),

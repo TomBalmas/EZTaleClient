@@ -128,14 +128,14 @@ class _BookInfoCardState extends State<BookInfoCard> {
             context,
             CupertinoPageRoute(
                 builder: (context) =>
-                    EditorScreen(isWatch: false,isCoBook: false,))); //add build book, entities
+                    EditorScreen(isWatch: false,isCoBook: false))); //add build book, entities
       } else if (itemSelected == 'add') {
         MyApp.bookManager.setBook(bookInfo.owner, bookInfo.title);
         Navigator.push(
             context,
             CupertinoPageRoute(
                 builder: (context) =>
-                    EditorScreen(isWatch: false,isCoBook: true))); //add build book, entities
+                    EditorScreen(isWatch: false,isCoBook: true,coWriterName: MyApp.userManager.getCurrentUsername(),))); //add build book, entities
       }
         else if (itemSelected == 'watch') {
         MyApp.bookManager.setBook(bookInfo.owner, bookInfo.title);
