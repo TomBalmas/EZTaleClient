@@ -139,6 +139,7 @@ class _NewEntityScreen extends State<NewEntityScreen> {
                               height: 50,
                               onTap: () {
                                 setState(() {
+                                  widget.bgColorApplyTemplate = Colors.grey;
                                   widget.attributeWidgets
                                       .add(addAttributeClicked());
                                   widget.attributeCounter++;

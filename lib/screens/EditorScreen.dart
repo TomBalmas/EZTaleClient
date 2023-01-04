@@ -219,6 +219,50 @@ class _EditorScreenState extends State<EditorScreen> {
                                       )));
                         });
                       }),
+                  SizedBox(height: 100),
+                  if (!widget.isWatch)
+                    BuildButton(
+                      name: saveButtonName,
+                      bgColor: saveButtonColor,
+                      textColor: Colors.black87,
+                      onTap: () {
+                        if (widget.isCoBook)
+                          saveCowriterPage(
+                                  MyApp.bookManager.getOwnerUsername(),
+                                  MyApp.bookManager.getBookName(),
+                                  pageNumber.data,
+                                  quillController.document.toPlainText(),
+                                  widget.coWriterName)
+                              .then((value) {
+                            saveButtonName = 'Save';
+                            saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+                            if (newPageStateFlag) {
+                              int lastPageNum = int.parse(lastPageNumber.data);
+                              lastPageNum++;
+                              lastPageNumber = Text(lastPageNum.toString());
+                              newPageStateFlag = false;
+                            }
+                            setState(() {});
+                          });
+                        else
+                          savePage(
+                                  MyApp.bookManager.getOwnerUsername(),
+                                  MyApp.bookManager.getBookName(),
+                                  pageNumber.data,
+                                  quillController.document.toPlainText())
+                              .then((value) {
+                            saveButtonName = 'Save';
+                            saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
+                            if (newPageStateFlag) {
+                              int lastPageNum = int.parse(lastPageNumber.data);
+                              lastPageNum++;
+                              lastPageNumber = Text(lastPageNum.toString());
+                              newPageStateFlag = false;
+                            }
+                            setState(() {});
+                          });
+                      },
+                    ),
                 ]),
                 SizedBox(width: 16),
                 Expanded(
@@ -226,7 +270,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   Expanded(
                     flex: 0,
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           if (MyApp.userManager.getCurrentUsername() !=
                                   MyApp.bookManager.getOwnerUsername() &&
@@ -235,6 +279,7 @@ class _EditorScreenState extends State<EditorScreen> {
                               name: 'Send Merge request',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
+                              width: 150,
                               onTap: () {
                                 sendMergeRequest(
                                         MyApp.bookManager.getOwnerUsername(),
@@ -256,15 +301,14 @@ class _EditorScreenState extends State<EditorScreen> {
                                   }
                                 });
                               },
-                              width: 100,
                             ),
-                          SizedBox(width: 16),
                           SizedBox(width: 16),
                           if (!widget.isCoBook && !widget.isWatch)
                             BuildButton(
                               name: 'Merge Requests',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
                               textColor: Colors.black87,
+                              width: 150,
                               onTap: () {
                                 Navigator.push(
                                     context,
@@ -272,13 +316,14 @@ class _EditorScreenState extends State<EditorScreen> {
                                         builder: (context) =>
                                             MergeRequestScreen()));
                               },
-                              width: 100,
+                              
                             ),
-                          Spacer(flex: 3),
+                          Spacer(flex: 1),
                           BuildButton(
                             name: 'Back',
                             bgColor: Color.fromRGBO(0, 173, 181, 100),
                             textColor: Colors.black87,
+                            width: 150,
                             onTap: () {
                               if (widget.isCoBook && widget.isWatch)
                                 Navigator.pop(context);
@@ -292,7 +337,6 @@ class _EditorScreenState extends State<EditorScreen> {
                                                 .getUserStoriesList())));
                               }
                             },
-                            width: 100,
                           )
                         ]),
                   ),
@@ -554,122 +598,6 @@ class _EditorScreenState extends State<EditorScreen> {
                 ]))
               ]),
             ),
-            Expanded(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Container(
-                      width: 450,
-                      height: 150,
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 5, color: Colors.black87),
-                          color: kBackgroundColor),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 7),
-                          Text('Editor Options:'),
-                          SizedBox(height: 10),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                BuildButton(
-                                  name: 'Repeated Words',
-                                  bgColor: repeatedWordsColor,
-                                  textColor: Colors.black87,
-                                  onTap: () {
-                                    setState(() {
-                                      if (repeatedWordsColor == Colors.red) {
-                                        repeatedWordsColor = Colors.green;
-                                        repeatedWordsFlag = true;
-                                        repeatedWordsTracker(true);
-                                      } else {
-                                        repeatedWordsColor = Colors.red;
-                                        repeatedWordsFlag = false;
-                                      }
-                                    });
-                                  },
-                                  width: 100,
-                                ),
-                                SizedBox(width: 16),
-                                BuildButton(
-                                  name: 'Tense Tracking',
-                                  bgColor: tenseTrackingColor,
-                                  textColor: Colors.black87,
-                                  onTap: () {
-                                    setState(() {
-                                      if (tenseTrackingColor == Colors.red)
-                                        tenseTrackingColor = Colors.green;
-                                      else
-                                        tenseTrackingColor = Colors.red;
-                                    });
-                                  },
-                                  width: 100,
-                                ),
-                                SizedBox(width: 16),
-                                BuildButton(
-                                  name: 'Turning Points',
-                                  bgColor: turningPointsColor,
-                                  textColor: Colors.black87,
-                                  onTap: () {
-                                    setState(() {
-                                      if (turningPointsColor == Colors.red)
-                                        turningPointsColor = Colors.green;
-                                      else
-                                        turningPointsColor = Colors.red;
-                                    });
-                                  },
-                                  width: 100,
-                                )
-                              ])
-                        ],
-                      )),
-                  SizedBox(width: 16),
-                  if (!widget.isWatch)
-                    BuildButton(
-                      name: saveButtonName,
-                      bgColor: saveButtonColor,
-                      textColor: Colors.black87,
-                      onTap: () {
-                        if (widget.isCoBook)
-                          saveCowriterPage(
-                                  MyApp.bookManager.getOwnerUsername(),
-                                  MyApp.bookManager.getBookName(),
-                                  pageNumber.data,
-                                  quillController.document.toPlainText(),
-                                  widget.coWriterName)
-                              .then((value) {
-                            saveButtonName = 'Save';
-                            saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
-                            if (newPageStateFlag) {
-                              int lastPageNum = int.parse(lastPageNumber.data);
-                              lastPageNum++;
-                              lastPageNumber = Text(lastPageNum.toString());
-                              newPageStateFlag = false;
-                            }
-                            setState(() {});
-                          });
-                        else
-                          savePage(
-                                  MyApp.bookManager.getOwnerUsername(),
-                                  MyApp.bookManager.getBookName(),
-                                  pageNumber.data,
-                                  quillController.document.toPlainText())
-                              .then((value) {
-                            saveButtonName = 'Save';
-                            saveButtonColor = Color.fromRGBO(0, 173, 181, 100);
-                            if (newPageStateFlag) {
-                              int lastPageNum = int.parse(lastPageNumber.data);
-                              lastPageNum++;
-                              lastPageNumber = Text(lastPageNum.toString());
-                              newPageStateFlag = false;
-                            }
-                            setState(() {});
-                          });
-                      },
-                      height: 100,
-                    )
-                ]))
           ]),
         )));
   }

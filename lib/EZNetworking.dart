@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
-//TODO: add more requests
-
 Future<bool> isServerConnected() async {
   var url = Uri.parse(kServerURL + '/');
   var response = await http.get(url);

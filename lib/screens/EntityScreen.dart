@@ -20,6 +20,7 @@ Map<String, String> newEditMap = {
 };
 var relations = [];
 
+// ignore: must_be_immutable
 class EntityScreen extends StatefulWidget {
   EntityScreen({
     key,
@@ -358,7 +359,7 @@ class _EntityScreenState extends State<EntityScreen> {
                                       ),
                                       child: SizedBox(
                                         width: 600,
-                                        height: 300,
+                                        height: 270,
                                         child: quill.QuillEditor.basic(
                                           controller: quillController,
                                           readOnly:

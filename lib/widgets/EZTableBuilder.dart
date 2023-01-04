@@ -191,8 +191,9 @@ class _BuildTable extends State<BuildTable> {
           for (final entity in widget.tableContent) {
             cells = [];
             cells.add(Text(entity["name"]));
-            if (entity["type"] == 'storyEvent')
-              cells.add(Text('event'));
+            if (entity["type"] == 'storyEvent') cells.add(Text('event'));
+            if (entity["type"] == 'userDefined')
+              cells.add(Text('custom'));
             else
               cells.add(Text(entity["type"]));
             cells.add(Text('X'));
@@ -208,7 +209,7 @@ class _BuildTable extends State<BuildTable> {
             if (entity["type"] == 'storyEvent')
               cells.add(Text('event'));
             else if (entity["type"] == 'userDefined')
-              cells.add(Text('Custom'));
+              cells.add(Text('custom'));
             else
               cells.add(Text(entity["type"]));
             rows.add(createRow(cells));
@@ -284,24 +285,39 @@ class _BuildTable extends State<BuildTable> {
       //adds the delete button
       if (cell.data == 'X' && widget.nameOfTable != 'Relations') {
         datacCells.add(DataCell(cell, onTap: (() {
-          deleteEntity(MyApp.bookManager.getOwnerUsername(),
+          getEntity(MyApp.bookManager.getOwnerUsername(),
                   MyApp.bookManager.getBookName(), entityName, type)
-              .then((value) {
+              .then((value) async {
             final data = jsonDecode(value);
-            if (data['msg'] == 'Entity Deleted')
-              showAlertDiaglog(context, "Success",
-                  "Entity " + entityName + " was deleted successfuly.", () {
-                Navigator.pop(context, 'OK');
-                getAllTypeEntities(
-                        MyApp.bookManager.getBookName(),
-                        MyApp.bookManager.getOwnerUsername(),
-                        getType(widget.nameOfTable))
-                    .then((value) {
-                  final data = jsonDecode(value);
-                  widget.tableContent = data;
-                  setState(() {});
+            for (final relation in data['relations']) {
+              print(relation);
+              await deleteRelation(
+                  MyApp.bookManager.getOwnerUsername(),
+                  MyApp.bookManager.getBookName(),
+                  entityName,
+                  type,
+                  relation['relateTo'],
+                  relation['relateToType']);
+            }
+            deleteEntity(MyApp.bookManager.getOwnerUsername(),
+                    MyApp.bookManager.getBookName(), entityName, type)
+                .then((value) {
+              final data = jsonDecode(value);
+              if (data['msg'] == 'Entity Deleted')
+                showAlertDiaglog(context, "Success",
+                    "Entity " + entityName + " was deleted successfuly.", () {
+                  Navigator.pop(context, 'OK');
+                  getAllTypeEntities(
+                          MyApp.bookManager.getBookName(),
+                          MyApp.bookManager.getOwnerUsername(),
+                          getType(widget.nameOfTable))
+                      .then((value) {
+                    final data = jsonDecode(value);
+                    widget.tableContent = data;
+                    setState(() {});
+                  });
                 });
-              });
+            });
           });
         })));
         nameFlag = true;
@@ -310,6 +326,7 @@ class _BuildTable extends State<BuildTable> {
       else if (cell.data == 'X' && widget.nameOfTable == 'Relations') {
         datacCells.add(DataCell(cell, onTap: () {
           Text name = datacCells[0].child, type = datacCells[1].child;
+          if (type.data == 'custom') type = Text('userDefined');
           for (final relation in relations)
             if (relation['name'] == name.data &&
                 relation['type'] == type.data) {
@@ -397,11 +414,13 @@ class _BuildTable extends State<BuildTable> {
           });
         },
       );
+
     /*
       builds the choose relations rows, clicking a row adds the relation to the entity's relations list
       */
     else if (widget.nameOfTable == 'Choose Relations') {
       Text name = datacCells[0].child, type = datacCells[1].child;
+      if (type.data == 'custom') type = Text('userDefined');
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) {
@@ -424,9 +443,22 @@ class _BuildTable extends State<BuildTable> {
        * builds the relations table
       */
     } else if (widget.nameOfTable == 'Relations') {
+      Text type = datacCells[1].child;
+      if (type.data == 'character') type = Text('Character');
+      if (type.data == 'location') type = Text('Location');
+      if (type.data == 'event') type = Text('Event');
+      if (type.data == 'custom') type = Text('Custom');
       return DataRow(
-        cells: datacCells,
-      );
+          cells: datacCells,
+          onSelectChanged: (selected) {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => EntityScreen(
+                          type: type.data,
+                          content: datacCells,
+                        )));
+          });
     } else if (widget.nameOfTable == 'MergeRequests') {
       return DataRow(
         cells: datacCells,
