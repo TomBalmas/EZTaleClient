@@ -21,6 +21,7 @@ class BuildTable extends StatefulWidget {
   var tableContent;
   String entityName, entityType;
   bool coWritersFlag = false;
+  List attributes = [];
 
   @override
   _BuildTable createState() => _BuildTable();
@@ -140,6 +141,8 @@ class _BuildTable extends State<BuildTable> {
             cells.add(Text(entity["name"]));
             if (entity["type"] == 'storyEvent')
               cells.add(Text('event'));
+            else if (entity["type"] == 'userDefined')
+              cells.add(Text('Custom'));
             else
               cells.add(Text(entity["type"]));
             rows.add(createRow(cells));
@@ -280,12 +283,15 @@ class _BuildTable extends State<BuildTable> {
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) async {
+          String type =
+              widget.nameOfTable.substring(0, widget.nameOfTable.length - 1);
+          if (widget.nameOfTable == 'Attribute Templates') type = 'Template';
+          if (widget.nameOfTable == 'Custom') type = 'Custom';
           await Navigator.push(
               context,
               CupertinoPageRoute(
                   builder: (context) => EntityScreen(
-                        type: widget.nameOfTable
-                            .substring(0, widget.nameOfTable.length - 1),
+                        type: type,
                         content: datacCells,
                       )));
           getAllTypeEntities(
@@ -299,6 +305,9 @@ class _BuildTable extends State<BuildTable> {
           });
         },
       );
+    /*
+      builds the choose relations rows, clicking a row adds the relation to the entity's relations list
+      */
     else if (widget.nameOfTable == 'Choose Relations') {
       Text name = datacCells[0].child, type = datacCells[1].child;
       return DataRow(
@@ -319,6 +328,9 @@ class _BuildTable extends State<BuildTable> {
       return DataRow(
         cells: datacCells,
       );
+      /*
+       * builds the relations table
+      */
     } else if (widget.nameOfTable == 'Relations') {
       return DataRow(
         cells: datacCells,
@@ -330,6 +342,24 @@ class _BuildTable extends State<BuildTable> {
           // TODO: add watch merge request
         },
       );
+    } else if (widget.nameOfTable == 'Apply Template') {
+      Text name = datacCells[0].child;
+      return DataRow(
+          cells: datacCells,
+          onSelectChanged: (selected) {
+            getEntity(
+                    MyApp.bookManager.getOwnerUsername(),
+                    MyApp.bookManager.getBookName(),
+                    name.data,
+                    'attributeTemplate')
+                .then((value) {
+              final data = jsonDecode(value);
+              for (final attribute in data['attributes'])
+                widget.attributes.add(attribute);
+              NewEntityScreen.attributes = widget.attributes;
+              Navigator.pop(context);
+            });
+          });
     } else
       return DataRow(cells: datacCells);
   }
