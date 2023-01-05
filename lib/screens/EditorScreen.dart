@@ -332,8 +332,9 @@ class _EditorScreenState extends State<EditorScreen> {
                               }
                               String page =
                                   quillController.document.toPlainText();
-                              if (pageNum <= lastPageNum) {
-                                if (!widget.isWatch && !widget.isCoBook) {
+
+                              if (!widget.isWatch && !widget.isCoBook) {
+                                if (pageNum <= lastPageNum) {
                                   savePage(
                                           MyApp.bookManager.getOwnerUsername(),
                                           MyApp.bookManager.getBookName(),
@@ -347,52 +348,6 @@ class _EditorScreenState extends State<EditorScreen> {
                                       MyApp.bookManager.getBookName(),
                                       pageNumber.data,
                                     ).then((value) {
-                                      final data = jsonDecode(value);
-                                      quillController.clear();
-                                      data['content'] = data['content']
-                                          .substring(
-                                              0, data['content'].length - 1);
-                                      quillController.document
-                                          .insert(0, data['content']);
-                                      setState(() {});
-                                    });
-                                  });
-                                } else if (widget.isCoBook && widget.isWatch) {
-                                  pageNum--;
-                                  pageNumber = Text(pageNum.toString());
-                                  getCowriterPage(
-                                          MyApp.bookManager.getOwnerUsername(),
-                                          MyApp.bookManager.getBookName(),
-                                          pageNumber.data,
-                                          widget.coWriterName)
-                                      .then((value) {
-                                    final data = jsonDecode(value);
-                                    quillController.clear();
-                                    data['content'] = data['content'].substring(
-                                        0, data['content'].length - 1);
-                                    quillController.document
-                                        .insert(0, data['content']);
-                                    setState(() {});
-                                  });
-                                } else if (widget.isCoBook && !widget.isWatch) {
-                                  saveCowriterPage(
-                                          MyApp.bookManager.getOwnerUsername(),
-                                          MyApp.bookManager.getBookName(),
-                                          pageNumber.data,
-                                          page,
-                                          MyApp.userManager
-                                              .getCurrentUsername())
-                                      .then((value) {
-                                    pageNum--;
-                                    pageNumber = Text(pageNum.toString());
-                                    getCowriterPage(
-                                            MyApp.bookManager
-                                                .getOwnerUsername(),
-                                            MyApp.bookManager.getBookName(),
-                                            pageNumber.data,
-                                            MyApp.userManager
-                                                .getCurrentUsername())
-                                        .then((value) {
                                       final data = jsonDecode(value);
                                       quillController.clear();
                                       data['content'] = data['content']
@@ -420,6 +375,85 @@ class _EditorScreenState extends State<EditorScreen> {
                                     setState(() {});
                                   });
                                 }
+                              } else if (widget.isCoBook && widget.isWatch) {
+                                pageNum--;
+                                pageNumber = Text(pageNum.toString());
+                                getCowriterPage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data,
+                                        widget.coWriterName)
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  quillController.clear();
+                                  data['content'] = data['content']
+                                      .substring(0, data['content'].length - 1);
+                                  quillController.document
+                                      .insert(0, data['content']);
+                                  setState(() {});
+                                });
+                              } else if (widget.isCoBook && !widget.isWatch) {
+                                if (pageNum <= lastPageNum) {
+                                  saveCowriterPage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data,
+                                          page,
+                                          widget.coWriterName)
+                                      .then((value) {
+                                    pageNum--;
+                                    pageNumber = Text(pageNum.toString());
+                                    getCowriterPage(
+                                            MyApp.bookManager
+                                                .getOwnerUsername(),
+                                            MyApp.bookManager.getBookName(),
+                                            pageNumber.data,
+                                            widget.coWriterName)
+                                        .then((value) {
+                                      final data = jsonDecode(value);
+                                      quillController.clear();
+                                      data['content'] = data['content']
+                                          .substring(
+                                              0, data['content'].length - 1);
+                                      quillController.document
+                                          .insert(0, data['content']);
+                                      setState(() {});
+                                    });
+                                  });
+                                } else {
+                                  pageNum--;
+                                  pageNumber = Text(pageNum.toString());
+                                  getCowriterPage(
+                                          MyApp.bookManager.getOwnerUsername(),
+                                          MyApp.bookManager.getBookName(),
+                                          pageNumber.data,
+                                          widget.coWriterName)
+                                      .then((value) {
+                                    final data = jsonDecode(value);
+                                    quillController.clear();
+                                    data['content'] = data['content'].substring(
+                                        0, data['content'].length - 1);
+                                    quillController.document
+                                        .insert(0, data['content']);
+                                    setState(() {});
+                                  });
+                                }
+                              } else {
+                                pageNum--;
+                                pageNumber = Text(pageNum.toString());
+                                getPage(
+                                        MyApp.bookManager.getOwnerUsername(),
+                                        MyApp.bookManager.getBookName(),
+                                        pageNumber.data)
+                                    .then((value) {
+                                  final data = jsonDecode(value);
+                                  quillController.clear();
+                                  data['content'] = data['content']
+                                      .substring(0, data['content'].length - 1);
+                                  quillController.document
+                                      .insert(0, data['content']);
+                                  setState(() {});
+                                });
                               }
                             },
                             width: 50,
@@ -479,7 +513,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                         MyApp.bookManager.getBookName(),
                                         pageNumber.data,
                                         quillController.document.toPlainText(),
-                                        MyApp.userManager.getCurrentUsername())
+                                        widget.coWriterName)
                                     .then((value) {
                                   if (pageNum == lastPageNum) {
                                     newPageStateFlag = true;
@@ -498,8 +532,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                                 .getOwnerUsername(),
                                             MyApp.bookManager.getBookName(),
                                             pageNumber.data,
-                                            MyApp.userManager
-                                                .getCurrentUsername())
+                                            widget.coWriterName)
                                         .then((value) {
                                       final data = jsonDecode(value);
                                       data['content'] = data['content']
