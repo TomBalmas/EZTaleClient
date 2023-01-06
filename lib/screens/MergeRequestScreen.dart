@@ -11,6 +11,8 @@ class MergeRequestScreen extends StatefulWidget {
 }
 
 class _MergeRequestScreenState extends State<MergeRequestScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     print(MyApp.bookManager.getBookMergeRequests());
@@ -27,7 +29,7 @@ class _MergeRequestScreenState extends State<MergeRequestScreen> {
           alignment: Alignment.topCenter,
           child: BuildTable(
             nameOfTable: 'MergeRequests',
-            tableContent: MyApp.bookManager.getBookMergeRequests(),
+            tableContent: MyApp.bookManager.mergeRequests,
           ),
         ));
   }

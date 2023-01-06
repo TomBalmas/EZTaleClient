@@ -356,8 +356,8 @@ class _BuildTable extends State<BuildTable> {
                   username.data);
               break;
             }
-            setState(() {});
           }
+          setState(() {});
         }));
       } else if (cell.data == 'Disapprove' &&
           widget.nameOfTable == 'MergeRequests') {
@@ -374,8 +374,8 @@ class _BuildTable extends State<BuildTable> {
               MyApp.bookManager.mergeRequests.remove(request);
               break;
             }
-            setState(() {});
           }
+          setState(() {});
         }));
       } else
         datacCells.add(DataCell(cell));
