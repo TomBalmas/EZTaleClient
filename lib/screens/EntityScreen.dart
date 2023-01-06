@@ -1000,13 +1000,13 @@ and the attribute templates.
                               width: 100,
                               onTap: () {
                                 final Map<String, String> editMap = newMap;
-                                editMap["type"] = "userDefined";
+                                editMap["type"] = "attributeTemplate";
                                 editMap["name"] = name.data;
                                 deleteEntity(
                                     MyApp.bookManager.getOwnerUsername(),
                                     MyApp.bookManager.getBookName(),
                                     name.data,
-                                    'userDefined');
+                                    'attributeTemplate');
                                 saveWithAttributes(
                                         createAttributeList(nameControllers,
                                             valueControllers, attributeCounter),
@@ -1017,7 +1017,7 @@ and the attribute templates.
                                     showAlertDiaglog(
                                         context,
                                         "Save Successeful",
-                                        "Custom entity " +
+                                        "Template entity " +
                                             name.data +
                                             " has been updated.",
                                         () => {
