@@ -30,6 +30,15 @@ class EZBookManager {
     return mergeRequests;
   }
 
+  updateMargeReuests() {
+    mergeRequests = [];
+    getMergeRequests(_username, _bookName).then((value) {
+      if (value == "") return;
+      final data = jsonDecode(value);
+      mergeRequests = data;
+    });
+  }
+
 // getting the book's page from server
   String getBookPage(int pageNum) {
     String pageContent;

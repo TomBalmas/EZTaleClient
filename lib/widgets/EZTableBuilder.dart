@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../screens/EntityScreen.dart';
 import '../screens/NewEntityScreen.dart';
+import '../screens/Screens.dart';
 import '../screens/TablesScreen.dart';
 
 void showAcceptRequestDiaglog(
@@ -30,7 +31,14 @@ void showAcceptRequestDiaglog(
                     MyApp.bookManager.getBookName(),
                     coUsername,
                     pageController.text)
-                .then((value) => Navigator.pop(context));
+                .then((value) {
+              MyApp.bookManager.updateMargeReuests();
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => HomeScreen(
+                          booksList: MyApp.userManager.getUserStoriesList())));
+            });
           },
           child: const Text('OK'),
         ),
@@ -64,7 +72,12 @@ Future<bool> showDisapproveRequestDiaglog(
         ),
         TextButton(
           onPressed: (() {
-            Navigator.pop(context);
+            MyApp.bookManager.updateMargeReuests();
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => HomeScreen(
+                        booksList: MyApp.userManager.getUserStoriesList())));
             return false;
           }),
           child: const Text('Cancel'),
@@ -191,9 +204,8 @@ class _BuildTable extends State<BuildTable> {
           for (final entity in widget.tableContent) {
             cells = [];
             cells.add(Text(entity["name"]));
-            if (entity["type"] == 'storyEvent')
-              cells.add(Text('event'));
-            else if (entity["type"] == 'userDefined')
+            if (entity["type"] == 'storyEvent') cells.add(Text('event'));
+            if (entity["type"] == 'userDefined')
               cells.add(Text('custom'));
             else
               cells.add(Text(entity["type"]));
@@ -422,7 +434,6 @@ class _BuildTable extends State<BuildTable> {
     else if (widget.nameOfTable == 'Choose Relations') {
       Text name = datacCells[0].child, type = datacCells[1].child;
       if (type.data == 'custom') type = Text('userDefined');
-      if (type.data == 'event') type = Text('storyEvent');
       return DataRow(
         cells: datacCells,
         onSelectChanged: (selected) {
