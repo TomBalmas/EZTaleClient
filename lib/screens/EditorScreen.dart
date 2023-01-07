@@ -40,6 +40,7 @@ class _EditorScreenState extends State<EditorScreen> {
   Text lastPageNumber = Text('');
   bool newPageStateFlag = false;
   bool firstTimeFlag = true;
+  bool accepted = false;
 
   showAlertDiaglog(
       BuildContext context, String alt, String desc, Function func) async {
@@ -84,7 +85,13 @@ class _EditorScreenState extends State<EditorScreen> {
             .then((value) {
           final data = jsonDecode(value);
           lastPageNumber = Text(data['msg']);
-          setState(() {});
+          checkMergeAccepted(MyApp.bookManager.getOwnerUsername(),
+                  MyApp.bookManager.getBookName(), widget.coWriterName)
+              .then((source) {
+            final dataAccepted = jsonDecode(source);
+            accepted = dataAccepted['msg'] == 'found';
+            setState(() {});
+          });
         });
         getCowriterPage(
                 MyApp.bookManager.getOwnerUsername(),
@@ -274,7 +281,8 @@ class _EditorScreenState extends State<EditorScreen> {
                         children: [
                           if (MyApp.userManager.getCurrentUsername() !=
                                   MyApp.bookManager.getOwnerUsername() &&
-                              !widget.isWatch)
+                              !widget.isWatch &&
+                              !accepted)
                             BuildButton(
                               name: 'Send Merge request',
                               bgColor: Color.fromRGBO(0, 173, 181, 100),
@@ -316,7 +324,6 @@ class _EditorScreenState extends State<EditorScreen> {
                                         builder: (context) =>
                                             MergeRequestScreen()));
                               },
-                              
                             ),
                           Spacer(flex: 1),
                           BuildButton(

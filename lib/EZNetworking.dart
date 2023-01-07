@@ -473,4 +473,13 @@ Future<String> sendMergeRequest(
   return response.body;
 }
 
+Future<String> checkMergeAccepted(
+    String username, String bookName, String coUsername) async {
+  var url = Uri.parse(kServerURL + '/story/checkMergeAccepted');
+  Map<String, String> body;
+  body = {'username': username, 'bookName': bookName, 'coUsername': coUsername};
+  var response = await http.post(url, body: body);
+  return response.body;
+}
+
 
